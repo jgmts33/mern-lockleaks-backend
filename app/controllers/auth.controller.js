@@ -41,7 +41,7 @@ export const signup = async (req, res) => {
             })
           ],
           Subject: "Email Verification | LockLeaks",
-          From: nodemailerConfig.auth.user
+          From: 'support@copyrightfixer.com'
         }
       });
 
@@ -65,7 +65,7 @@ export const signup = async (req, res) => {
 
         }
       };
-      
+
       api.emailsPost(emailContent, callback);
 
     })
