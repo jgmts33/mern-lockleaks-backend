@@ -12,9 +12,7 @@ apikey.apiKey = "0DB5ECD47CD2E0E29C03F8D73B7B07DF4DC19B94BEAC3B1AA0A59C5EA983D35
 
 let api = new ElasticEmail.EmailsApi()
 
-const { user: User, role: Role, refreshToken: RefreshToken } = db;
-
-const Op = db.Sequelize.Op;
+const { user: User, refreshToken: RefreshToken } = db;
 
 export const signup = async (req, res) => {
 
@@ -31,7 +29,7 @@ export const signup = async (req, res) => {
 
       let refreshToken = await RefreshToken.createToken(user);
 
-      let email = ElasticEmail.EmailMessageData.constructFromObject({
+      let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
         Recipients: [
           new ElasticEmail.EmailRecipient(email)
         ],
@@ -67,7 +65,8 @@ export const signup = async (req, res) => {
 
         }
       };
-      api.emailsPost(email, callback);
+      
+      api.emailsPost(emailContent, callback);
 
     })
     .catch(err => {
