@@ -5,34 +5,20 @@ const User = db.user;
 
 export const checkDuplicateUsernameOrEmail = (req, res, next) => {
 
-  // Username
+  // Email
   User.findOne({
     where: {
-      username: req.body.username
+      email: req.body.email
     }
   }).then(user => {
     if (user) {
       res.status(400).send({
-        message: "Failed! Username is already is in user!"
+        message: "Failed! Email is already in user!"
       });
       return;
     }
 
-    // Email
-    User.findOne({
-      where: {
-        email: req.body.email
-      }
-    }).then(user => {
-      if (user) {
-        res.status(400).send({
-          message: "Failed! Email is already in user!"
-        });
-        return;
-      }
-
-      next();
-    });
+    next();
   });
 
 }

@@ -3,48 +3,74 @@ import config from '../config/auth.config.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
+import nodemailer from 'nodemailer';
+import nodemailerConfig from '../config/nodemailer.config.js';
+
 const { user: User, role: Role, refreshToken: RefreshToken } = db;
 
 const Op = db.Sequelize.Op;
 
 export const signup = async (req, res) => {
+
+  const { email, password } = req.body;
   User.create({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
+    email: email,
+    password: bcrypt.hashSync(password, 8)
   })
-    .then(user => {
-      if (req.body.roles) {
-        Role.findAll({
-          where: {
-            name: {
-              [Op.or]: req.body.roles
-            }
-          }
-        }).then(roles => {
-          user.setRoles(roles).then(() => {
-            res.json({ message: "User was registered successfully!" });
-          });
+    .then(async user => {
+
+      const transporter = nodemailer.createTransport(nodemailerConfig);
+
+      const info = await transporter.sendMail({
+        from: nodemailerConfig.auth.user,
+        to: email,
+        subject: 'Email Verification | LockLeaks',
+        text: `
+        Hi ,
+        
+        Thanks for getting started with LockLeaks!
+        
+        We need a little more information to complete your registration, including a confirmation of your email address.
+        
+        Click below to confirm your email address:
+        
+        [link]
+        
+        If you have problems, please paste the above URL into your web browser.`,
+        html: "<p>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/>[link]<br/><br/>If you have problems, please paste the above URL into your web browser.</p>"
+      });
+
+      const token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: config.jwtExpiration
+      });
+
+      let refreshToken = await RefreshToken.createToken(user);
+      user.setRoles([1]).then(() => {
+
+        res.status(200).send({
+          username: user.username,
+          email: user.email,
+          roles: ['user'],
+          accessToken: token,
+          refreshToken: refreshToken,
         });
-      } else {
-        // user role = 1
-        user.setRoles([1]).then(() => {
-          res.json({ message: "User was registered successfully!" });
-        });
-      }
+
+      });
     })
     .catch(err => {
-      res.status(500).json({ message: err.message });
+      res.status(500).json({
+        message: err.message
+      });
     });
 }
 
 export const signin = async (req, res) => {
 
-  const { username, password } = req.body
+  const { email, password } = req.body
 
   User.findOne({
     where: {
-      username: username
+      email: email
     }
   })
     .then(async (user) => {
@@ -52,14 +78,10 @@ export const signin = async (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      const passwordIsValid = bcrypt.compareSync(
-        password,
-        user.password
-      );
+      const passwordIsValid = bcrypt.compareSync(password, user.password);
 
       if (!passwordIsValid) {
         return res.status(401).send({
-          accessToken: null,
           message: "Invalid Password!"
         });
       }
@@ -70,25 +92,20 @@ export const signin = async (req, res) => {
 
       let refreshToken = await RefreshToken.createToken(user);
 
-
-      let authorities = [];
       user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
-        }
 
         res.status(200).send({
-          id: user.id,
-          username: user.username,
           email: user.email,
-          roles: authorities,
+          roles: roles.map((role) => role.name),
           accessToken: token,
           refreshToken: refreshToken,
         });
       });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({
+        message: err.message
+      });
     });
 };
 
@@ -96,7 +113,9 @@ export const refreshToken = async (req, res) => {
   const { refreshToken: requestToken } = req.body;
 
   if (requestToken == null) {
-    return res.status(403).json({ message: "Refresh Token is required!" });
+    return res.status(403).json({
+      message: "Refresh Token is required!"
+    });
   }
 
   try {
@@ -105,7 +124,9 @@ export const refreshToken = async (req, res) => {
     console.log(refreshToken)
 
     if (!refreshToken) {
-      res.status(403).json({ message: "Refresh token is not in database!" });
+      res.status(403).json({
+        message: "Refresh token is not in database!"
+      });
       return;
     }
 
@@ -128,6 +149,8 @@ export const refreshToken = async (req, res) => {
       refreshToken: refreshToken.token,
     });
   } catch (err) {
-    return res.status(500).send({ message: err });
+    return res.status(500).send({
+      message: err
+    });
   }
 };
