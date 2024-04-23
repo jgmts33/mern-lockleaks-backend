@@ -16,12 +16,12 @@
   "author": "wb-ts",
   "license": "ISC",
   "dependencies": {
+    "@elasticemail/elasticemail-client": "^4.0.23",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "eslint": "^9.1.1",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",

@@ -3,8 +3,14 @@ import config from '../config/auth.config.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import nodemailer from 'nodemailer';
-import nodemailerConfig from '../config/nodemailer.config.js';
+import ElasticEmail from '@elasticemail/elasticemail-client';
+
+let defaultClient = ElasticEmail.ApiClient.instance;
+
+let apikey = defaultClient.authentications['apikey'];
+apikey.apiKey = "0DB5ECD47CD2E0E29C03F8D73B7B07DF4DC19B94BEAC3B1AA0A59C5EA983D359EEA7C209680E82D451CE91B369DF0561"
+
+let api = new ElasticEmail.EmailsApi()
 
 const { user: User, role: Role, refreshToken: RefreshToken } = db;
 
@@ -19,43 +25,50 @@ export const signup = async (req, res) => {
   })
     .then(async user => {
 
-      const transporter = nodemailer.createTransport(nodemailerConfig);
-
-      const info = await transporter.sendMail({
-        from: nodemailerConfig.auth.user,
-        to: email,
-        subject: 'Email Verification | LockLeaks',
-        text: `
-        Hi ,
-        
-        Thanks for getting started with LockLeaks!
-        
-        We need a little more information to complete your registration, including a confirmation of your email address.
-        
-        Click below to confirm your email address:
-        
-        [link]
-        
-        If you have problems, please paste the above URL into your web browser.`,
-        html: "<p>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/>[link]<br/><br/>If you have problems, please paste the above URL into your web browser.</p>"
-      });
-
       const token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: config.jwtExpiration
       });
 
       let refreshToken = await RefreshToken.createToken(user);
-      user.setRoles([1]).then(() => {
 
-        res.status(200).send({
-          username: user.username,
-          email: user.email,
-          roles: ['user'],
-          accessToken: token,
-          refreshToken: refreshToken,
-        });
-
+      let email = ElasticEmail.EmailMessageData.constructFromObject({
+        Recipients: [
+          new ElasticEmail.EmailRecipient(email)
+        ],
+        Content: {
+          Body: [
+            ElasticEmail.BodyPart.constructFromObject({
+              ContentType: "HTML",
+              Content: "<p>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/>[link]<br/><br/>If you have problems, please paste the above URL into your web browser.</p>"
+            })
+          ],
+          Subject: "Email Verification | LockLeaks",
+          From: nodemailerConfig.auth.user
+        }
       });
+
+      var callback = function (error, data, response) {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('API called successfully.');
+
+          user.setRoles([1]).then(() => {
+
+            res.status(200).send({
+              username: user.username,
+              email: user.email,
+              roles: ['user'],
+              accessToken: token,
+              refreshToken: refreshToken,
+            });
+
+          });
+
+        }
+      };
+      api.emailsPost(email, callback);
+
     })
     .catch(err => {
       res.status(500).json({
