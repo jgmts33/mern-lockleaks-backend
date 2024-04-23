@@ -2,7 +2,7 @@ export default {
   HOST: 'localhost',
   USER: 'postgres',
   PASSWORD: '123',
-  DB: 'lockless',
+  DB: 'lockleaks',
   dialect: 'postgres',
   pool: {
     min: 0,
