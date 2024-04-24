@@ -41,7 +41,7 @@ export const signup = async (req, res) => {
             })
           ],
           Subject: "Email Verification | LockLeaks",
-          From: 'support@copyrightfixer.com'
+          From: 'info@copyrightfixer.com',
         }
       });
 
