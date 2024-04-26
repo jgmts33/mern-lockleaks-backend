@@ -216,7 +216,7 @@ export const googleAuthenticateUser = async (req, res) => {
   const googleClient = new OAuth2Client({
     clientId: `${process.env.GOOGLE_CLIENT_ID}`,
     clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-    redirectUri: 'http://localhost:3000'
+    redirectUri: 'http://copyrightfixer.com'
   });
 
   const { code } = req.body;
