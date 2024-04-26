@@ -1,5 +1,5 @@
 import { checkDuplicateUsernameOrEmail, checkRolesExisted } from "../middleware/verifySignUp.js";;
-import { signin, signup, refreshToken } from '../controllers/auth.controller.js';
+import { signin, signup, refreshToken, verifyEmail } from '../controllers/auth.controller.js';
 
 export default function (app) {
 
@@ -22,4 +22,5 @@ export default function (app) {
 
   app.post("/api/auth/signin", signin);
   app.post("/api/auth/refreshtoken", refreshToken);
+  app.post("/api/auth/verify-email", verifyEmail);
 };

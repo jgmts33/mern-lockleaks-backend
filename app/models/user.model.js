@@ -5,6 +5,10 @@ export default function (sequelize, Sequelize) {
     },
     password: {
       type: Sequelize.STRING
+    },
+    verified: {
+      type: Sequelize.BOOLEAN,
+      default: false
     }
   });
 

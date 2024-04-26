@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 import ElasticEmail from '@elasticemail/elasticemail-client';
+import elasticEmailConfig from '../config/elasticEmail.config..js';
+import authConfig from '../config/auth.config.js';
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -19,7 +21,8 @@ export const signup = async (req, res) => {
   const { email, password } = req.body;
   User.create({
     email: email,
-    password: bcrypt.hashSync(password, 8)
+    password: bcrypt.hashSync(password, 8),
+    verified: false
   })
     .then(async user => {
 
@@ -37,11 +40,11 @@ export const signup = async (req, res) => {
           Body: [
             ElasticEmail.BodyPart.constructFromObject({
               ContentType: "HTML",
-              Content: "<p>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/>[link]<br/><br/>If you have problems, please paste the above URL into your web browser.</p>"
+              Content: `<div>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="https:/copyrightfixer.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
             })
           ],
           Subject: "Email Verification | LockLeaks",
-          From: 'info@copyrightfixer.com',
+          From: elasticEmailConfig.auth.user,
         }
       });
 
@@ -54,7 +57,6 @@ export const signup = async (req, res) => {
           user.setRoles([1]).then(() => {
 
             res.status(200).send({
-              username: user.username,
               email: user.email,
               roles: ['user'],
               accessToken: token,
@@ -159,6 +161,37 @@ export const refreshToken = async (req, res) => {
     return res.status(200).json({
       accessToken: newAccessToken,
       refreshToken: refreshToken.token,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      message: err
+    });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { token: token } = req.body;
+
+  if (token == null) {
+    return res.status(403).json({
+      message: "Token is required!"
+    });
+  }
+
+  try {
+
+    let decoded = jwt.verify(token, authConfig.secret);
+
+    const user = await User.findOne({
+      where: {
+        id: decoded.id
+      }
+    });
+
+    user.update({ verified: true });
+
+    return res.status(200).json({
+      message: "User verified Successfully"
     });
   } catch (err) {
     return res.status(500).send({
