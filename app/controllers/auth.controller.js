@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
 import authConfig from '../config/auth.config.js';
+import { OAuth2Client } from 'google-auth-library';
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -26,7 +27,9 @@ export const signup = async (req, res) => {
   })
     .then(async user => {
 
-      const token = jwt.sign({ id: user.id }, config.secret, {
+      const token = jwt.sign({
+        email: user.email
+      }, config.secret, {
         expiresIn: config.jwtExpiration
       });
 
@@ -40,7 +43,7 @@ export const signup = async (req, res) => {
           Body: [
             ElasticEmail.BodyPart.constructFromObject({
               ContentType: "HTML",
-              Content: `<div>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="https:/copyrightfixer.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
+              Content: `<div>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="http://copyrightfixer.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
             })
           ],
           Subject: "Email Verification | LockLeaks",
@@ -59,6 +62,9 @@ export const signup = async (req, res) => {
             res.status(200).send({
               email: user.email,
               roles: ['user'],
+              name: user.name,
+              avatar: user.avatar,
+              verified: user.verified,
               accessToken: token,
               refreshToken: refreshToken,
             });
@@ -111,6 +117,9 @@ export const signin = async (req, res) => {
         res.status(200).send({
           email: user.email,
           roles: roles.map((role) => role.name),
+          name: user.name,
+          avatar: user.avatar,
+          verified: user.verified,
           accessToken: token,
           refreshToken: refreshToken,
         });
@@ -184,7 +193,7 @@ export const verifyEmail = async (req, res) => {
 
     const user = await User.findOne({
       where: {
-        id: decoded.id
+        email: decoded.email
       }
     });
 
@@ -199,3 +208,52 @@ export const verifyEmail = async (req, res) => {
     });
   }
 };
+
+export const googleAuthenticateUser = async (req, res) => {
+
+  console.log("process.env.GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+
+  const googleClient = new OAuth2Client({
+    clientId: `${process.env.GOOGLE_CLIENT_ID}`,
+    clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+    redirectUri: 'http://localhost:3000'
+  });
+
+  const { code } = req.body;
+
+  const tokens = await googleClient.getToken(code);
+  const decodedProfileInfo = jwt.decode(tokens.tokens.id_token);
+
+  let user = await User.findOne({ where: { email: decodedProfileInfo?.email } });
+
+  if (!user) {
+    user = await User.create({
+      email: decodedProfileInfo?.email,
+      avatar: decodedProfileInfo?.picture,
+      name: decodedProfileInfo?.name,
+      verified: true,
+      roles: ['user']
+    });
+
+    await user.setRoles([1]);
+  }
+
+  let refreshToken = await RefreshToken.createToken(user);
+
+  res.status(200).send({
+    email: user.email,
+    roles: ['user'],
+    name: user.name,
+    avatar: user.avatar,
+    accessToken: tokens.tokens.id_token,
+    refreshToken: refreshToken,
+  });
+}
+
+export const facebookAuthenticateUser = async (req, res) => {
+
+}
+
+export const twitterAuthenticateUser = async (req, res) => {
+
+}

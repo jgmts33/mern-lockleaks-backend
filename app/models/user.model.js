@@ -6,6 +6,12 @@ export default function (sequelize, Sequelize) {
     password: {
       type: Sequelize.STRING
     },
+    name: {
+      type: Sequelize.STRING
+    },
+    avatar: {
+      type: Sequelize.STRING
+    },
     verified: {
       type: Sequelize.BOOLEAN,
       default: false
