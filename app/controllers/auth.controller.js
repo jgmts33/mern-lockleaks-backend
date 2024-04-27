@@ -44,7 +44,7 @@ export const signup = async (req, res) => {
           Body: [
             ElasticEmail.BodyPart.constructFromObject({
               ContentType: "HTML",
-              Content: `<div>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="http://copyrightfixer.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
+              Content: `<div>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="https://copyrightfixer.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
             })
           ],
           Subject: "Email Verification | LockLeaks",
@@ -217,7 +217,7 @@ export const googleAuthenticateUser = async (req, res) => {
   const googleClient = new OAuth2Client({
     clientId: `${process.env.GOOGLE_CLIENT_ID}`,
     clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-    redirectUri: 'http://copyrightfixer.com'
+    redirectUri: 'https://copyrightfixer.com'
   });
 
   const { code } = req.body;
@@ -260,7 +260,7 @@ export const facebookAuthenticateUser = async (req, res) => {
     params: {
       client_id: process.env.FACEBOOK_APP_ID,
       client_secret: process.env.FACEBOOK_APP_SECRET,
-      redirect_uri: 'http://copyrightfixer.com/auth/facebook',
+      redirect_uri: 'https://copyrightfixer.com/auth/facebook',
       code
     }
   });
