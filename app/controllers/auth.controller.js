@@ -2,6 +2,7 @@ import db from '../models/index.js';
 import config from '../config/auth.config.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import axios from 'axios';
 
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
@@ -251,7 +252,57 @@ export const googleAuthenticateUser = async (req, res) => {
 }
 
 export const facebookAuthenticateUser = async (req, res) => {
+  const { code } = req.body;
 
+  const { data } = await axios({
+    url: 'https://graph.facebook.com/v4.0/oauth/access_token',
+    method: 'get',
+    params: {
+      client_id: process.env.FACEBOOK_APP_ID,
+      client_secret: process.env.FACEBOOK_APP_SECRET,
+      redirect_uri: 'http://copyrightfixer.com/auth/facebook',
+      code
+    }
+  });
+
+  const accessToken = data?.access_token || '';
+
+  if (accessToken) {
+    const { userData } = await axios({
+      url: 'https://graph.facebook.com/me',
+      method: 'get',
+      params: {
+        fields: ['id', 'email', 'first_name', 'last_name', 'picture'].join(','),
+        access_token: accessToken
+      }
+    });
+    
+    let user = await User.findOne({ where: { email: userData?.email } });
+
+    if (!user) {
+      user = await User.create({
+        email: userData?.email,
+        avatar: userData?.picture,
+        name: `${userData?.first_name} ${userData?.last_name}`,
+        verified: true,
+        roles: ['user']
+      });
+  
+      await user.setRoles([1]);
+    }
+  
+    let refreshToken = await RefreshToken.createToken(user);
+  
+    res.status(200).send({
+      email: user.email,
+      roles: ['user'],
+      name: user.name,
+      avatar: user.avatar,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
+
+  }
 }
 
 export const twitterAuthenticateUser = async (req, res) => {
