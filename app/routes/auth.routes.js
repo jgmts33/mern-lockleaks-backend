@@ -1,5 +1,5 @@
 import { checkDuplicateUsernameOrEmail, checkRolesExisted } from "../middleware/verifySignUp.js";;
-import { signin, signup, refreshToken, verifyEmail, googleAuthenticateUser, facebookAuthenticateUser, twitterAuthenticateUser } from '../controllers/auth.controller.js';
+import { signin, signup, refreshToken, verifyEmail, googleAuthenticateUser, facebookAuthenticateUser, twitterAuthenticateUser, forgotPassword, resetPassword } from '../controllers/auth.controller.js';
 
 export default function (app) {
 
@@ -11,12 +11,14 @@ export default function (app) {
     next();
   });
 
-  app.post("/api/auth/signup", [checkDuplicateUsernameOrEmail, checkRolesExisted], signup);
-  app.post("/api/auth/google", googleAuthenticateUser);
-  app.post("/api/auth/facebook", facebookAuthenticateUser);
-  app.post("/api/auth/twitter", twitterAuthenticateUser);
+  app.post("/auth/signup", [checkDuplicateUsernameOrEmail, checkRolesExisted], signup);
+  app.post("/auth/google", googleAuthenticateUser);
+  app.post("/auth/facebook", facebookAuthenticateUser);
+  app.post("/auth/twitter", twitterAuthenticateUser);
 
-  app.post("/api/auth/signin", signin);
-  app.post("/api/auth/refreshtoken", refreshToken);
-  app.post("/api/auth/verify-email", verifyEmail);
+  app.post("/auth/signin", signin);
+  app.post("/auth/forgot-password", forgotPassword);
+  app.post("/auth/reset-password", resetPassword);
+  app.post("/auth/refreshtoken", refreshToken);
+  app.post("/auth/verify-email", verifyEmail);
 };

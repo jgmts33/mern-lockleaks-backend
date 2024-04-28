@@ -36,7 +36,7 @@ db.sequelize.sync({ force: true }).then(() => {
   });
 });
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
   res.send({ mesage: "Server is alive" });
 })
 

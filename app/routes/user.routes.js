@@ -11,22 +11,22 @@ export default function (app) {
     next();
   });
 
-  app.get("/api/test/all", allAccess);
+  app.get("/test/all", allAccess);
 
   app.get(
-    "/api/test/user",
+    "/test/user",
     [authJwt.verifyToken],
     userBoard
   );
 
   app.get(
-    "/api/test/mod",
+    "/test/mod",
     [authJwt.verifyToken, authJwt.isModerator],
     moderatorBoard
   );
 
   app.get(
-    "/api/test/admin",
+    "/test/admin",
     [authJwt.verifyToken, authJwt.isAdmin],
     adminBoard
   );

@@ -107,7 +107,7 @@ export const signin = async (req, res) => {
         });
       }
 
-      const token = jwt.sign({ id: user.id }, config.secret, {
+      const token = jwt.sign({ email: user.email }, config.secret, {
         expiresIn: config.jwtExpiration
       });
 
@@ -164,7 +164,7 @@ export const refreshToken = async (req, res) => {
     }
 
     const user = await refreshToken.getUser();
-    let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
+    let newAccessToken = jwt.sign({ email: user.email }, config.secret, {
       expiresIn: config.jwtExpiration,
     });
 
@@ -202,6 +202,89 @@ export const verifyEmail = async (req, res) => {
 
     return res.status(200).json({
       message: "User verified Successfully"
+    });
+  } catch (err) {
+    return res.status(500).send({
+      message: err
+    });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+
+  const { email } = req.body;
+
+  const user = await User.findOne({
+    where: {
+      email: email
+    }
+  });
+
+  if (user) {
+
+    const token = jwt.sign({ email: user.email }, config.secret, {
+      expiresIn: config.jwtExpiration
+    });
+
+    let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+      Recipients: [
+        new ElasticEmail.EmailRecipient(email)
+      ],
+      Content: {
+        Body: [
+          ElasticEmail.BodyPart.constructFromObject({
+            ContentType: "HTML",
+            Content: `<div>Hi<br/><br/> To reset your password, click on the button below:<br/><br/><br/><a href="https://copyrightfixer.com/auth/reset-password?token=${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Reset Password</a><br/><br/></div>`
+          })
+        ],
+        Subject: "Reset Password | LockLeaks",
+        From: elasticEmailConfig.auth.user,
+      }
+    });
+
+    var callback = function (error, data, response) {
+      if (error) {
+        console.error(error);
+      }
+
+      else res.status(200).send({
+        message: "Reset Password Link Sent"
+      });
+
+    };
+
+    api.emailsPost(emailContent, callback);
+  }
+
+  else return res.status(500).send({
+    message: "User Not Found!"
+  });
+
+}
+
+export const resetPassword = async (req, res) => {
+  const { token, password } = req.body;
+
+  if (token == null) {
+    return res.status(403).json({
+      message: "Token is required!"
+    });
+  }
+
+  try {
+
+    let decoded = jwt.verify(token, authConfig.secret);
+
+    const user = await User.findOne({
+      where: {
+        email: decoded.email
+      }
+    });
+
+    user.update({ password: bcrypt.hashSync(password, 8) });
+
+    return res.status(200).json({
+      message: "Password Updated Successfully!"
     });
   } catch (err) {
     return res.status(500).send({
@@ -276,7 +359,7 @@ export const facebookAuthenticateUser = async (req, res) => {
         access_token: accessToken
       }
     });
-    
+
     let user = await User.findOne({ where: { email: userData?.email } });
 
     if (!user) {
@@ -287,12 +370,12 @@ export const facebookAuthenticateUser = async (req, res) => {
         verified: true,
         roles: ['user']
       });
-  
+
       await user.setRoles([1]);
     }
-  
+
     let refreshToken = await RefreshToken.createToken(user);
-  
+
     res.status(200).send({
       email: user.email,
       roles: ['user'],
@@ -306,5 +389,69 @@ export const facebookAuthenticateUser = async (req, res) => {
 }
 
 export const twitterAuthenticateUser = async (req, res) => {
+  const { code } = req.body;
 
+  const BasicAuthToken = Buffer.from(`${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`, "utf8").toString(
+    "base64"
+  );
+
+  const { data } = await axios.post(
+    'https://api.twitter.com/2/oauth2/token',
+    {
+      client_id: process.env.TWITTER_CLIENT_ID,
+      // based on code_challenge
+      code_verifier: "8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA",
+      redirect_uri: `https://copyrightfixer.com/auth/twitter`,
+      grant_type: "authorization_code",
+      code: code
+    },
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${BasicAuthToken}`,
+      }
+    }
+  )
+
+  const accessToken = data?.access_token || '';
+
+  if (accessToken) {
+    const userRes = await axios({
+      url: 'https://api.twitter.com/2/users/me',
+      method: 'get',
+      headers: {
+        "Content-type": "application/json",
+        // put the access token in the Authorization Bearer token
+        Authorization: `Bearer ${accessToken}`,
+      }
+    });
+
+    const twitterUser = userRes.data.data;
+
+    let user = await User.findOne({ where: { email: twitterUser?.email } });
+
+    if (!user) {
+      user = await User.create({
+        email: twitterUser?.email,
+        avatar: twitterUser?.picture,
+        name: `${twitterUser.username}`,
+        verified: true,
+        roles: ['user']
+      });
+
+      await user.setRoles([1]);
+    }
+
+    let refreshToken = await RefreshToken.createToken(user);
+
+    res.status(200).send({
+      email: user.email,
+      roles: ['user'],
+      name: user.name,
+      avatar: user.avatar,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
+
+  }
 }
