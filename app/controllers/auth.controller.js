@@ -300,8 +300,23 @@ export const googleAuthenticateUser = async (req, res) => {
   const googleClient = new OAuth2Client({
     clientId: `${process.env.GOOGLE_CLIENT_ID}`,
     clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-    redirectUri: 'https://copyrightfixer.com/auth/google'
+    // redirectUri: 'https://copyrightfixer.com/auth/google'
+    redirectUri: 'http://localhost:3000/auth/google',
+
   });
+
+  const authorizationUrl = googleClient.generateAuthUrl({
+    access_type: 'offline', // Needed to receive a refresh token
+    scope: [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/plus.me'
+    ],
+    prompt: 'select_account',
+    include_granted_scopes: true,
+    enable_granular_consent: true
+  });
+
 
   const { code } = req.body;
 
