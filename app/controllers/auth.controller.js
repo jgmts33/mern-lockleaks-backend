@@ -434,8 +434,8 @@ export const twitterAuthenticateUser = async (req, res) => {
   if (!user) {
     user = await User.create({
       email: twitterUser?.email,
-      avatar: twitterUser?.picture,
-      name: `${twitterUser.username}`,
+      avatar: twitterUser?.profile_image_url,
+      name: `${twitterUser.name}`,
       verified: true,
       roles: ['user']
     });
