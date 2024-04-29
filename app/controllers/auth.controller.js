@@ -422,18 +422,16 @@ export const twitterAuthenticateUser = async (req, res) => {
   })
   await authClient.requestAccessToken(code);
 
-  const { data: twitterUser } = await client.users.findMyUser({
-    "user.fields": ["name", "profile_image_url", "email"]
-  })
+  const { data: twitterUser } = await client.users.findMyUser()
 
 
   console.log("twitterUser:", twitterUser);
 
-  let user = await User.findOne({ where: { email: twitterUser?.email } });
+  let user = await User.findOne({ where: { email: twitterUser?.id } });
 
   if (!user) {
     user = await User.create({
-      email: twitterUser?.email,
+      email: twitterUser?.id,
       avatar: twitterUser?.profile_image_url,
       name: `${twitterUser.name}`,
       verified: true,
