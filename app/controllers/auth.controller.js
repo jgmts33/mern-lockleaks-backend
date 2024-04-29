@@ -8,6 +8,7 @@ import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
 import authConfig from '../config/auth.config.js';
 import { OAuth2Client } from 'google-auth-library';
+import { Client, auth } from "twitter-api-sdk"
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -406,69 +407,46 @@ export const facebookAuthenticateUser = async (req, res) => {
 export const twitterAuthenticateUser = async (req, res) => {
   const { code } = req.body;
 
-  const BasicAuthToken = Buffer.from(`${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`, "utf8").toString(
-    "base64"
-  );
+  const authClient = new auth.OAuth2User({
+    client_id: process.env.TWITTER_CLIENT_ID,
+    client_secret: process.env.TWITTER_CLIENT_SECRET,
+    callback: 'https://copyrightfixer.com/auth/twitter',
+    scopes: ["users.read", "tweet.read", "follows.read", "follows.write"],
+  })
+  const client = new Client(authClient)
 
-  const { data } = await axios.post(
-    'https://api.twitter.com/2/oauth2/token',
-    {
-      client_id: process.env.TWITTER_CLIENT_ID,
-      // based on code_challenge
-      code_challenge: process.env.TWITTER_CLIENT_SECRET,
-      code_verifier: "8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA",
-      redirect_uri: `https://copyrightfixer.com/auth/twitter`,
+  authClient.generateAuthURL({
+    state: "state",
+    code_challenge: "challenge",
+    code_challenge_method: "plain",
+  })
+  await authClient.requestAccessToken(code);
 
-      grant_type: "authorization_code",
-      code: code
-    },
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${BasicAuthToken}`,
-      }
-    }
-  )
+  const { data: twitterUser } = await client.users.findMyUser()
 
-  const accessToken = data?.access_token || '';
+  let user = await User.findOne({ where: { email: twitterUser?.email } });
 
-  if (accessToken) {
-    const userRes = await axios({
-      url: 'https://api.twitter.com/2/users/me',
-      method: 'get',
-      headers: {
-        "Content-type": "application/json",
-        // put the access token in the Authorization Bearer token
-        Authorization: `Bearer ${accessToken}`,
-      }
+  if (!user) {
+    user = await User.create({
+      email: twitterUser?.email,
+      avatar: twitterUser?.picture,
+      name: `${twitterUser.username}`,
+      verified: true,
+      roles: ['user']
     });
 
-    const twitterUser = userRes.data.data;
-
-    let user = await User.findOne({ where: { email: twitterUser?.email } });
-
-    if (!user) {
-      user = await User.create({
-        email: twitterUser?.email,
-        avatar: twitterUser?.picture,
-        name: `${twitterUser.username}`,
-        verified: true,
-        roles: ['user']
-      });
-
-      await user.setRoles([1]);
-    }
-
-    let refreshToken = await RefreshToken.createToken(user);
-
-    res.status(200).send({
-      email: user.email,
-      roles: ['user'],
-      name: user.name,
-      avatar: user.avatar,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    });
-
+    await user.setRoles([1]);
   }
+
+  let refreshToken = await RefreshToken.createToken(user);
+
+  res.status(200).send({
+    email: user.email,
+    roles: ['user'],
+    name: user.name,
+    avatar: user.avatar,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  });
+
 }

@@ -30,6 +30,7 @@
     "pg-hstore": "^2.3.4",
     "prettier": "^3.2.5",
     "sequelize": "^6.37.3",
+    "twitter-api-sdk": "^1.2.1",
     "uuid": "^9.0.1"
   }
 }
