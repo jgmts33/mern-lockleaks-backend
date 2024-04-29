@@ -10,9 +10,14 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.STRING
     },
     avatar: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      default: ""
     },
     verified: {
+      type: Sequelize.BOOLEAN,
+      default: false
+    },
+    subscription: {
       type: Sequelize.BOOLEAN,
       default: false
     }

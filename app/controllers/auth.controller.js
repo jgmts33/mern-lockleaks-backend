@@ -25,7 +25,9 @@ export const signup = async (req, res) => {
   User.create({
     email: email,
     password: bcrypt.hashSync(password, 8),
-    verified: false
+    verified: false,
+    avatar: "",
+    subscription: false
   })
     .then(async user => {
 
@@ -67,6 +69,7 @@ export const signup = async (req, res) => {
               name: user.name,
               avatar: user.avatar,
               verified: user.verified,
+              subscription: user.subscription,
               accessToken: token,
               refreshToken: refreshToken,
             });
@@ -122,6 +125,7 @@ export const signin = async (req, res) => {
           name: user.name,
           avatar: user.avatar,
           verified: user.verified,
+          subscription: user.subscription,
           accessToken: token,
           refreshToken: refreshToken,
         });
@@ -340,7 +344,8 @@ export const googleAuthenticateUser = async (req, res) => {
       avatar: decodedProfileInfo?.picture,
       name: decodedProfileInfo?.name,
       verified: true,
-      roles: ['user']
+      roles: ['user'],
+      subscription: false
     });
 
     await user.setRoles([1]);
@@ -353,6 +358,7 @@ export const googleAuthenticateUser = async (req, res) => {
     roles: ['user'],
     name: user.name,
     avatar: user.avatar,
+    subscription: user.subscription,
     accessToken: tokens.tokens.id_token,
     refreshToken: refreshToken,
   });
@@ -392,7 +398,8 @@ export const facebookAuthenticateUser = async (req, res) => {
         avatar: userData?.picture,
         name: `${userData?.first_name} ${userData?.last_name}`,
         verified: true,
-        roles: ['user']
+        roles: ['user'],
+        subscription: false
       });
 
       await user.setRoles([1]);
@@ -405,6 +412,7 @@ export const facebookAuthenticateUser = async (req, res) => {
       roles: ['user'],
       name: user.name,
       avatar: user.avatar,
+      subscription: user.subscription,
       accessToken: accessToken,
       refreshToken: refreshToken,
     });
@@ -443,7 +451,8 @@ export const twitterAuthenticateUser = async (req, res) => {
       avatar: twitterUser?.profile_image_url,
       name: `${twitterUser.name}`,
       verified: true,
-      roles: ['user']
+      roles: ['user'],
+      subscription: false
     });
 
     await user.setRoles([1]);
@@ -456,6 +465,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     roles: ['user'],
     name: user.name,
     avatar: user.avatar,
+    subscription: user.subscription,
     accessToken: accessToken,
     refreshToken: refreshToken,
   });
