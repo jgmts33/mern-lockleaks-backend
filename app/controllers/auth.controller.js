@@ -411,7 +411,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     client_id: process.env.TWITTER_CLIENT_ID,
     client_secret: process.env.TWITTER_CLIENT_SECRET,
     callback: 'https://copyrightfixer.com/auth/twitter',
-    scopes: ["users.read", "users.email.read"],
+    scopes: ["users.read"],
   })
   const client = new Client(authClient)
   
