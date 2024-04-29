@@ -415,8 +415,10 @@ export const twitterAuthenticateUser = async (req, res) => {
     {
       client_id: process.env.TWITTER_CLIENT_ID,
       // based on code_challenge
+      code_challenge: process.env.TWITTER_CLIENT_SECRET,
       code_verifier: "8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA",
       redirect_uri: `https://copyrightfixer.com/auth/twitter`,
+
       grant_type: "authorization_code",
       code: code
     },
