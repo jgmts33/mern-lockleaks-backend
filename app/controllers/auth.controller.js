@@ -420,7 +420,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     code_challenge: "challenge",
     code_challenge_method: "plain",
   })
-  await authClient.requestAccessToken(code);
+  const accessToken = await authClient.requestAccessToken(code);
 
   const { data: twitterUser } = await client.users.findMyUser()
 
