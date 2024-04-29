@@ -281,13 +281,20 @@ export const resetPassword = async (req, res) => {
         email: decoded.email
       }
     });
+    if (user) {
+      user.update({ password: bcrypt.hashSync(password, 8) });
 
-    user.update({ password: bcrypt.hashSync(password, 8) });
+      return res.status(200).json({
+        message: "Password Updated Successfully!"
+      });
+    }
 
-    return res.status(200).json({
-      message: "Password Updated Successfully!"
+    return res.status(404).json({
+      message: "User not Found!"
     });
+
   } catch (err) {
+    console.log("err", err);
     return res.status(500).send({
       message: err
     });
@@ -306,7 +313,7 @@ export const googleAuthenticateUser = async (req, res) => {
 
   });
 
-  const authorizationUrl = googleClient.generateAuthUrl({
+  googleClient.generateAuthUrl({
     access_type: 'offline', // Needed to receive a refresh token
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
@@ -326,6 +333,7 @@ export const googleAuthenticateUser = async (req, res) => {
 
   let user = await User.findOne({ where: { email: decodedProfileInfo?.email } });
 
+  console.log("decodedProfileInfo:", decodedProfileInfo);
   if (!user) {
     user = await User.create({
       email: decodedProfileInfo?.email,
@@ -414,7 +422,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     scopes: ["users.read", "tweet.read", "follows.read", "follows.write"],
   })
   const client = new Client(authClient)
-  
+
   authClient.generateAuthURL({
     state: "twitter-state",
     code_challenge: "challenge",
