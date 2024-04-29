@@ -411,7 +411,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     client_id: process.env.TWITTER_CLIENT_ID,
     client_secret: process.env.TWITTER_CLIENT_SECRET,
     callback: 'https://copyrightfixer.com/auth/twitter',
-    scopes: ["users.read", "tweet.read", "follows.read", "follows.write"],
+    scopes: ["users.read", "users.email.read"],
   })
   const client = new Client(authClient)
   
@@ -422,7 +422,9 @@ export const twitterAuthenticateUser = async (req, res) => {
   })
   await authClient.requestAccessToken(code);
 
-  const { data: twitterUser } = await client.users.findMyUser();
+  const { data: twitterUser } = await client.users.findMyUser({
+    "user.fields": ["name", "profile_image_url", "email"]
+  })
 
 
   console.log("twitterUser:", twitterUser);
