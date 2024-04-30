@@ -436,7 +436,8 @@ export const twitterAuthenticateUser = async (req, res) => {
     code_challenge: "challenge",
     code_challenge_method: "plain",
     prompt: 'consent',
-      incluse_granted_scopes: true
+    incluse_granted_scopes: true,
+    enable_granular_consent: true
   })
   const accessToken = await authClient.requestAccessToken(code);
 
