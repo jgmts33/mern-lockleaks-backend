@@ -427,12 +427,12 @@ export const twitterAuthenticateUser = async (req, res) => {
     client_id: process.env.TWITTER_CLIENT_ID,
     client_secret: process.env.TWITTER_CLIENT_SECRET,
     callback: 'https://copyrightfixer.com/auth/twitter',
-    scopes: ["users.read"],
+    scopes: ["users.read", "tweet.read", "follows.read", "follows.write"],
   })
   const client = new Client(authClient)
 
   authClient.generateAuthURL({
-    state: "copyrightfixer-twitter-state",
+    state: "twitter-state",
     code_challenge: "challenge",
     code_challenge_method: "plain",
   })
