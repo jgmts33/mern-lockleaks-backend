@@ -432,7 +432,7 @@ export const twitterAuthenticateUser = async (req, res) => {
   const client = new Client(authClient)
 
   authClient.generateAuthURL({
-    state: "twitter-state",
+    state: "copyrightfixer-twitter-state",
     code_challenge: "challenge",
     code_challenge_method: "plain",
   })
