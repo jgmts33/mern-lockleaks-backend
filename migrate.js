@@ -43,7 +43,7 @@ const executeSqlFile = (filePath) => {
 // Main function to reset DB and run SQL file
 const main = async () => {
   await resetDatabase();
-  const fullPath = join(__dirname, 'yourfile.sql'); // Replace 'yourfile.sql' with your actual file name
+  const fullPath = join(__dirname, 'lockleaks.sql'); // Replace 'yourfile.sql' with your actual file name
   executeSqlFile(fullPath);
 };
 
