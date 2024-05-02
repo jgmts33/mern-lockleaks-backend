@@ -21,23 +21,6 @@ app.use(
   })
 );
 
-db.sequelize.sync({ force: true }).then(() => {
-  db.role.create({
-    id: 1,
-    name: "user"
-  });
-
-  db.role.create({
-    id: 2,
-    name: "moderator"
-  });
-
-  db.role.create({
-    id: 3,
-    name: "admin"
-  });
-});
-
 app.get("/", (req, res) => {
   res.send({ mesage: "Server is alive" });
 })
