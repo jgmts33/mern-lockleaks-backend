@@ -203,26 +203,29 @@ export const verifyEmail = async (req, res) => {
       }
     });
 
-    user.update({ verified: true });
+    if (user) {
+      user.update({ verified: true });
 
-    const token = jwt.sign({ email: user.email }, config.secret, {
-      expiresIn: config.jwtExpiration
-    });
+      let refreshToken = await RefreshToken.createToken(user);
 
-    let refreshToken = await RefreshToken.createToken(user);
-
-    return res.status(200).send({
-      email: user.email,
-      roles: user.role,
-      name: user.name,
-      avatar: user.avatar,
-      verified: user.verified,
-      subscription: user.subscription,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    });
+      return res.status(200).send({
+        email: user.email,
+        roles: user.role,
+        name: user.name,
+        avatar: user.avatar,
+        verified: user.verified,
+        subscription: user.subscription,
+        accessToken: token,
+        refreshToken: refreshToken,
+      });
+    } else {
+      return res.status(500).send({
+        message: "Invalid Token!"
+      });
+    }
 
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       message: err
     });
