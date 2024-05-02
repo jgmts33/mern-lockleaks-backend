@@ -39,9 +39,12 @@ const executeSqlFile = (filePath) => {
       console.error(`Exec error: ${error}`);
       return;
     }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
-    return;
+
+    if (!stderr) {
+      console.info("✅ Miggrated Successfully!")
+    } else {
+      console.error(`stderr: ${stderr}`);
+    }
   });
 };
 

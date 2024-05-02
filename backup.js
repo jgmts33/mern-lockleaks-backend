@@ -13,17 +13,21 @@ const command = `pg_dump -U ${config.USER} -h ${config.HOST} -d ${config.DB} -p 
 
 // Execute the command
 exec(command, {
-    env: {
-        ...process.env,
-        PGPASSWORD: config.PASSWORD  // Pass the password securely via environment variable
-    }
+  env: {
+    ...process.env,
+    PGPASSWORD: config.PASSWORD  // Pass the password securely via environment variable
+  }
 }, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Backup error: ${error}`);
-        return;
-    }
-    console.log('Backup complete:', stdout);
-    console.error('Backup errors:', stderr);
+  if (error) {
+    console.error(`Backup error: ${error}`);
     return;
+  }
+
+  if (!stderr) {
+    console.info("✅ The Database was Backed Up to lockleaks.sql file Successfully!")
+  } else {
+    console.error(`stderr: ${stderr}`);
+  }
+  return;
 });
 
