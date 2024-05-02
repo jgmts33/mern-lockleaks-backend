@@ -50,6 +50,7 @@ const main = async () => {
   await resetDatabase();
   const fullPath = join(__dirname, 'lockleaks.sql'); // Replace 'yourfile.sql' with your actual file name
   executeSqlFile(fullPath);
+  return;
 };
 
 main();
