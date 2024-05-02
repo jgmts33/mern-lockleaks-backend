@@ -1,6 +1,5 @@
 import { exec } from 'child_process';
 import pkg from 'pg';
-import fs from 'fs';
 import { dirname, join } from 'path';
 import config from "./app/config/db.config.js";
 import { fileURLToPath } from 'url';
