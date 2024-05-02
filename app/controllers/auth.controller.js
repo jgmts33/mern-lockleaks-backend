@@ -119,7 +119,7 @@ export const signin = async (req, res) => {
 
       user.getRoles().then(roles => {
 
-        if (admin && !roles.find(p => p == "admin")) {
+        if (admin && !roles.find(p => p.name == "admin")) {
           return res.status(404).send({ message: "You are not Admin." });
         }
 
