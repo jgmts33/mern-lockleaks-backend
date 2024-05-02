@@ -24,5 +24,6 @@ exec(command, {
     }
     console.log('Backup complete:', stdout);
     console.error('Backup errors:', stderr);
+    return;
 });
 

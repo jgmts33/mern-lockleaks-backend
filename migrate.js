@@ -27,15 +27,21 @@ const resetDatabase = async () => {
 
 // Function to execute SQL file using psql command
 const executeSqlFile = (filePath) => {
-  const command = `psql -U ${config.USER} -d ${config.DB} -h ${config.HOST} -f ${filePath}`;
+  const command = `psql -U ${config.USER} -d ${config.DB} -h ${config.HOST} --no-password -f ${filePath}`;
 
-  exec(command, (error, stdout, stderr) => {
+  exec(command, {
+    env: {
+      ...process.env,
+      PGPASSWORD: config.PASSWORD  // Pass the password securely via environment variable
+    }
+  }, (error, stdout, stderr) => {
     if (error) {
       console.error(`Exec error: ${error}`);
       return;
     }
     console.log(`stdout: ${stdout}`);
     console.error(`stderr: ${stderr}`);
+    return;
   });
 };
 
