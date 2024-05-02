@@ -205,9 +205,23 @@ export const verifyEmail = async (req, res) => {
 
     user.update({ verified: true });
 
-    return res.status(200).json({
-      message: "User verified Successfully"
+    const token = jwt.sign({ email: user.email }, config.secret, {
+      expiresIn: config.jwtExpiration
     });
+
+    let refreshToken = await RefreshToken.createToken(user);
+
+    res.status(200).send({
+      email: user.email,
+      roles: user.role,
+      name: user.name,
+      avatar: user.avatar,
+      verified: user.verified,
+      subscription: user.subscription,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
+
   } catch (err) {
     return res.status(500).send({
       message: err
