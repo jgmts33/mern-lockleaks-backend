@@ -91,7 +91,7 @@ export const signup = async (req, res) => {
 
 export const signin = async (req, res) => {
 
-  const { email, password } = req.body
+  const { email, password, admin } = req.body
 
   User.findOne({
     where: {
@@ -101,6 +101,10 @@ export const signin = async (req, res) => {
     .then(async (user) => {
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
+      }
+
+      if (admin && !user.roles.include("admin")) {
+        return res.status(404).send({ message: "You are not Admin." });
       }
 
       const passwordIsValid = bcrypt.compareSync(password, user.password);
