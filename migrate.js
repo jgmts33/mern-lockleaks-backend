@@ -1,18 +1,50 @@
 import { exec } from 'child_process';
+import pkg from 'pg';
+import fs from 'fs';
+import { dirname, join } from 'path';
 import config from "./app/config/db.config.js";
+import { fileURLToPath } from 'url';
 
-const importDatabase = (filePath) => {
-    const command = `psql -U ${config.USER} -d ${config.DB} -h ${config.HOST} -f ${filePath}`;
-    
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`exec error: ${error}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-    });
+const { Client } = pkg
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// PostgreSQL client setup
+const client = new Client({
+  connectionString: `postgres://${config.USER}:${config.PASSWORD}@${config.HOST}:5432/${config.DB}`
+});
+
+// Function to drop schema and recreate
+const resetDatabase = async () => {
+  try {
+    await client.connect();
+    await client.query('DROP SCHEMA public CASCADE;');
+    await client.query('CREATE SCHEMA public;');
+    console.log('Schema reset successfully');
+  } catch (error) {
+    console.error('Error resetting schema:', error);
+  }
 };
 
-// Replace 'path/to/your/dumpfile.sql' with the path to your SQL dump file
-importDatabase('./lockleaks.sql');
+// Function to execute SQL file using psql command
+const executeSqlFile = (filePath) => {
+  const command = `psql -U ${config.USER} -d ${config.DB} -h ${config.HOST} -f ${filePath}`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
+};
+
+// Main function to reset DB and run SQL file
+const main = async () => {
+  await resetDatabase();
+  const fullPath = join(__dirname, 'yourfile.sql'); // Replace 'yourfile.sql' with your actual file name
+  executeSqlFile(fullPath);
+};
+
+main();
