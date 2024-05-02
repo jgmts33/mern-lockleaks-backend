@@ -103,10 +103,6 @@ export const signin = async (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      if (admin && !user.roles.include("admin")) {
-        return res.status(404).send({ message: "You are not Admin." });
-      }
-
       const passwordIsValid = bcrypt.compareSync(password, user.password);
 
       if (!passwordIsValid) {
@@ -122,6 +118,10 @@ export const signin = async (req, res) => {
       let refreshToken = await RefreshToken.createToken(user);
 
       user.getRoles().then(roles => {
+
+        if (admin && !roles.include("admin")) {
+          return res.status(404).send({ message: "You are not Admin." });
+        }
 
         res.status(200).send({
           email: user.email,
