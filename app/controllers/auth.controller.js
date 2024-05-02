@@ -211,7 +211,7 @@ export const verifyEmail = async (req, res) => {
 
     let refreshToken = await RefreshToken.createToken(user);
 
-    res.status(200).send({
+    return res.status(200).send({
       email: user.email,
       roles: user.role,
       name: user.name,
