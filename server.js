@@ -4,6 +4,7 @@ import db from './app/models/index.js';
 import authRoutes from './app/routes/auth.routes.js';
 import userRoutes from './app/routes/user.routes.js';
 import { configDotenv } from 'dotenv';
+import keywordsRoutes from './app/routes/keywords.routes.js';
 
 configDotenv();
 
@@ -50,3 +51,4 @@ app.listen(PORT, () => {
 
 authRoutes(app);
 userRoutes(app);
+keywordsRoutes(app);

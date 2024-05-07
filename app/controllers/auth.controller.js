@@ -306,6 +306,7 @@ export const resetPassword = async (req, res) => {
         email: decoded.email
       }
     });
+    
     if (user) {
       user.update({ password: bcrypt.hashSync(password, 8) });
 
