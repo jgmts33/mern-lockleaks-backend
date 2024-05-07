@@ -34,6 +34,7 @@ db.refreshToken = refreshTokenModel(sequelize, Sequelize);
 db.basicKeyworkds = basicKeywordsModel(sequelize, Sequelize);
 db.customeKeywords = customKeywordsModel(sequelize, Sequelize);
 
+
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleId",
