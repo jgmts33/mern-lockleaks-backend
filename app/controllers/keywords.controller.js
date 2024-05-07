@@ -2,23 +2,25 @@ import db from "../models/index.js";
 
 const { basicKeywords: BasicKeywords, customKeywords: CustomKeywords } = db;
 
-export const addNewKeyword = (req, res) => {
+export const addNewKeyword = async (req, res) => {
   const { website, keyword, keywords } = req.body;
 
   try {
 
+    let newKeyword;
+
     if (website) {
-      CustomKeywords.create({
+      newKeyword = await CustomKeywords.create({
         website,
         keywords,
       });
     } else {
-      BasicKeywords.create({
+      newKeyword = await BasicKeywords.create({
         keyword,
       });
     }
     res.status(200).send({
-      message: "Keyword added successfully!"
+      ...newKeyword
     });
   } catch (err) {
     res.status(500).send({
@@ -33,20 +35,20 @@ export const editCustomKeywords = (req, res) => {
   try {
 
     CustomKeywords.findByPk(id).then((item) => {
-      item.update({ 
-        website: website ,
+      item.update({
+        website: website,
         keywords: keywords
       });
 
       return res.status(200).json({
         message: "Custom Keyword Updated Successfully!"
       });
-    }). catch((err) => {
+    }).catch((err) => {
       res.status(500).send({
         message: err.message,
       });
     });
-    
+
   } catch (err) {
     res.status(500).send({
       message: err.message,
