@@ -7,7 +7,7 @@ export default function (sequelize, Sequelize) {
     token: {
       type: Sequelize.STRING
     },
-    expiryDate: {
+    expires: {
       type: Sequelize.DATE
     }
   });
@@ -22,14 +22,14 @@ export default function (sequelize, Sequelize) {
     await this.create({
       token: _token,
       userId: user.id,
-      expiryDate: expiredAt.getTime()
+      expires: expiredAt.getTime()
     });
 
     return _token;
   }
 
   RefreshToken.verifyExpiration = (token) => {
-    return token.expiryDate.getTime() < new Date().getTime()
+    return token.expires.getTime() < new Date().getTime()
   };
 
   return RefreshToken;

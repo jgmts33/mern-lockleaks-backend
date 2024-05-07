@@ -31,11 +31,15 @@ export const signup = async (req, res) => {
   })
     .then(async user => {
 
-      const token = jwt.sign({
-        email: user.email
-      }, config.secret, {
-        expiresIn: config.jwtExpiration
-      });
+      const token = jwt.sign(
+        {
+          email: user.email
+        }, 
+        config.secret, 
+        {
+          expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
+        }
+      );
 
       let refreshToken = await RefreshToken.createToken(user);
 
@@ -112,7 +116,7 @@ export const signin = async (req, res) => {
       }
 
       const token = jwt.sign({ email: user.email }, config.secret, {
-        expiresIn: config.jwtExpiration
+        expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
       });
 
       let refreshToken = await RefreshToken.createToken(user);
@@ -174,7 +178,7 @@ export const refreshToken = async (req, res) => {
 
     const user = await refreshToken.getUser();
     let newAccessToken = jwt.sign({ email: user.email }, config.secret, {
-      expiresIn: config.jwtExpiration,
+      expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
     });
 
     return res.status(200).json({
@@ -249,7 +253,7 @@ export const forgotPassword = async (req, res) => {
   if (user) {
 
     const token = jwt.sign({ email: user.email }, config.secret, {
-      expiresIn: config.jwtExpiration
+      expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
     });
 
     let emailContent = ElasticEmail.EmailMessageData.constructFromObject({

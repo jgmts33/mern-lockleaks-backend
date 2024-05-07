@@ -19,6 +19,6 @@ export default function (app) {
   app.post("/auth/signin", signin);
   app.post("/auth/forgot-password", forgotPassword);
   app.post("/auth/reset-password", resetPassword);
-  app.post("/auth/refreshtoken", refreshToken);
+  app.post("/auth/refresh-token", refreshToken);
   app.post("/auth/verify-email", verifyEmail);
 };
