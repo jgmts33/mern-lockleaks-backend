@@ -124,7 +124,7 @@ export const signin = async (req, res) => {
       }
 
       const token = jwt.sign({ id: user.id }, config.secret, {
-        expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
+        expiresIn: config.jwtExpiration,
       });
 
       let refreshToken = await RefreshToken.createToken(user);
