@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { allAccess, adminBoard, moderatorBoard, userBoard } from '../controllers/user.controller.js';
+import { allAccess, adminBoard, moderatorBoard, getUserInfo } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -11,12 +11,12 @@ export default function (app) {
     next();
   });
 
-  app.get("/test/all", allAccess);
+  app.get("/users", allAccess);
 
   app.get(
-    "/test/user",
+    "/users/:id",
     [authJwt.verifyToken],
-    userBoard
+    getUserInfo
   );
 
   app.get(

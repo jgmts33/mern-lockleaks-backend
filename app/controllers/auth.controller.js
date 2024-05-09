@@ -33,11 +33,11 @@ export const signup = async (req, res) => {
 
       const token = jwt.sign(
         {
-          email: user.email
+          id: user.id
         }, 
         config.secret, 
         {
-          expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
+          expiresIn: config.jwtExpiration,
         }
       );
 
@@ -74,8 +74,16 @@ export const signup = async (req, res) => {
               avatar: user.avatar,
               verified: user.verified,
               subscription: user.subscription,
-              accessToken: token,
-              refreshToken: refreshToken,
+              tokens: {
+                access: {
+                  token: token,
+                  expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+                },
+                refresh: {
+                  token: refreshToken,
+                  expires: new Date( Number(new Date()) + config.jwtRegreshExpiration * 1000)
+                }
+              }
             });
 
           });
@@ -115,7 +123,7 @@ export const signin = async (req, res) => {
         });
       }
 
-      const token = jwt.sign({ email: user.email }, config.secret, {
+      const token = jwt.sign({ id: user.id }, config.secret, {
         expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
       });
 
@@ -134,8 +142,16 @@ export const signin = async (req, res) => {
           avatar: user.avatar,
           verified: user.verified,
           subscription: user.subscription,
-          accessToken: token,
-          refreshToken: refreshToken,
+          tokens: {
+            access: {
+              token: token,
+              expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+            },
+            refresh: {
+              token: refreshToken.token,
+              expires: refreshToken.expires
+            }
+          }
         });
       });
     })
@@ -177,13 +193,21 @@ export const refreshToken = async (req, res) => {
     }
 
     const user = await refreshToken.getUser();
-    let newAccessToken = jwt.sign({ email: user.email }, config.secret, {
-      expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
+    let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
+      expiresIn: config.jwtExpiration,
     });
 
     return res.status(200).json({
-      accessToken: newAccessToken,
-      refreshToken: refreshToken.token,
+      tokens: {
+        access: {
+          token: newAccessToken,
+          expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+        },
+        refresh: {
+          token: refreshToken.token,
+          expires: refreshToken.expires
+        }
+      }
     });
   } catch (err) {
     return res.status(500).send({
@@ -205,11 +229,7 @@ export const verifyEmail = async (req, res) => {
 
     let decoded = jwt.verify(token, authConfig.secret);
 
-    const user = await User.findOne({
-      where: {
-        email: decoded.email
-      }
-    });
+    const user = await User.findByPk(decoded.id);
 
     if (user) {
       user.update({ verified: true });
@@ -223,8 +243,16 @@ export const verifyEmail = async (req, res) => {
         avatar: user.avatar,
         verified: user.verified,
         subscription: user.subscription,
-        accessToken: token,
-        refreshToken: refreshToken,
+        tokens: {
+          access: {
+            token,
+            expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+          },
+          refresh: {
+            token: refreshToken.token,
+            expires: refreshToken.expires
+          }
+        }
       });
     } else {
       return res.status(500).send({
@@ -252,8 +280,8 @@ export const forgotPassword = async (req, res) => {
 
   if (user) {
 
-    const token = jwt.sign({ email: user.email }, config.secret, {
-      expires: new Date( Number(new Date()) + config.jwtExpiration * 1000),
+    const token = jwt.sign({ id: user.id }, config.secret, {
+      expiresIn: config.jwtExpiration,
     });
 
     let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
@@ -305,11 +333,7 @@ export const resetPassword = async (req, res) => {
 
     let decoded = jwt.verify(token, authConfig.secret);
 
-    const user = await User.findOne({
-      where: {
-        email: decoded.email
-      }
-    });
+    const user = await User.findByPk(decoded.id);
     
     if (user) {
       user.update({ password: bcrypt.hashSync(password, 8) });
@@ -386,8 +410,16 @@ export const googleAuthenticateUser = async (req, res) => {
     avatar: user.avatar,
     verified: user.verified,
     subscription: user.subscription,
-    accessToken: tokens.tokens.id_token,
-    refreshToken: refreshToken,
+    tokens: {
+      access: {
+        token: tokens.tokens.id_token,
+        expires: tokens.tokens.expiry_date
+      },
+      refresh: {
+        token: refreshToken.token,
+        expires: refreshToken.expires
+      }
+    }
   });
 }
 
@@ -406,6 +438,7 @@ export const facebookAuthenticateUser = async (req, res) => {
   });
 
   const accessToken = data?.access_token || '';
+  const expires = data?.expiry_date || new Date( Number(new Date()) + config.jwtExpiration * 1000);
 
   if (accessToken) {
     const { userData } = await axios({
@@ -441,8 +474,16 @@ export const facebookAuthenticateUser = async (req, res) => {
       avatar: user.avatar,
       verified: user.verified,
       subscription: user.subscription,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      tokens: {
+        access: {
+          token: accessToken,
+          expires: expires
+        },
+        refresh: {
+          token: refreshToken.token,
+          expires: refreshToken.expires
+        }
+      }
     });
 
   }
@@ -471,7 +512,6 @@ export const twitterAuthenticateUser = async (req, res) => {
 
   const { data: twitterUser } = await client.users.findMyUser()
 
-
   console.log("twitterUser:", twitterUser);
 
   let user = await User.findOne({ where: { email: twitterUser?.id } });
@@ -498,8 +538,16 @@ export const twitterAuthenticateUser = async (req, res) => {
     avatar: user.avatar,
     verified: user.verified,
     subscription: user.subscription,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
+    tokens: {
+      access: {
+        token: accessToken,
+        expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+      },
+      refresh: {
+        token: refreshToken.token,
+        expires: refreshToken.expires
+      }
+    }
   });
 
 }
