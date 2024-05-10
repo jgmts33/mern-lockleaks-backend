@@ -117,7 +117,7 @@ export const getBasicKeywords = async (req, res) => {
     const data = await BasicKeywords.findAll();
 
     return res.status(200).json(
-      ...data
+      data
     );
 
   } catch (err) {
@@ -134,7 +134,7 @@ export const getCustomKeywords = async (req, res) => {
     const data = await CustomKeywords.findAll();
 
     return res.status(200).json(
-      ...data
+      data
     );
 
   } catch (err) {
