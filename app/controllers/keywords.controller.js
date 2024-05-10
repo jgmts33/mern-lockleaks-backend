@@ -19,7 +19,7 @@ export const addNewKeyword = async (req, res) => {
         keyword,
       });
     }
-    if ( website ) {
+    if (website) {
       res.status(200).send({
         id: newKeyword.id,
         keyword: newKeyword.keyword
@@ -31,7 +31,7 @@ export const addNewKeyword = async (req, res) => {
         keyword: newKeyword.keywords
       });
     }
-    
+
 
   } catch (err) {
     res.status(500).send({
@@ -58,6 +58,48 @@ export const editCustomKeywords = (req, res) => {
       res.status(500).send({
         message: err.message,
       });
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+export const deleteBasicKeyword = async (req, res) => {
+  const { id } = req.params.id;
+
+  try {
+
+    await BasicKeywords.destroy({
+      where: {
+        id: id
+      }
+    });
+    return res.status(200).json({
+      message: "Custom Keyword Updated Successfully!"
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+export const deleteCustomKeyword = async (req, res) => {
+  const { id } = req.params.id;
+
+  try {
+
+    await CustomKeywords.destroy({
+      where: {
+        id: id
+      }
+    });
+    return res.status(200).json({
+      message: "Custom Keyword Updated Successfully!"
     });
 
   } catch (err) {
