@@ -69,7 +69,7 @@ export const editCustomKeywords = (req, res) => {
 };
 
 export const deleteBasicKeyword = async (req, res) => {
-  const { id } = req.params.id;
+  const { id } = req.params;
 
   try {
 
@@ -90,7 +90,7 @@ export const deleteBasicKeyword = async (req, res) => {
 };
 
 export const deleteCustomKeyword = async (req, res) => {
-  const { id } = req.params.id;
+  const { id } = req.params;
 
   try {
 
