@@ -19,9 +19,20 @@ export const addNewKeyword = async (req, res) => {
         keyword,
       });
     }
-    res.status(200).send({
-      ...newKeyword
-    });
+    if ( website ) {
+      res.status(200).send({
+        id: newKeyword.id,
+        keyword: newKeyword.keyword
+      });
+    } else {
+      res.status(200).send({
+        id: newKeyword.id,
+        website: newKeyword.website,
+        keyword: newKeyword.keywords
+      });
+    }
+    
+
   } catch (err) {
     res.status(500).send({
       message: err.message,
