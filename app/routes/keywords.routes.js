@@ -1,4 +1,4 @@
-import { addNewKeyword, editCustomKeywords } from "../controllers/keywords.controller.js";
+import { addNewKeyword, deleteBasicKeyword, deleteCustomKeyword, editCustomKeywords, getBasicKeywords, getCustomKeywords } from "../controllers/keywords.controller.js";
 import authJwt from "../middleware/authjwt.js";
 
 export default function (app) {
@@ -11,6 +11,18 @@ export default function (app) {
     next();
   });
 
+  app.get(
+    "/keywords/basic",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getBasicKeywords
+  );
+
+  app.get(
+    "/keywords/custom",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getCustomKeywords
+  );
+
   app.post(
     "/keywords",
     [authJwt.verifyToken, authJwt.isAdmin],
@@ -18,9 +30,21 @@ export default function (app) {
   );
 
   app.patch(
-    "/keywords",
+    "/keywords/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     editCustomKeywords
+  );
+
+  app.delete(
+    "/keywords/basic/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    deleteBasicKeyword
+  );
+
+  app.delete(
+    "/keywords/custom/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    deleteCustomKeyword
   );
 
 };

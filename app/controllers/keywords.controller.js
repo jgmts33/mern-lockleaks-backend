@@ -41,7 +41,8 @@ export const addNewKeyword = async (req, res) => {
 };
 
 export const editCustomKeywords = (req, res) => {
-  const { id, website, keywords } = req.body;
+  const { website, keywords } = req.body;
+  const { id } = req.params;
 
   try {
 
@@ -100,6 +101,40 @@ export const deleteCustomKeyword = async (req, res) => {
     });
     return res.status(200).json({
       message: "Custom Keyword Updated Successfully!"
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+export const getBasicKeywords = async (req, res) => {
+
+  try {
+
+    const data = await BasicKeywords.findAll();
+
+    return res.status(200).json({
+      ...data
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+export const getCustomKeywords = async (req, res) => {
+
+  try {
+
+    const data = await CustomKeywords.findAll();
+
+    return res.status(200).json({
+      ...data
     });
 
   } catch (err) {
