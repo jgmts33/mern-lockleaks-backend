@@ -1,6 +1,6 @@
 import db from "../models/index.js";
 
-const { basicKeywords: BasicKeywords, customKeywords: CustomKeywords } = db;
+const { basicKeyworkds: BasicKeywords, customKeywords: CustomKeywords } = db;
 
 export const addNewKeyword = async (req, res) => {
   const { website, keyword, keywords } = req.body;
