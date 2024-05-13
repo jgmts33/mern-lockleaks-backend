@@ -32,7 +32,7 @@ db.sequelize = sequelize;
 db.user = userModel(sequelize, Sequelize);
 db.role = roleModel(sequelize, Sequelize);
 db.refreshToken = refreshTokenModel(sequelize, Sequelize);
-db.basicKeyworkds = basicKeywordsModel(sequelize, Sequelize);
+db.basicKeywords = basicKeywordsModel(sequelize, Sequelize);
 db.customKeywords = customKeywordsModel(sequelize, Sequelize);
 db.scrapeSummary = scrapSummaryModel(sequelize, Sequelize);
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import db from "../models/index.js";
 import { extractDomain } from "../utils/index.js";
 
-const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeyworkds: BasicKeywords } = db;
+const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywords: BasicKeywords } = db;
 
 export const scrapeData = async (req, res) => {
   const { username, link } = req.body;
@@ -23,8 +23,8 @@ export const scrapeData = async (req, res) => {
       query = query.slice(0, -1);
     }
     else {
-      const basicKeywords = await BasicKeywords.findAll();
-      basicKeywords.map((item) => query +`${username} ${item},`);
+      const basicKeyword = await BasicKeywords.findAll();
+      basicKeyword.map((item) => query +`${username} ${item},`);
       query = query.slice(0, -1);
     }
     console.info("query------------->", query);
