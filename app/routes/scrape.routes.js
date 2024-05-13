@@ -12,7 +12,7 @@ export default function (app) {
   });
 
   app.post(
-    "/scrape",
+    "/:id/scrape",
     [authJwt.verifyToken],
     scrapeData
   );

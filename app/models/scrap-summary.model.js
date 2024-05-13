@@ -62,6 +62,9 @@ export default function (sequelize, Sequelize) {
     no_matches_count: {
       type: Sequelize.INTEGER,
       default: 0
+    },
+    user_id: {
+      type: Sequelize.INTEGER
     }
   });
 

@@ -6,6 +6,7 @@ const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywo
 
 export const scrapeData = async (req, res) => {
   const { username, link } = req.body;
+  const { id } = req.params;
 
   try {
 
@@ -18,7 +19,7 @@ export const scrapeData = async (req, res) => {
     let query = "";
 
     if (customKeyword) {
-      let array_keywords = customKeyword.keywords.split(",") ;
+      let array_keywords = customKeyword.keywords.split(",");
       array_keywords.map((item) => query += `${username} ${item},`);
       query = query.slice(0, -1);
     }
@@ -27,10 +28,10 @@ export const scrapeData = async (req, res) => {
       array_keywords.map((item) => query += `${username} ${item.keyword},`);
       query = query.slice(0, -1);
     }
-    console.info("query------------->", query);
-    console.log(`${process.env.BOT_API_ENDPOINT}/scrape`)
+
     const { data } = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
-      query: query
+      query,
+      id
     });
 
     if (data.currentDate) {
