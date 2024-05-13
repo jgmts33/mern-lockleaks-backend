@@ -5,6 +5,7 @@ import authRoutes from './app/routes/auth.routes.js';
 import userRoutes from './app/routes/user.routes.js';
 import { configDotenv } from 'dotenv';
 import keywordsRoutes from './app/routes/keywords.routes.js';
+import scrapeRoutes from './app/routes/scrape.routes.js';
 
 configDotenv();
 
@@ -52,3 +53,4 @@ app.listen(PORT, () => {
 authRoutes(app);
 userRoutes(app);
 keywordsRoutes(app);
+scrapeRoutes(app);
