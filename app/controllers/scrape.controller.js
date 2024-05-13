@@ -9,7 +9,7 @@ export const scrapeData = async (req, res) => {
 
   try {
 
-    const customKeyword = await CustomKeywords.find({
+    const customKeyword = await CustomKeywords.findOne({
       where: {
         website: extractDomain(link)
       }
