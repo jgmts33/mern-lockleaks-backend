@@ -1,5 +1,6 @@
 import axios from "axios";
 import db from "../models/index.js";
+import { extractDomain } from "../utils/index.js";
 
 const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeyworkds: BasicKeywords } = db;
 
