@@ -27,7 +27,7 @@ export const scrapeData = async (req, res) => {
       basicKeywords.map((item) => query +`${username} ${item},`);
       query = query.slice(0, -1);
     }
-
+    console.info("query------------->", query);
     const { data } = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
       query
     });
