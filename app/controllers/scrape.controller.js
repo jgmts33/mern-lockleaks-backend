@@ -28,6 +28,7 @@ export const scrapeData = async (req, res) => {
       query = query.slice(0, -1);
     }
     console.info("query------------->", query);
+    console.log(`${process.env.BOT_API_ENDPOINT}/scrape`)
     const { data } = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
       query: query
     });
