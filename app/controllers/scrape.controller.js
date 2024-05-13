@@ -23,8 +23,8 @@ export const scrapeData = async (req, res) => {
       query = query.slice(0, -1);
     }
     else {
-      const basicKeyword = await BasicKeywords.findAll();
-      basicKeyword.map((item) => query +`${username} ${item.keyword},`);
+      const array_keywords = await BasicKeywords.findAll();
+      array_keywords.map((item) => query +`${username} ${item.keyword},`);
       query = query.slice(0, -1);
     }
     console.info("query------------->", query);
