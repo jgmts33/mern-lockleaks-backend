@@ -31,7 +31,7 @@ export const scrapeData = async (req, res) => {
 
     const { data } = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
       query,
-      id
+      user_id: id
     });
 
     if (data.currentDate) {
