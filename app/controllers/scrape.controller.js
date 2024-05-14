@@ -8,6 +8,9 @@ export const scrapeData = async (req, res) => {
   const { usernames } = req.body;
   const { id } = req.params;
 
+  console.log("usernames:", usernames);
+  console.log("id:", id);
+
   try {
 
     let fullQuery = "", data = {
