@@ -8,6 +8,7 @@ import keywordsRoutes from './app/routes/keywords.routes.js';
 import scrapeRoutes from './app/routes/scrape.routes.js';
 import http from 'http';
 import { Server } from 'socket.io';
+import usernamesRoutes from './app/routes/usernames.routes.js';
 
 configDotenv();
 
@@ -70,5 +71,6 @@ authRoutes(app);
 userRoutes(app);
 keywordsRoutes(app);
 scrapeRoutes(app);
+usernamesRoutes(app);
 
 export { io };
