@@ -41,13 +41,13 @@ export const scrapeData = async (req, res) => {
 
       if (customKeyword) {
         let array_keywords = customKeyword.keywords.split(",");
-        array_keywords.map((item) => fullQuery += `${eachData.username} ${item},`);
-        fullQuery = fullQuery.slice(0, -1);
+        array_keywords.map((item) => fullQuery += `${eachData.username} ${item}, `);
+        fullQuery = fullQuery.slice(0, -2);
       }
       else {
         const array_keywords = await BasicKeywords.findAll();
-        array_keywords.map((item) => fullQuery += `${eachData.username} ${item.keyword},`);
-        fullQuery = fullQuery.slice(0, -1);
+        array_keywords.map((item) => fullQuery += `${eachData.username} ${item.keyword}, `);
+        fullQuery = fullQuery.slice(0, -2);
       }
     })
 
@@ -62,7 +62,9 @@ export const scrapeData = async (req, res) => {
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
-    console.log(queries, currentDate, fullQuery);
+    console.log("fullQuery:", fullQuery);
+    console.log("queries:", queries);
+    console.log("currentDate:", currentDate);
 
     queries.map(async (query) => {
       const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
