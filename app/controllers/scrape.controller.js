@@ -59,6 +59,8 @@ export const scrapeData = async (req, res) => {
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
+    console.log(queries, currentDate);
+
     queries.map(async (query) => {
       const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
         query,
