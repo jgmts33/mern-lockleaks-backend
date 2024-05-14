@@ -56,7 +56,7 @@ export const scrapeData = async (req, res) => {
       }
     }
 
-    const queries = fullQuery.replace(",", " ").split("  ");
+    const queries = fullQuery.replaceAll(",", " ").split("  ");
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
       month: '2-digit',
