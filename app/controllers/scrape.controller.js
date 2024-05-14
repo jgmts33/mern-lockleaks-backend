@@ -13,7 +13,7 @@ export const scrapeData = async (req, res) => {
 
   try {
 
-    let data = {
+    let fullQuery = "", data = {
       currentDate: "",
       google_link_count: 0,
       google_image_count: 0,
@@ -32,33 +32,30 @@ export const scrapeData = async (req, res) => {
       user_id: id,
     };
 
-    const promiseForFullQueryUpdate = new Promise(async (resolve, reject) => {
-      let fullQuery = "";
+    try {
       await usernames.map(async (eachData) => {
         const customKeyword = await CustomKeywords.findOne({
           where: {
             website: extractDomain(eachData.link)
           }
         });
-
+  
         if (customKeyword) {
           const array_keywords = customKeyword.keywords.split(",");
-          console.log("custom-array_keywords", array_keywords);
-          await array_keywords.map((item) => fullQuery += `${eachData.username} ${item}, `);
+          console.log("array_keywords", array_keywords);
+          array_keywords.map((item) => fullQuery += `${eachData.username} ${item}, `);
           fullQuery = fullQuery.slice(0, -2);
         }
         else {
           const array_keywords = await BasicKeywords.findAll();
-          console.log("basic-array_keywords", array_keywords);
-          await array_keywords.map((item) => fullQuery += `${eachData.username} ${item.keyword}, `);
+          array_keywords.map((item) => fullQuery += `${eachData.username} ${item.keyword}, `);
           fullQuery = fullQuery.slice(0, -2);
         }
-      });
-
-      resolve(fullQuery);
-    })
-    promiseForFullQueryUpdate.then(async (value) => {
-      const queries = value.replace(",", " ").split("  ");
+      })
+    } catch (err) {
+      console.log(err);
+    } finally {
+      const queries = fullQuery.replace(",", " ").split("  ");
       const currentDate = new Date().toLocaleString('en-GB', {
         day: '2-digit',
         month: '2-digit',
@@ -67,17 +64,17 @@ export const scrapeData = async (req, res) => {
         minute: '2-digit',
         second: '2-digit',
       }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
-
-      console.log("fullQuery:", value);
+  
+      console.log("fullQuery:", fullQuery);
       console.log("queries:", queries);
       console.log("currentDate:", currentDate);
-
+  
       queries.map(async (query) => {
         const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
           query,
           currentDate
         });
-
+  
         data = {
           currentDate: currentDate,
           google_link_count: data.google_link_count + res.data.google_link_count,
@@ -96,15 +93,15 @@ export const scrapeData = async (req, res) => {
           no_matches_count: data.no_matches_count + res.data.no_matches_count,
           user_id: id
         }
-
+  
       });
-
+  
       const scrapeSummary = await ScrapeSummary.create({ ...data });
-
+  
       res.status(200).send({
         ...scrapeSummary
       });
-    });
+    }
 
   } catch (err) {
     res.status(500).send({
