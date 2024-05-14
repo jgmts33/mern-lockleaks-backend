@@ -76,7 +76,16 @@ export const scrapeData = async (req, res) => {
 
       scrapeProgress += (100 / queries.length);
 
-      io.emit(`${id}:scrape`, scrapeProgress);
+      io.on("connection", (socket) => {
+
+        console.log("New user connected on socketId", socket.id);
+        io.emit(`${id}:scrape`, scrapeProgress);
+
+        socket.on('disconnect', (info) => {
+          console.log("disconnected:", info);
+        })
+      })
+
 
       data = {
         currentDate: currentDate,
