@@ -1,5 +1,5 @@
 export default function (sequelize, Sequelize) {
-  const BasicKeywords = sequelize.define("basic-keywords", {
+  const BasicKeywords = sequelize.define("basic_keywords", {
     keyword: {
       type: Sequelize.STRING
     }

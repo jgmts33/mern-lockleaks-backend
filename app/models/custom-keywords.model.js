@@ -1,5 +1,5 @@
 export default function (sequelize, Sequelize) {
-  const CustomKeywords = sequelize.define("custom-keywords", {
+  const CustomKeywords = sequelize.define("custom_keywords", {
     website: {
       type: Sequelize.STRING
     },
