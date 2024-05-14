@@ -32,21 +32,21 @@ export const scrapeData = async (req, res) => {
       user_id: id,
     };
 
-    usernames.map(async ({ username, link }) => {
+    usernames.map(async (eachData) => {
       const customKeyword = await CustomKeywords.findOne({
         where: {
-          website: extractDomain(link)
+          website: extractDomain(eachData.link)
         }
       });
 
       if (customKeyword) {
         let array_keywords = customKeyword.keywords.split(",");
-        array_keywords.map((item) => fullQuery += `${username} ${item},`);
+        array_keywords.map((item) => fullQuery += `${eachData.username} ${item},`);
         fullQuery = fullQuery.slice(0, -1);
       }
       else {
         const array_keywords = await BasicKeywords.findAll();
-        array_keywords.map((item) => fullQuery += `${username} ${item.keyword},`);
+        array_keywords.map((item) => fullQuery += `${eachData.username} ${item.keyword},`);
         fullQuery = fullQuery.slice(0, -1);
       }
     })
