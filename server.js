@@ -6,10 +6,14 @@ import userRoutes from './app/routes/user.routes.js';
 import { configDotenv } from 'dotenv';
 import keywordsRoutes from './app/routes/keywords.routes.js';
 import scrapeRoutes from './app/routes/scrape.routes.js';
+import http from 'http';
+import { Server } from 'socket.io';
 
 configDotenv();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 app.use(cors({
   origin: "*"
@@ -44,6 +48,18 @@ app.get("/", (req, res) => {
   res.send({ mesage: "Server is alive" });
 })
 
+io.on('connection', (socket) => {
+  console.log(`Socket ${socket.id} connected.`);
+
+  socket.on('message', (message) => {
+    io.emit('message', message);
+  })
+
+  socket.on('disconnect', () => {
+    console.log(`Socket ${socket.id} disconnected.`);
+  });
+})
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
@@ -54,3 +70,5 @@ authRoutes(app);
 userRoutes(app);
 keywordsRoutes(app);
 scrapeRoutes(app);
+
+export { io };

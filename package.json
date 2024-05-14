@@ -33,6 +33,7 @@
     "pg-hstore": "^2.3.4",
     "prettier": "^3.2.5",
     "sequelize": "^6.37.3",
+    "socket.io": "^4.7.5",
     "twitter-api-sdk": "^1.2.1",
     "uuid": "^9.0.1"
   }
