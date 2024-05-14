@@ -14,9 +14,17 @@ export const getUsernames = async (req, res) => {
       }
     });
 
-    res.status(200).send({
-      ...usernamesList
-    });
+    const responseData = [];
+    for ( let item in usernamesList ) {
+      responseData.push({
+        username: item.username,
+        websiteLink: item.link
+      })
+    }
+
+    res.status(200).send([
+      
+    ]);
 
   } catch (err) {
     res.status(500).send({
