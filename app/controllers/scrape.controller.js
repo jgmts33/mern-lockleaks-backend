@@ -46,16 +46,14 @@ export const scrapeData = async (req, res) => {
         for (const item of array_keywords) {
           fullQuery += `${eachData.username} ${item}, `;
         }
-        fullQuery = fullQuery.slice(0, -2);
       } else {
         array_keywords = await BasicKeywords.findAll();
         for (const item of array_keywords) {
           fullQuery += `${eachData.username} ${item.keyword}, `;
         }
-        fullQuery = fullQuery.slice(0, -2);
       }
     }
-
+    fullQuery = fullQuery.slice(0, -2);
     const queries = fullQuery.replaceAll(",", " ").split("  ");
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
