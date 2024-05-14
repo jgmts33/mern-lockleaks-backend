@@ -1,9 +1,5 @@
 export default function (sequelize, Sequelize) {
   const ScrapeSummaries = sequelize.define("scrape_summaries", {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true
-    },
     scrape_date: {
       type: Sequelize.STRING
     },
