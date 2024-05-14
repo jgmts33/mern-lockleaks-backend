@@ -41,13 +41,11 @@ export const scrapeData = async (req, res) => {
 
       if (customKeyword) {
         const array_keywords = customKeyword.keywords.split(",");
-        console.log("custom-array_keywords", array_keywords);
         await array_keywords.map((item) => fullQuery += `${eachData.username} ${item}, `);
         fullQuery = fullQuery.slice(0, -2);
       }
       else {
         const array_keywords = await BasicKeywords.findAll();
-        console.log("basic-array_keywords", array_keywords);
         await array_keywords.map((item) => fullQuery += `${eachData.username} ${item.keyword}, `);
         fullQuery = fullQuery.slice(0, -2);
       }
