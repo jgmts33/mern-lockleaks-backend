@@ -31,13 +31,14 @@ export const createUserNames = async (req, res) => {
 
   try {
 
-    usernames.map(async (item) => {
+    for (let item in usernames ) {
+      const { username , websiteLink  } = item;
       await Usernames.create({
-        username: item.username,
-        link: item, link,
+        username,
+        link: websiteLink,
         userId: id
       })
-    })
+    }
 
     res.status(200).send({
       message: "User Names created Successfully"
