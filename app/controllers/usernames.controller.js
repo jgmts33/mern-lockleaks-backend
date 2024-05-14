@@ -22,9 +22,7 @@ export const getUsernames = async (req, res) => {
       })
     }
 
-    res.status(200).send([
-      
-    ]);
+    res.status(200).send(responseData);
 
   } catch (err) {
     res.status(500).send({
