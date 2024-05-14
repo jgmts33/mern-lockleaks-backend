@@ -15,7 +15,7 @@ export const getUsernames = async (req, res) => {
     });
 
     const responseData = [];
-    for ( let item in usernamesList ) {
+    for ( let item of usernamesList ) {
       responseData.push({
         username: item.username,
         websiteLink: item.link
@@ -37,7 +37,7 @@ export const createUserNames = async (req, res) => {
 
   try {
 
-    for (let item in usernames ) {
+    for (let item of usernames ) {
       const { username , websiteLink  } = item;
       await Usernames.create({
         username,
