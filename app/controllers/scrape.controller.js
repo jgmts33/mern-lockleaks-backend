@@ -32,7 +32,7 @@ export const scrapeData = async (req, res) => {
       user_id: id,
     };
 
-    usernames.map(async (eachData) => {
+    await usernames.map(async (eachData) => {
       const customKeyword = await CustomKeywords.findOne({
         where: {
           website: extractDomain(eachData.link)
