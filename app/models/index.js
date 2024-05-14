@@ -1,6 +1,6 @@
 import config from "../config/db.config.js";
 
-import { Sequelize } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 
 import userModel from "./user.model.js";
 import roleModel from "./role.model.js";
@@ -8,6 +8,7 @@ import refreshTokenModel from "./refreshToken.model.js";
 import basicKeywordsModel from "./basic-keywords.model.js";
 import customKeywordsModel from "./custom-keywords.model.js";
 import scrapSummaryModel from "./scrap-summary.model.js";
+import usernamesModel from "./usernames.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -35,7 +36,7 @@ db.refreshToken = refreshTokenModel(sequelize, Sequelize);
 db.basicKeywords = basicKeywordsModel(sequelize, Sequelize);
 db.customKeywords = customKeywordsModel(sequelize, Sequelize);
 db.scrapeSummary = scrapSummaryModel(sequelize, Sequelize);
-
+db.usernames = usernamesModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

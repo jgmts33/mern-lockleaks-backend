@@ -1,5 +1,5 @@
 export default function (sequelize, Sequelize) {
-  const User = sequelize.define("custom-keywords", {
+  const CustomKeywords = sequelize.define("custom-keywords", {
     website: {
       type: Sequelize.STRING
     },
@@ -8,5 +8,5 @@ export default function (sequelize, Sequelize) {
     }
   });
 
-  return User;
+  return CustomKeywords;
 }
