@@ -13,8 +13,6 @@ import usernamesRoutes from './app/routes/usernames.routes.js';
 configDotenv();
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
 
 app.use(cors({
   origin: "*"
@@ -49,12 +47,19 @@ app.get("/", (req, res) => {
   res.send({ mesage: "Server is alive" });
 })
 
+const server = http.createServer(app);
+const io = new Server(server);
+
+authRoutes(app);
+userRoutes(app);
+keywordsRoutes(app);
+scrapeRoutes(app);
+usernamesRoutes(app);
+
 io.on('connection', (socket) => {
   console.log(`Socket ${socket.id} connected.`);
 
-  socket.on('message', (message) => {
-    io.emit('message', message);
-  })
+  io.emit("message", "Hello");
 
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} disconnected.`);
@@ -63,14 +68,10 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 })
 
-authRoutes(app);
-userRoutes(app);
-keywordsRoutes(app);
-scrapeRoutes(app);
-usernamesRoutes(app);
+
 
 export { io };
