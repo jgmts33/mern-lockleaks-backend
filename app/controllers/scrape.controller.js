@@ -110,7 +110,15 @@ export const scrapeData = async (req, res) => {
       total_google_videos: scrapeSummary.total_google_videos,
       total_bing_links: scrapeSummary.total_bing_links,
       total_bing_images: scrapeSummary.total_bing_images,
-      total_bing_videos: scrapeSummary.total_bing_videos
+      total_bing_videos: scrapeSummary.total_bing_videos,
+      good_count: scrapeSummary.good_count,
+      other_count: scrapeSummary.other_count,
+      bad_count: scrapeSummary.bad_count,
+      new_count: scrapeSummary.new_count,
+      report_count: scrapeSummary.report_count,
+      no_report_count: scrapeSummary.no_report_count,
+      matches_count: scrapeSummary.matches_count,
+      no_matches_count: scrapeSummary.no_matches_count,
     });
 
   } catch (err) {
