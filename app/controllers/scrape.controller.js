@@ -100,7 +100,12 @@ export const scrapeData = async (req, res) => {
     const scrapeSummary = await ScrapeSummary.create({ ...data });
 
     res.status(200).send({
-      ...scrapeSummary
+      total_google_links: scrapeSummary.total_google_links,
+      total_google_images: scrapeSummary.total_google_images,
+      total_google_videos: scrapeSummary.total_google_videos,
+      total_bing_links: scrapeSummary.total_bing_links,
+      total_bing_images: scrapeSummary.total_bing_images,
+      total_bing_videos: scrapeSummary.total_bing_videos
     });
 
   } catch (err) {
