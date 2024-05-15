@@ -61,16 +61,6 @@ keywordsRoutes(app);
 scrapeRoutes(app);
 usernamesRoutes(app);
 
-io.on('connection', (socket) => {
-  console.log(`Socket ${socket.id} connected.`);
-
-  io.emit("message", "Hello");
-
-  socket.on('disconnect', () => {
-    console.log(`Socket ${socket.id} disconnected.`);
-  });
-})
-
 const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () => {
