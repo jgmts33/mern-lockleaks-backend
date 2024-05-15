@@ -139,13 +139,13 @@ export const downloadSrapedData = async (req, res) => {
   console.log(scrapedData);
 
   if (scrapedData) {
-    const { data } = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
+    const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
       folder_name: folder_name
     }, {
       responseType: "stream"
     });
 
-    req.status(200).send(data);
+    req.status(200).send(response);
   }
   else {
     res.status(404).send({
