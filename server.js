@@ -55,12 +55,21 @@ const io = new Server(server, {
   }
 });
 
-authRoutes(app);
-userRoutes(app);
-keywordsRoutes(app);
-scrapeRoutes(app);
-usernamesRoutes(app);
+io.on("connection", (socket) => {
 
+  console.log("New user connected on socketId", socket.id);
+
+  authRoutes(app);
+  userRoutes(app);
+  keywordsRoutes(app);
+  scrapeRoutes(app);
+  usernamesRoutes(app);
+
+  socket.on('disconnect', (info) => {
+    console.log("disconnected:", info);
+  });
+  
+})
 const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () => {
