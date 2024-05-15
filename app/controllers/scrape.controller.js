@@ -98,6 +98,10 @@ export const scrapeData = async (req, res) => {
       }
     }
 
+    await axios.post(`${process.env.BOT_API_ENDPOINT}/zip`, {
+      currentDate
+    });
+
     const scrapeSummary = await ScrapeSummary.create({ ...data });
 
     res.status(200).send({
