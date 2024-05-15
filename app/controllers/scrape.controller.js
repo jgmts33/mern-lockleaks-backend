@@ -74,11 +74,11 @@ export const scrapeData = async (req, res) => {
         currentDate
       });
 
-      scrapeProgress += (100 / queries.length);
+      console.log("res:", res)
       io.emit(`${id}:scrape`, scrapeProgress);
 
       data = {
-        currentDate: currentDate,
+        scrape_date: currentDate,
         google_link_count: data.google_link_count + res.data.google_link_count,
         google_image_count: data.google_image_count + res.data.google_image_count,
         google_video_count: data.google_video_count + res.data.google_video_count,
