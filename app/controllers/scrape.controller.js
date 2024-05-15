@@ -145,7 +145,7 @@ export const downloadSrapedData = async (req, res) => {
       responseType: "stream"
     });
 
-    req.status(200).send(response);
+    res.status(200).send(response);
   }
   else {
     res.status(404).send({
