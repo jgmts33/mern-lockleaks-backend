@@ -59,6 +59,10 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.INTEGER,
       default: 0
     },
+    status: {
+      type: Sequelize.STRING,
+      default: "available"
+    },
     user_id: {
       type: Sequelize.INTEGER
     }

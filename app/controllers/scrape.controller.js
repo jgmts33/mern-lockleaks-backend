@@ -90,6 +90,7 @@ export const scrapeData = async (req, res) => {
         no_report_count: data.no_report_count + res.data.no_report_count,
         matches_count: data.matches_count + res.data.matches_count,
         no_matches_count: data.no_matches_count + res.data.no_matches_count,
+        status: "available",
         user_id: id
       }
     }
@@ -115,6 +116,7 @@ export const scrapeData = async (req, res) => {
       no_report_count: scrapeSummary.no_report_count,
       matches_count: scrapeSummary.matches_count,
       no_matches_count: scrapeSummary.no_matches_count,
+      status: "available",
     });
 
   } catch (err) {
@@ -135,8 +137,6 @@ export const downloadSrapedData = async (req, res) => {
       scrape_date: folder_name
     }
   });
-
-  console.log(scrapedData);
 
   if (scrapedData) {
     const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
@@ -163,7 +163,7 @@ export const getScrapedDataList = async (req, res) => {
       user_id: id
     },
     order: [['createdAt', 'DESC']],
-    attributes: ['scrape_date']
+    attributes: ['scrape_date', 'status']
   });
 
   res.status(200).send(scrapedData);
