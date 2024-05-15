@@ -134,7 +134,9 @@ export const downloadSrapedData = async (req, res) => {
       user_id: id,
       scrape_date: folder_name
     }
-  })
+  });
+
+  console.log(scrapedData);
 
   if (scrapedData) {
     const { data } = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
@@ -146,7 +148,7 @@ export const downloadSrapedData = async (req, res) => {
     req.status(200).send(data);
   }
   else {
-    res.status(500).send({
+    res.status(404).send({
       message: "Scraped Data not Found!"
     });
   }
