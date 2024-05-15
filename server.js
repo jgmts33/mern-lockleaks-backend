@@ -48,10 +48,12 @@ app.get("/", (req, res) => {
 })
 
 const server = http.createServer(app);
-const io = new Server(server);
-io.use(cors({
-  origin: "*"
-}))
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    credentials: true
+  }
+});
 
 authRoutes(app);
 userRoutes(app);
