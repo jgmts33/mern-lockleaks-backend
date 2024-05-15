@@ -9,10 +9,6 @@ export const scrapeData = async (req, res) => {
   const { usernames } = req.body;
   const { id } = req.params;
 
-
-  console.log("usernames:", usernames);
-  console.log("id:", id);
-
   try {
 
     let fullQuery = "", data = {
@@ -127,3 +123,46 @@ export const scrapeData = async (req, res) => {
     });
   }
 };
+
+export const downloadSrapedData = async (req, res) => {
+
+  const { id } = req.params;
+  const { folder_name } = req.query;
+
+  const scrapedData = await ScrapeSummary.findOne({
+    where: {
+      user_id: id,
+      scrape_date: folder_name
+    }
+  })
+
+  if (scrapedData) {
+    const { data } = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
+      folder_name: folder_name
+    }, {
+      responseType: "stream"
+    });
+
+    req.status(200).send(data);
+  }
+  else {
+    res.status(500).send({
+      message: "Scraped Data not Found!"
+    });
+  }
+}
+
+export const getScrapedDataList = async (req, res) => {
+
+  const { id } = req.params;
+
+  const scrapedData = await ScrapeSummary.findAll({
+    where: {
+      user_id: id
+    },
+    order: [['createdAt', 'DESC']],
+    attributes: ['scrape_date']
+  });
+
+  res.status(200).send(scrapedData);
+}

@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { scrapeData } from "../controllers/scrape.controller.js";
+import { scrapeData, downloadSrapedData } from "../controllers/scrape.controller.js";
 
 export default function (app) {
 
@@ -11,9 +11,21 @@ export default function (app) {
     next();
   });
 
+  app.get(
+    "/:id/scraped-data",
+    [authJwt.verifyToken],
+    getScrapedDataList
+  )
+
   app.post(
     "/:id/scrape",
     [authJwt.verifyToken],
     scrapeData
   );
+
+  app.get(
+    "/:id/download-file",
+    [authJwt.verifyToken],
+    downloadSrapedData
+  )
 };
