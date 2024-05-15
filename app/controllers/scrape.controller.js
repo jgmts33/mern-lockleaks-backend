@@ -76,6 +76,8 @@ export const scrapeData = async (req, res) => {
 
       scrapeProgress += (100 / queries.length);
 
+      console.log("scrapeProgress:", scrapeProgress);
+
       io.on("connection", (socket) => {
 
         console.log("New user connected on socketId", socket.id);
