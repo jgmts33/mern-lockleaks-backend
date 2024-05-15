@@ -59,6 +59,8 @@ io.on("connection", (socket) => {
 
   console.log("New user connected on socketId", socket.id);
 
+  socket.emit("welcome", "Conncted to Socket Server.");
+
   authRoutes(app);
   userRoutes(app);
   keywordsRoutes(app);
@@ -68,7 +70,7 @@ io.on("connection", (socket) => {
   socket.on('disconnect', (info) => {
     console.log("disconnected:", info);
   });
-  
+
 })
 const PORT = process.env.PORT || 8080;
 
