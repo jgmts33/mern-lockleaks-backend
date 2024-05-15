@@ -16,13 +16,13 @@ export const scrapeData = async (req, res) => {
   try {
 
     let fullQuery = "", data = {
-      currentDate: "",
-      google_link_count: 0,
-      google_image_count: 0,
-      google_video_count: 0,
-      bing_link_count: 0,
-      bing_image_count: 0,
-      bing_video_count: 0,
+      scrate_date: "",
+      total_google_links: 0,
+      total_google_images: 0,
+      total_google_videos: 0,
+      total_bing_links: 0,
+      total_bing_images: 0,
+      total_bing_videos: 0,
       good_count: 0,
       other_count: 0,
       bad_count: 0,
@@ -74,17 +74,17 @@ export const scrapeData = async (req, res) => {
         currentDate
       });
 
-      console.log("res:", res)
+      scrapeProgress += (100 / queries.length);
       io.emit(`${id}:scrape`, scrapeProgress);
 
       data = {
         scrape_date: currentDate,
-        google_link_count: data.google_link_count + res.data.google_link_count,
-        google_image_count: data.google_image_count + res.data.google_image_count,
-        google_video_count: data.google_video_count + res.data.google_video_count,
-        bing_link_count: data.bing_link_count + res.data.bing_link_count,
-        bing_image_count: data.bing_image_count + res.data.bing_image_count,
-        bing_video_count: data.bing_video_count + res.data.bing_video_count,
+        total_google_links: data.total_google_links + res.data.google_link_count,
+        total_google_images: data.total_google_images + res.data.google_image_count,
+        total_google_videos: data.total_google_videos + res.data.google_video_count,
+        total_bing_links: data.total_bing_links + res.data.bing_link_count,
+        total_bing_images: data.total_bing_images + res.data.bing_image_count,
+        total_bing_videos: data.total_bing_videos + res.data.bing_video_count,
         good_count: data.good_count + res.data.good_count,
         other_count: data.other_count + res.data.other_count,
         bad_count: data.bad_count + res.data.bad_count,
