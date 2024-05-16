@@ -72,8 +72,8 @@ export const scrapeData = async (req, res) => {
       save_results: true
     }
 
-    if ( only == 'google' ) requestData.no_google = true;
-    if ( only == 'bing' ) requestData.no_bing = true;
+    if ( only == 'google' ) requestData.no_bing = true;
+    if ( only == 'bing' ) requestData.no_google = true;
 
     for (const query of queries) {
       requestData.query = query;
