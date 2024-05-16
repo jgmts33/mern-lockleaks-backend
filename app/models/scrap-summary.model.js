@@ -63,6 +63,10 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.STRING,
       default: "available"
     },
+    downloaded: {
+      type: Sequelize.BOOLEAN,
+      default: false
+    },
     user_id: {
       type: Sequelize.INTEGER
     }

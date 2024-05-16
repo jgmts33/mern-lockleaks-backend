@@ -101,6 +101,7 @@ export const scrapeData = async (req, res) => {
         matches_count: data.matches_count + res.data.matches_count,
         no_matches_count: data.no_matches_count + res.data.no_matches_count,
         status: "available",
+        downloaded: false,
         user_id: id
       }
     }
@@ -109,24 +110,10 @@ export const scrapeData = async (req, res) => {
       folder_name: currentDate
     });
 
-    const scrapeSummary = await ScrapeSummary.create({ ...data });
+    await ScrapeSummary.create({ ...data });
 
     res.status(200).send({
-      total_google_links: scrapeSummary.total_google_links,
-      total_google_images: scrapeSummary.total_google_images,
-      total_google_videos: scrapeSummary.total_google_videos,
-      total_bing_links: scrapeSummary.total_bing_links,
-      total_bing_images: scrapeSummary.total_bing_images,
-      total_bing_videos: scrapeSummary.total_bing_videos,
-      good_count: scrapeSummary.good_count,
-      other_count: scrapeSummary.other_count,
-      bad_count: scrapeSummary.bad_count,
-      new_count: scrapeSummary.new_count,
-      report_count: scrapeSummary.report_count,
-      no_report_count: scrapeSummary.no_report_count,
-      matches_count: scrapeSummary.matches_count,
-      no_matches_count: scrapeSummary.no_matches_count,
-      status: "available",
+      message: "Scraped Successfully!"
     });
 
   } catch (err) {
@@ -154,7 +141,9 @@ export const downloadSrapedData = async (req, res) => {
     }, {
       responseType: "stream"
     });
-
+    scrapedData.update({
+      downloaded: true
+    })
     response.data.pipe(res);
   }
   else {
