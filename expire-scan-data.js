@@ -12,6 +12,8 @@ const { scrapeSummary: ScrapeSummary } = db;
       { where: { createdAt: { [Sequelize.Op.lt]: expirationDate } } }
     );
 
+    console.log("expiredData:", expiredData);
+
     console.log(`Updated ${expiredData.length} records as expired.`);
   } catch (error) {
     console.error('Error updating expired data:', error);
