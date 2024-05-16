@@ -162,8 +162,7 @@ export const getScrapedDataList = async (req, res) => {
     where: {
       user_id: id
     },
-    order: [['createdAt', 'DESC']],
-    attributes: ['scrape_date', 'status']
+    order: [['createdAt', 'DESC']]
   });
 
   res.status(200).send(scrapedData); 
