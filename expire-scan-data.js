@@ -7,7 +7,7 @@ const { scrapeSummary: ScrapeSummary } = db;
 
 (async () => {
   const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() - 30); // Calculate 30 days ago
+  expirationDate.setDate(expirationDate.getDate() + 30); // Calculate 30 days ago
 
   try {
     const expiredData = await ScrapeSummary.findAll({
