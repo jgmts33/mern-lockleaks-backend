@@ -123,8 +123,10 @@ export const signin = async (req, res) => {
         });
       }
 
+      const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+      
       const token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: config.jwtExpiration,
+        expiresIn: expiresIn,
       });
 
       let refreshToken = await RefreshToken.createToken(user);
