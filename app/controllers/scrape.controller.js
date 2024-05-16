@@ -77,7 +77,9 @@ export const scrapeData = async (req, res) => {
 
     for (const query of queries) {
       requestData.query = query;
-      const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, requestData);
+      const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
+        ...requestData
+      });
 
       scrapeProgress += (100 / queries.length);
       io.emit(`${id}:scrape`, scrapeProgress);
