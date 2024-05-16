@@ -31,7 +31,7 @@ export const signup = async (req, res) => {
   })
     .then(async user => {
 
-      const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+      const expiresIn = (await user.getRoles()).map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
 
       const token = jwt.sign(
         {
@@ -125,7 +125,7 @@ export const signin = async (req, res) => {
         });
       }
 
-      const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+      const expiresIn = (await user.getRoles()).map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
       
       const token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: expiresIn,
@@ -198,7 +198,7 @@ export const refreshToken = async (req, res) => {
 
     const user = await refreshToken.getUser();
 
-    const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+    const expiresIn = (await user.getRoles()).map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
 
     let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
       expiresIn: expiresIn,
@@ -241,7 +241,7 @@ export const verifyEmail = async (req, res) => {
     if (user) {
       user.update({ verified: true });
 
-      const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+      const expiresIn = (await user.getRoles()).map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
 
       let refreshToken = await RefreshToken.createToken(user);
 
@@ -289,7 +289,7 @@ export const forgotPassword = async (req, res) => {
 
   if (user) {
 
-    const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+    const expiresIn = (await user.getRoles()).map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
 
     const token = jwt.sign({ id: user.id }, config.secret, {
       expiresIn: expiresIn,
@@ -527,7 +527,7 @@ export const twitterAuthenticateUser = async (req, res) => {
 
   let user = await User.findOne({ where: { email: twitterUser?.id } });
 
-  const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+  const expiresIn = (await user.getRoles()).map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
 
   if (!user) {
     user = await User.create({
