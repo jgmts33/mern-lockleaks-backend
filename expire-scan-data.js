@@ -35,7 +35,7 @@ const { scrapeSummary: ScrapeSummary } = db;
         console.log(`Removed ${data.scrape_date} record because that is expired.`);
 
       } catch (err) {
-        console.log(err);
+        console.log("err:", err);
       }
 
     }
