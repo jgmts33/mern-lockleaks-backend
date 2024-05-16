@@ -30,12 +30,12 @@ export const signup = async (req, res) => {
     subscription: false
   })
     .then(async user => {
-      
+
       const token = jwt.sign(
         {
           id: user.id
-        }, 
-        config.secret, 
+        },
+        config.secret,
         {
           expiresIn: config.jwtExpiration,
         }
@@ -77,7 +77,7 @@ export const signup = async (req, res) => {
               tokens: {
                 access: {
                   token: token,
-                  expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+                  expires: new Date(Number(new Date()) + config.jwtExpiration * 1000)
                 },
                 refresh: {
                   token: refreshToken,
@@ -131,7 +131,7 @@ export const signin = async (req, res) => {
           return res.status(404).send({ message: "You are not Admin." });
         }
 
-        const expiresIn = roles.map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+        const expiresIn = roles.map((role) => role.name).find(p => p == 'admin') ? config.adminJwtExpiration : config.jwtExpiration;
 
         const token = jwt.sign({ id: user.id }, config.secret, {
           expiresIn: expiresIn,
@@ -147,7 +147,7 @@ export const signin = async (req, res) => {
           tokens: {
             access: {
               token: token,
-              expires: new Date( Number(new Date()) + expiresIn * 1000)
+              expires: new Date(Number(new Date()) + expiresIn * 1000)
             },
             refresh: {
               token: refreshToken.token,
@@ -204,7 +204,7 @@ export const refreshToken = async (req, res) => {
       tokens: {
         access: {
           token: newAccessToken,
-          expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+          expires: new Date(Number(new Date()) + config.jwtExpiration * 1000)
         },
         refresh: {
           token: refreshToken.token,
@@ -249,7 +249,7 @@ export const verifyEmail = async (req, res) => {
         tokens: {
           access: {
             token,
-            expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+            expires: new Date(Number(new Date()) + config.jwtExpiration * 1000)
           },
           refresh: {
             token: refreshToken.token,
@@ -337,7 +337,7 @@ export const resetPassword = async (req, res) => {
     let decoded = jwt.verify(token, authConfig.secret);
 
     const user = await User.findByPk(decoded.id);
-    
+
     if (user) {
       user.update({ password: bcrypt.hashSync(password, 8) });
 
@@ -441,7 +441,7 @@ export const facebookAuthenticateUser = async (req, res) => {
   });
 
   const accessToken = data?.access_token || '';
-  const expires = data?.expiry_date || new Date( Number(new Date()) + config.jwtExpiration * 1000);
+  const expires = data?.expiry_date || new Date(Number(new Date()) + config.jwtExpiration * 1000);
 
   if (accessToken) {
     const { userData } = await axios({
@@ -544,7 +544,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     tokens: {
       access: {
         token: accessToken,
-        expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+        expires: new Date(Number(new Date()) + config.jwtExpiration * 1000)
       },
       refresh: {
         token: refreshToken.token,
