@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize";
 import db from "./app/models/index.js";
 import fs from 'fs';
 import path from 'path';
+import axios from "axios";
 
 const { scrapeSummary: ScrapeSummary } = db;
 
