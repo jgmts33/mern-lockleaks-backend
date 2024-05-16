@@ -27,7 +27,7 @@ const { scrapeSummary: ScrapeSummary } = db;
           { where: { id: data.id } }
         );
 
-        await axios.post(`${process.env.BOT_API_ENDPOINT}/delete-file`, {
+        await axios.post(`https://api.lockleaks.com/delete-file`, {
           folder_name: data.scrape_date
         });
 
