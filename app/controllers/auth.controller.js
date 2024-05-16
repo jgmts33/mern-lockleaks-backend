@@ -31,13 +31,15 @@ export const signup = async (req, res) => {
   })
     .then(async user => {
 
+      const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+
       const token = jwt.sign(
         {
           id: user.id
         }, 
         config.secret, 
         {
-          expiresIn: config.jwtExpiration,
+          expiresIn,
         }
       );
 
@@ -77,11 +79,11 @@ export const signup = async (req, res) => {
               tokens: {
                 access: {
                   token: token,
-                  expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+                  expires: new Date( Number(new Date()) + expiresIn * 1000)
                 },
                 refresh: {
                   token: refreshToken,
-                  expires: new Date( Number(new Date()) + config.jwtRegreshExpiration * 1000)
+                  expires: refreshToken.expires
                 }
               }
             });
@@ -147,7 +149,7 @@ export const signin = async (req, res) => {
           tokens: {
             access: {
               token: token,
-              expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+              expires: new Date( Number(new Date()) + expiresIn * 1000)
             },
             refresh: {
               token: refreshToken.token,
@@ -195,15 +197,18 @@ export const refreshToken = async (req, res) => {
     }
 
     const user = await refreshToken.getUser();
+
+    const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+
     let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
-      expiresIn: config.jwtExpiration,
+      expiresIn: expiresIn,
     });
 
     return res.status(200).json({
       tokens: {
         access: {
           token: newAccessToken,
-          expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+          expires: new Date( Number(new Date()) + expiresIn * 1000)
         },
         refresh: {
           token: refreshToken.token,
@@ -236,6 +241,8 @@ export const verifyEmail = async (req, res) => {
     if (user) {
       user.update({ verified: true });
 
+      const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+
       let refreshToken = await RefreshToken.createToken(user);
 
       return res.status(200).send({
@@ -248,7 +255,7 @@ export const verifyEmail = async (req, res) => {
         tokens: {
           access: {
             token,
-            expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+            expires: new Date( Number(new Date()) + expiresIn * 1000)
           },
           refresh: {
             token: refreshToken.token,
@@ -282,8 +289,10 @@ export const forgotPassword = async (req, res) => {
 
   if (user) {
 
+    const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+
     const token = jwt.sign({ id: user.id }, config.secret, {
-      expiresIn: config.jwtExpiration,
+      expiresIn: expiresIn,
     });
 
     let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
@@ -518,6 +527,8 @@ export const twitterAuthenticateUser = async (req, res) => {
 
   let user = await User.findOne({ where: { email: twitterUser?.id } });
 
+  const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+
   if (!user) {
     user = await User.create({
       email: twitterUser?.id,
@@ -543,7 +554,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     tokens: {
       access: {
         token: accessToken,
-        expires: new Date( Number(new Date()) + config.jwtExpiration * 1000)
+        expires: new Date( Number(new Date()) + expiresIn * 1000)
       },
       refresh: {
         token: refreshToken.token,

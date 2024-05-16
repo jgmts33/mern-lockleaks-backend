@@ -15,7 +15,7 @@ export default function (sequelize, Sequelize) {
   RefreshToken.createToken = async function (user) {
     let expiredAt = new Date();
 
-    const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtExpiration;
+    const expiresIn = await user.getRoles().map((role) => role.name).include('admin') ? config.adminJwtExpiration : config.jwtRefreshExpiration ;
 
     expiredAt.setSeconds(expiredAt.getSeconds() + expiresIn);
 
