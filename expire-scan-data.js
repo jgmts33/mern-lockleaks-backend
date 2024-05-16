@@ -1,7 +1,5 @@
 import { Sequelize } from "sequelize";
 import db from "./app/models/index.js";
-import fs from 'fs';
-import path from 'path';
 import axios from "axios";
 
 const { scrapeSummary: ScrapeSummary } = db;
@@ -27,7 +25,7 @@ const { scrapeSummary: ScrapeSummary } = db;
           { status: 'expired' },
           { where: { id: data.id } }
         );
-
+        console.log("data.scrape_date:", data.scrape_date);
         await axios.post(`https://api.lockleaks.com/delete-file`, {
           folder_name: data.scrape_date
         });
