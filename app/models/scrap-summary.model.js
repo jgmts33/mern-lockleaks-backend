@@ -65,11 +65,17 @@ export default function (sequelize, Sequelize) {
     },
     user_id: {
       type: Sequelize.INTEGER
+    },
+    createdAt: {
+      type: Sequelize.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    updatedAt: {
+      type: Sequelize.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
     }
-  }, {
-    timestamps: true,
-    createdAt: 'createdAt', // Customize the createdAt field name if needed
-    updatedAt: 'updatedAt' // Customize the updatedAt field name if needed
   });
 
   return ScrapeSummaries;
