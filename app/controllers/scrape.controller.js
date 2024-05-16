@@ -53,7 +53,6 @@ export const scrapeData = async (req, res) => {
     }
     fullQuery = fullQuery.slice(0, -2);
     const queries = fullQuery.replaceAll(",", " ").split("  ");
-    const createdAt = new Date();
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -92,8 +91,6 @@ export const scrapeData = async (req, res) => {
         matches_count: data.matches_count + res.data.matches_count,
         no_matches_count: data.no_matches_count + res.data.no_matches_count,
         status: "available",
-        createdAt: createdAt,
-        updatedAt: createdAt,
         user_id: id
       }
     }
@@ -165,7 +162,7 @@ export const getScrapedDataList = async (req, res) => {
     where: {
       user_id: id
     },
-    // order: [['createdAt', 'DESC']],
+    order: [['createdAt', 'DESC']],
     attributes: ['scrape_date', 'status']
   });
 
