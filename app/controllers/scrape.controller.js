@@ -6,7 +6,7 @@ import { io } from "../../server.js";
 const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywords: BasicKeywords } = db;
 
 export const scrapeData = async (req, res) => {
-  const { usernames } = req.body;
+  const { usernames, only } = req.body;
   const { id } = req.params;
 
   try {
@@ -64,12 +64,20 @@ export const scrapeData = async (req, res) => {
 
     let scrapeProgress = 0;
 
+    let requestData = {
+      query,
+      currentDate,
+      no_google: false,
+      no_bing: false,
+      save_results: true
+    }
+
+    if ( only == 'google' ) requestData.no_google = true;
+    if ( only == 'bing' ) requestData.no_bing = true;
+
     for (const query of queries) {
-      const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
-        query,
-        currentDate,
-        save_results: true
-      });
+      requestData.query = query;
+      const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, requestData);
 
       scrapeProgress += (100 / queries.length);
       io.emit(`${id}:scrape`, scrapeProgress);
