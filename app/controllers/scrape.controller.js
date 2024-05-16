@@ -65,7 +65,7 @@ export const scrapeData = async (req, res) => {
     let scrapeProgress = 0;
 
     let requestData = {
-      query,
+      query : "",
       currentDate,
       no_google: false,
       no_bing: false,
