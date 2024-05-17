@@ -27,7 +27,10 @@ export const signup = async (req, res) => {
     password: bcrypt.hashSync(password, 8),
     verified: false,
     avatar: "",
-    subscription: false,
+    subscription: {
+      payment_method: null,
+      expire_date: null
+    },
     social: ""
   })
     .then(async user => {
@@ -401,7 +404,10 @@ export const googleAuthenticateUser = async (req, res) => {
       name: decodedProfileInfo?.name,
       verified: true,
       roles: ['user'],
-      subscription: false,
+      subscription: {
+        payment_method: null,
+        expire_date: null
+      },
       social: "google"
     });
 
@@ -467,7 +473,10 @@ export const facebookAuthenticateUser = async (req, res) => {
         name: `${userData?.first_name} ${userData?.last_name}`,
         verified: true,
         roles: ['user'],
-        subscription: false,
+        subscription: {
+          payment_method: null,
+          expire_date: null
+        },
         social: "facebook"
       });
 
@@ -532,7 +541,10 @@ export const twitterAuthenticateUser = async (req, res) => {
       name: `${twitterUser.name}`,
       verified: true,
       roles: ['user'],
-      subscription: false,
+      subscription: {
+        payment_method: null,
+        expire_date: null
+      },
       social: "twitter"
     });
 
