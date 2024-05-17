@@ -1,4 +1,4 @@
-import { where } from "sequelize";
+import { Sequelize, where } from "sequelize";
 import db from "../models/index.js";
 
 const { user: User, scrapeSummary: ScrapeSummary } = db;
@@ -70,10 +70,10 @@ export const getExtraReport = async (req, res) => {
     const weeklyUserCount = User.count({
       where: {
         email: {
-          [Op.not]: 'admin@lockleaks.com'
+          [Sequelize.Op.not]: 'admin@lockleaks.com'
         },
         createdAt: {
-          [Op.between]: [oneWeekAgo, new Date()]
+          [Sequelize.Op.between]: [oneWeekAgo, new Date()]
         }
       }
     });
@@ -81,7 +81,7 @@ export const getExtraReport = async (req, res) => {
     const userCount = User.count({
       where: {
         email: {
-          [Op.not]: 'admin@lockleaks.com'
+          [Sequelize.Op.not]: 'admin@lockleaks.com'
         }
       }
     });
