@@ -89,7 +89,7 @@ export const getExtraReport = async (req, res) => {
     const weeklyOrderCount = ScrapeSummary.count({
       where: {
         createdAt: {
-          [Op.between]: [oneWeekAgo, new Date()]
+          [Sequelize.Op.between]: [oneWeekAgo, new Date()]
         }
       }
     });
