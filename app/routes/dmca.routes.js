@@ -32,12 +32,12 @@ export default function (app) {
   );
 
   app.get(
-    "/dmca-images/download/:filename",
+    "/dmca-images/download",
     downloadDmcaImages
   );
 
   app.get(
-    "/images/:filename",
+    "/images",
     getDmcaImage
   );
 };
