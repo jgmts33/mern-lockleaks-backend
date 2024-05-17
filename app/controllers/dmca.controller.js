@@ -1,6 +1,7 @@
 import axios from "axios";
 import db from "../models/index.js";
 import path from 'path';
+import fs from 'fs';
 
 const { dmcaImages: DmcaImages } = db;
 
@@ -20,26 +21,50 @@ export const getDmcaImages = async (req, res) => {
 };
 
 export const updateDmcaImageOrder = async (req, res) => {
-
   const { id } = req.params;
-  const { order } = req.body;
+  const { newOrder } = req.body;
 
   try {
+    // Find the image with the specified ID
+    const image = await DmcaImages.findByPk(id);
 
-    await DmcaImages.findByPk(id).then(async(image) => {
-      await image.update({
-        position_order: order
-      })
-    });
+    if (!image) {
+      return res.status(404).send('Image not found');
+    }
 
-    res.status(200).send({
-      message: "Order updated successfully!"
-    });
+    // Get the current order of the image
+    const currentOrder = image.order;
 
+    // Update the order of the image
+    await image.update({ order: newOrder });
+
+    // Adjust the orders of other images
+    if (newOrder > currentOrder) {
+      // Decrement the order of images with orders between currentOrder and newOrder
+      await DmcaImages.update(
+        { order: Sequelize.literal('"order" - 1') },
+        {
+          where: {
+            order: { [Op.between]: [currentOrder + 1, newOrder] },
+          },
+        }
+      );
+    } else {
+      // Increment the order of images with orders between newOrder and currentOrder
+      await DmcaImages.update(
+        { order: Sequelize.literal('"order" + 1') },
+        {
+          where: {
+            order: { [Op.between]: [newOrder, currentOrder - 1] },
+          },
+        }
+      );
+    }
+
+    res.send('Order updated successfully');
   } catch (err) {
-    res.status(500).send({
-      message: err.message,
-    });
+    console.error(err);
+    res.status(500).send('Error updating order');
   }
 };
 
@@ -110,3 +135,26 @@ export const uploadDmcaImages = async (req, res) => {
     });
   }
 }
+
+const deleteDmcaImage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const image = await DmcaImages.findByPk(id);
+
+    if (!image) {
+      return res.status(404).send('Image not found');
+    }
+
+    // Delete the file from the file system
+    await fs.promises.unlink(image.name);
+
+    // Delete the image record from the database
+    await image.destroy();
+
+    res.send('Image deleted successfully');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting image');
+  }
+};

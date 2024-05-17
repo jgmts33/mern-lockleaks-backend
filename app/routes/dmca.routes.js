@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { downloadDmcaImages, getDmcaImages, updateDmcaImageOrder, uploadDmcaImages, getDmcaImage } from "../controllers/dmca.controller.js";
+import { downloadDmcaImages, getDmcaImages, updateDmcaImageOrder, uploadDmcaImages, getDmcaImage, deleteDmcaImage } from "../controllers/dmca.controller.js";
 import upload from 'express-fileupload';
 
 export default function (app) {
@@ -40,4 +40,10 @@ export default function (app) {
     "/images",
     getDmcaImage
   );
+
+  app.delete(
+    '/dmca-images/:id',
+    [authJwt.verifyToken, authJwt.isAdmin],
+    deleteDmcaImage
+  )
 };
