@@ -1,7 +1,7 @@
 import { where } from "sequelize";
 import db from "../models/index.js";
 
-const { user: User } = db;
+const { user: User, scrapeSummary: ScrapeSummary } = db;
 
 export const getUserInfo = (req, res) => {
   const { id } = req.params;
@@ -59,5 +59,59 @@ export const getUsersList = (req, res) => {
   }
 
   res.status(200).send(responseData);
+
+}
+
+export const getExtraReport = async (req, res) => {
+
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  try {
+    const weeklyUserCount = User.count({
+      where: {
+        email: {
+          [Op.not]: 'admin@lockleaks.com'
+        },
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
+      }
+    });
+
+    const userCount = User.count({
+      where: {
+        email: {
+          [Op.not]: 'admin@lockleaks.com'
+        }
+      }
+    });
+
+    const weeklyOrderCount = ScrapeSummary.count({
+      where: {
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
+      }
+    });
+
+    const orderCount = ScrapeSummary.count();
+
+    res.status(200).send({
+      user: {
+        total: userCount,
+        weekly: weeklyUserCount
+      },
+      order: {
+        total: orderCount,
+        weekly: weeklyOrderCount
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
+  }
+
 
 }

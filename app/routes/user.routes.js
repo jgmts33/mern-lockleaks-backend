@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getWeeklyRerpot } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -30,5 +30,11 @@ export default function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     getUsersList
   );
+
+  app.get(
+    "/extra-report",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getWeeklyRerpot
+  )
 
 };
