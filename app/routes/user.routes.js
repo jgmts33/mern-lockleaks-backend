@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { allAccess, adminBoard, moderatorBoard, getUserInfo } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -11,7 +11,7 @@ export default function (app) {
     next();
   });
 
-  app.get("/users", allAccess);
+  // app.get("/users", allAccess);
 
   app.get(
     "/users/:id",
@@ -19,16 +19,16 @@ export default function (app) {
     getUserInfo
   );
 
-  app.get(
-    "/test/mod",
-    [authJwt.verifyToken, authJwt.isModerator],
-    moderatorBoard
-  );
+  // app.get(
+  //   "/test/mod",
+  //   [authJwt.verifyToken, authJwt.isModerator],
+  //   moderatorBoard
+  // );
 
   app.get(
-    "/test/admin",
+    "/users",
     [authJwt.verifyToken, authJwt.isAdmin],
-    adminBoard
+    getUsersList
   );
 
 };
