@@ -47,7 +47,7 @@ export const downloadDmcaImages = async (req, res) => {
 
   try {
 
-    const filePath = path.join(__dirname, `images/${req.query.filename}`);
+    const filePath = path.join(`./uploads/${req.query.filename}`);
 
     res.download(filePath);
 
@@ -62,7 +62,7 @@ export const getDmcaImage = async (req, res) => {
 
   try {
 
-    const filePath = path.join(__dirname, `images/${req.query.filename}`);
+    const filePath = path.join(`./uploads/${req.query.filename}`);
 
     res.status(200).sendFile(filePath);
 
@@ -92,7 +92,7 @@ export const uploadDmcaImages = async (req, res) => {
       minute: '2-digit',
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
-    const filePath = path.join(__dirname, `uploads/${fileName.slice(0, -4)}_${currentDate}.png`);
+    const filePath = path.join(`./uploads/${fileName.slice(0, -4)}_${currentDate}.png`);
 
     await file.mv(filePath);
 
