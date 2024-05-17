@@ -34,4 +34,10 @@ export default function (app) {
     [authJwt.verifyToken],
     downloadSrapedData
   )
+
+  app.get(
+    "/accept-order",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    acceptOrder
+  )
 };

@@ -161,6 +161,36 @@ export const downloadSrapedData = async (req, res) => {
   }
 }
 
+export const acceptOrder = async (req, res) => {
+
+  const { folder_name } = req.query;
+
+  const scrapedData = await ScrapeSummary.findOne({
+    where: {
+      scrape_date: folder_name
+    }
+  });
+
+  if (scrapedData) {
+    const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
+      folder_name: folder_name
+    }, {
+      responseType: "stream"
+    });
+
+    scrapedData.update({
+      accepted: true
+    })
+
+    response.data.pipe(res);
+  }
+  else {
+    res.status(404).send({
+      message: "Scraped Data not Found!"
+    });
+  }
+}
+
 export const getScrapedDataListByUser = async (req, res) => {
 
   const { id } = req.params;
