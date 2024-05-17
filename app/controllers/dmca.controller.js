@@ -97,7 +97,7 @@ export const uploadDmcaImages = async (req, res) => {
     await file.mv(filePath);
 
     await DmcaImages.create({
-      name: filePath
+      name: `${fileName.slice(0, -4)}_${currentDate}.png`
     });
 
     res.send({
