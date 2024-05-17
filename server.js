@@ -9,6 +9,7 @@ import scrapeRoutes from './app/routes/scrape.routes.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import usernamesRoutes from './app/routes/usernames.routes.js';
+import dmcaRoutes from './app/routes/dmca.routes.js';
 
 configDotenv();
 
@@ -66,6 +67,7 @@ io.on("connection", (socket) => {
   keywordsRoutes(app);
   scrapeRoutes(app);
   usernamesRoutes(app);
+  dmcaRoutes(app);
 
   socket.on('disconnect', (info) => {
     console.log("disconnected:", info);
