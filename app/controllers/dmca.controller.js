@@ -136,7 +136,7 @@ export const uploadDmcaImages = async (req, res) => {
   }
 }
 
-const deleteDmcaImage = async (req, res) => {
+export const deleteDmcaImage = async (req, res) => {
   const { id } = req.params;
 
   try {
