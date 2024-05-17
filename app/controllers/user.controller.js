@@ -18,7 +18,8 @@ export const getUserInfo = (req, res) => {
           name: user.name,
           avatar: user.avatar,
           verified: user.verified,
-          subscription: user.subscription
+          subscription: user.subscription,
+          social: user.social
         });
       });
     })

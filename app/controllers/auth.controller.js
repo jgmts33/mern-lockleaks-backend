@@ -27,7 +27,8 @@ export const signup = async (req, res) => {
     password: bcrypt.hashSync(password, 8),
     verified: false,
     avatar: "",
-    subscription: false
+    subscription: false,
+    social: ""
   })
     .then(async user => {
 
@@ -144,6 +145,7 @@ export const signin = async (req, res) => {
           avatar: user.avatar,
           verified: user.verified,
           subscription: user.subscription,
+          social: user.social,
           tokens: {
             access: {
               token: token,
@@ -246,6 +248,7 @@ export const verifyEmail = async (req, res) => {
         avatar: user.avatar,
         verified: user.verified,
         subscription: user.subscription,
+        social: user.social,
         tokens: {
           access: {
             token,
@@ -398,7 +401,8 @@ export const googleAuthenticateUser = async (req, res) => {
       name: decodedProfileInfo?.name,
       verified: true,
       roles: ['user'],
-      subscription: false
+      subscription: false,
+      social: "google"
     });
 
     await user.setRoles([1]);
@@ -413,6 +417,7 @@ export const googleAuthenticateUser = async (req, res) => {
     avatar: user.avatar,
     verified: user.verified,
     subscription: user.subscription,
+    social: user.social,
     tokens: {
       access: {
         token: tokens.tokens.id_token,
@@ -462,7 +467,8 @@ export const facebookAuthenticateUser = async (req, res) => {
         name: `${userData?.first_name} ${userData?.last_name}`,
         verified: true,
         roles: ['user'],
-        subscription: false
+        subscription: false,
+        social: "facebook"
       });
 
       await user.setRoles([1]);
@@ -526,7 +532,8 @@ export const twitterAuthenticateUser = async (req, res) => {
       name: `${twitterUser.name}`,
       verified: true,
       roles: ['user'],
-      subscription: false
+      subscription: false,
+      social: "twitter"
     });
 
     await user.setRoles([1]);
@@ -541,6 +548,7 @@ export const twitterAuthenticateUser = async (req, res) => {
     avatar: user.avatar,
     verified: user.verified,
     subscription: user.subscription,
+    social: user.social,
     tokens: {
       access: {
         token: accessToken,

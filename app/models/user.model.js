@@ -20,6 +20,10 @@ export default function (sequelize, Sequelize) {
     subscription: {
       type: Sequelize.BOOLEAN,
       default: false
+    },
+    social: {
+      type: Sequelize.STRING,
+      default: ""
     }
   });
 
