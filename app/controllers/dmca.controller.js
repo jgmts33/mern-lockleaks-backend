@@ -147,7 +147,7 @@ export const deleteDmcaImage = async (req, res) => {
     }
 
     // Delete the file from the file system
-    await fs.promises.unlink(image.name);
+    await fs.promises.unlink(`/root/lockleaks-backend/uploads/${image.name}`);
 
     // Delete the image record from the database
     await image.destroy();
