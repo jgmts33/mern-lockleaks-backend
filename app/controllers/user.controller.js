@@ -67,7 +67,7 @@ export const getExtraReport = async (req, res) => {
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   try {
-    const weeklyUserCount = User.count({
+    const weeklyUserCount = await User.count({
       where: {
         email: {
           [Sequelize.Op.not]: 'admin@lockleaks.com'
@@ -78,7 +78,7 @@ export const getExtraReport = async (req, res) => {
       }
     });
 
-    const userCount = User.count({
+    const userCount = await User.count({
       where: {
         email: {
           [Sequelize.Op.not]: 'admin@lockleaks.com'
@@ -86,7 +86,7 @@ export const getExtraReport = async (req, res) => {
       }
     });
 
-    const weeklyOrderCount = ScrapeSummary.count({
+    const weeklyOrderCount = await ScrapeSummary.count({
       where: {
         createdAt: {
           [Sequelize.Op.between]: [oneWeekAgo, new Date()]
@@ -94,7 +94,7 @@ export const getExtraReport = async (req, res) => {
       }
     });
 
-    const orderCount = ScrapeSummary.count();
+    const orderCount = await ScrapeSummary.count();
 
     res.status(200).send({
       user: {
