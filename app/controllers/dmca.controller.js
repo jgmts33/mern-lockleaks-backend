@@ -75,7 +75,7 @@ export const getDmcaImage = async (req, res) => {
 
 export const uploadDmcaImages = async (req, res) => {
 
-  console.log("req:", req);
+  console.log("req:", req.files);
 
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
