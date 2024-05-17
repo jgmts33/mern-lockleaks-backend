@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { scrapeData, downloadSrapedData, getScrapedDataList, getScrapedDataListByUser } from "../controllers/scrape.controller.js";
+import { scrapeData, downloadSrapedData, getScrapedDataList, getScrapedDataListByUser , acceptOrder} from "../controllers/scrape.controller.js";
 
 export default function (app) {
 
