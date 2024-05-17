@@ -1,5 +1,6 @@
 import authJwt from "../middleware/authjwt.js";
 import { downloadDmcaImages, getDmcaImages, updateDmcaImageOrder, uploadDmcaImages, getDmcaImage } from "../controllers/dmca.controller.js";
+import upload from 'express-fileupload';
 
 export default function (app) {
 
@@ -10,6 +11,8 @@ export default function (app) {
     );
     next();
   });
+
+  app.use(upload());
 
   app.get(
     "/dmca-images",
