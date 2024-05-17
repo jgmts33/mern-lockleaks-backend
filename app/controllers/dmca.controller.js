@@ -62,7 +62,7 @@ export const getDmcaImage = async (req, res) => {
 
   try {
 
-    const filePath = path.join(`./uploads/${req.query.filename}`);
+    const filePath = path.join(`/root/lockleaks-backend/uploads/${req.query.filename}`);
 
     res.status(200).sendFile(filePath);
 
