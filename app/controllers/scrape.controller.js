@@ -65,15 +65,15 @@ export const scrapeData = async (req, res) => {
     let scrapeProgress = 0;
 
     let requestData = {
-      query : "",
+      query: "",
       currentDate,
       no_google: false,
       no_bing: false,
       save_results: true
     }
 
-    if ( only == 'google' ) requestData.no_bing = true;
-    if ( only == 'bing' ) requestData.no_google = true;
+    if (only == 'google') requestData.no_bing = true;
+    if (only == 'bing') requestData.no_google = true;
 
     for (const query of queries) {
       requestData.query = query;
@@ -102,6 +102,9 @@ export const scrapeData = async (req, res) => {
         no_matches_count: data.no_matches_count + res.data.no_matches_count,
         status: "available",
         downloaded: false,
+        only_google: requestData.no_bing,
+        only_bing: requestData.no_google,
+        accepted: false,
         user_id: id
       }
     }
@@ -126,7 +129,7 @@ export const scrapeData = async (req, res) => {
 export const downloadSrapedData = async (req, res) => {
 
   const { id } = req.params;
-  const { folder_name } = req.query;
+  const { folder_name, admin } = req.query;
 
   const scrapedData = await ScrapeSummary.findOne({
     where: {
@@ -141,9 +144,14 @@ export const downloadSrapedData = async (req, res) => {
     }, {
       responseType: "stream"
     });
-    scrapedData.update({
+    if (admin) scrapedData.update({
+      accepted: true
+    })
+
+    else scrapedData.update({
       downloaded: true
     })
+
     response.data.pipe(res);
   }
   else {
@@ -153,7 +161,7 @@ export const downloadSrapedData = async (req, res) => {
   }
 }
 
-export const getScrapedDataList = async (req, res) => {
+export const getScrapedDataListByUser = async (req, res) => {
 
   const { id } = req.params;
 
@@ -164,5 +172,38 @@ export const getScrapedDataList = async (req, res) => {
     order: [['createdAt', 'DESC']]
   });
 
-  res.status(200).send(scrapedData); 
+  res.status(200).send(scrapedData);
+}
+
+export const getScrapedDataList = async (req, res) => {
+
+  const { only } = req.query;
+
+  let scrapedData;
+
+  switch (only) {
+    case 'google':
+      scrapedData = await ScrapeSummary.findAll({
+        where: {
+          only_google: true
+        },
+        order: [['createdAt', 'DESC']]
+      });
+      break;
+    case 'bing':
+      scrapedData = await ScrapeSummary.findAll({
+        where: {
+          only_bing: true
+        },
+        order: [['createdAt', 'DESC']]
+      });
+      break;
+    default:
+      scrapedData = await ScrapeSummary.findAll({
+        order: [['createdAt', 'DESC']]
+      });
+      break;
+  }
+
+  res.status(200).send(scrapedData);
 }

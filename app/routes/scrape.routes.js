@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { scrapeData, downloadSrapedData, getScrapedDataList } from "../controllers/scrape.controller.js";
+import { scrapeData, downloadSrapedData, getScrapedDataList, getScrapedDataListByUser } from "../controllers/scrape.controller.js";
 
 export default function (app) {
 
@@ -14,6 +14,12 @@ export default function (app) {
   app.get(
     "/:id/scraped-data",
     [authJwt.verifyToken],
+    getScrapedDataListByUser
+  )
+
+  app.get(
+    "/scraped-data",
+    [authJwt.verifyToken, authJwt.isAdmin],
     getScrapedDataList
   )
 

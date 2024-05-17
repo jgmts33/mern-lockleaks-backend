@@ -67,6 +67,18 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.BOOLEAN,
       default: false
     },
+    accepted: {
+      type: Sequelize.BOOLEAN,
+      default: false
+    },
+    only_google: {
+      type: Sequelize.BOOLEAN,
+      default: false
+    },
+    only_bing: {
+      type: Sequelize.BOOLEAN,
+      default: false
+    },
     user_id: {
       type: Sequelize.INTEGER
     }
