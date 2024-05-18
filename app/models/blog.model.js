@@ -1,8 +1,7 @@
 export default function (sequelize, Sequelize) {
   const Blog = sequelize.define("blog", {
     title: {
-      type: Sequelize.STRING,
-      allowNull: false
+      type: Sequelize.STRING
     },
     banner: {
       type: Sequelize.BLOB
@@ -16,12 +15,10 @@ export default function (sequelize, Sequelize) {
       }
     },
     shortContent: {
-      type: Sequelize.STRING,
-      allowNull: false
+      type: Sequelize.STRING
     },
     content: {
-      type: Sequelize.TEXT,
-      allowNull: false
+      type: Sequelize.TEXT
     }
   });
 

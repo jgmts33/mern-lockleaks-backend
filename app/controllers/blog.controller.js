@@ -45,10 +45,10 @@ export const createBlog = async (req, res) => {
   try {
 
     await Blog.create({
-      title,
-      moderatorInfo,
-      shortContent,
-      content
+      title: title,
+      moderatorInfo: moderatorInfo,
+      shortContent: shortContent,
+      content: content
     });
 
     res.status(200).send({
