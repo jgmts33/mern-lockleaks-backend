@@ -42,6 +42,8 @@ export const createBlog = async (req, res) => {
 
   const { title, moderatorInfo, shortContent, content } = req.body;
 
+  console.log({title, moderatorInfo, shortContent, content});
+
   try {
 
     await Blog.create({
