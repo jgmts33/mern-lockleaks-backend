@@ -17,24 +17,24 @@ export default function (app) {
   );
 
   app.get(
-    "blogs/:id",
+    "/blogs/:id",
     getBlog
   )
 
   app.post(
-    "blogs/new",
+    "/blogs/new",
     [authJwt.verifyToken, authJwt.isAdmin],
     createBlog
   )
 
   app.patch(
-    "blogs/:id",
+    "/blogs/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateBlog
   )
 
   app.delete(
-    "blogs/:id",
+    "/blogs/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     deleteBlog
   )
