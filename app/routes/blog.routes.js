@@ -24,10 +24,6 @@ export default function (app) {
   app.post(
     "/blogs/new",
     [authJwt.verifyToken, authJwt.isAdmin],
-    upload.fields([
-      { name: 'banner', maxCount: 1 },
-      { name: 'moderatorInfo[avatar]', maxCount: 1 }
-    ]),
     createBlog
   )
 
