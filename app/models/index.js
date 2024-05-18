@@ -10,6 +10,7 @@ import customKeywordsModel from "./custom-keywords.model.js";
 import scrapeSummaryModel from "./scrap-summary.model.js";
 import usernamesModel from "./usernames.model.js";
 import dmcaImagesModel from "./dmca-images.model.js";
+import blogModel from "./blog.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -39,6 +40,7 @@ db.customKeywords = customKeywordsModel(sequelize, Sequelize);
 db.scrapeSummary = scrapeSummaryModel(sequelize, Sequelize);
 db.usernames = usernamesModel(sequelize, Sequelize);
 db.dmcaImages = dmcaImagesModel(sequelize, Sequelize);
+db.blog = blogModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
