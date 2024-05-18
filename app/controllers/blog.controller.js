@@ -42,16 +42,19 @@ export const createBlog = async (req, res) => {
 
   const data = req.body;
 
-  console.log("data:", data);
-
   try {
 
-    // await Blog.create({
-    //   title: title,
-    //   moderatorInfo: moderatorInfo,
-    //   shortContent: shortContent,
-    //   content: content
-    // });
+    await Blog.create({
+      title: data.title,
+      moderatorInfo: {
+        name: data[`moderatorInfo[name]`],
+        avatar: data[`moderatorInfo[avatar]`],
+        description: data[`moderatorInfo[description]`],
+      },
+      shortContent: data.shortContent,
+      content: data.content,
+      banner: data.banner
+    });
 
     res.status(200).send({
       message: "Blog created Successfully!"
