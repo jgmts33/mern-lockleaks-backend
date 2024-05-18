@@ -40,18 +40,18 @@ export const getBlog = async (req, res) => {
 
 export const createBlog = async (req, res) => {
 
-  const { title, moderatorInfo, shortContent, content } = req.body;
+  const data = req.body;
 
-  console.log({title, moderatorInfo, shortContent, content});
+  console.log("data:", data);
 
   try {
 
-    await Blog.create({
-      title: title,
-      moderatorInfo: moderatorInfo,
-      shortContent: shortContent,
-      content: content
-    });
+    // await Blog.create({
+    //   title: title,
+    //   moderatorInfo: moderatorInfo,
+    //   shortContent: shortContent,
+    //   content: content
+    // });
 
     res.status(200).send({
       message: "Blog created Successfully!"
