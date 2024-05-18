@@ -27,7 +27,7 @@ export default function (app) {
     createBlog
   )
 
-  app.put(
+  app.patch(
     "blogs/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateBlog
