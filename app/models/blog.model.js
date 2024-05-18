@@ -1,5 +1,5 @@
 export default function (sequelize, Sequelize) {
-  const Blog = sequelize.define("blog", {
+  const Blog = sequelize.define("blogs", {
     title: {
       type: Sequelize.STRING
     },
