@@ -1,6 +1,8 @@
 import authJwt from "../middleware/authjwt.js";
 import { createBlog, deleteBlog, getBlog, getBlogs, updateBlog } from "../controllers/blog.controller.js";
-import upload from 'express-fileupload';
+import multer from 'multer';
+
+const upload = multer();
 
 export default function (app) {
 
@@ -27,12 +29,20 @@ export default function (app) {
   app.post(
     "/blogs/new",
     [authJwt.verifyToken, authJwt.isAdmin],
+    upload.fields([
+      { name: 'banner', maxCount: 1 },
+      { name: 'moderatorInfo[avatar]', maxCount: 1 }
+    ]),
     createBlog
   )
 
   app.patch(
     "/blogs/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
+    upload.fields([
+      { name: 'banner', maxCount: 1 },
+      { name: 'moderatorInfo[avatar]', maxCount: 1 }
+    ]),
     updateBlog
   )
 
