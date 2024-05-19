@@ -14,8 +14,6 @@ export default function (app) {
     next();
   });
 
-  app.use(upload());
-
   app.get(
     "/blogs",
     getBlogs
