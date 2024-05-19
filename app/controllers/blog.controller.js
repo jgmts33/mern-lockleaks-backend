@@ -1,6 +1,5 @@
-import axios from "axios";
 import db from "../models/index.js";
-import { Sequelize } from "sequelize";
+import path from 'path';
 
 const { blog: Blog } = db;
 
@@ -56,7 +55,7 @@ export const createBlog = async (req, res) => {
       minute: '2-digit',
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
-    
+
     const bannerFilePath = path.join(`./blogs/banners/${banner.name.slice(0, -4)}_${currentDate}.png`);
     const avatarFilePath = path.join(`./blogs/avatars/${avatar.name.slice(0, -4)}_${currentDate}.png`);
 
