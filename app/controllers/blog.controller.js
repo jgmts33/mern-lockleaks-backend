@@ -40,8 +40,10 @@ export const getBlog = async (req, res) => {
 
 export const createBlog = async (req, res) => {
 
-  console.log("req:", req);
+  console.log("req:", req.files);
   const { title, content, shortContent, moderatorInfo } = req.body;
+  const banner = req.files['banner'];
+  const avatar = req.files['moderatorInfo[avatar]'];
 
   try {
 
