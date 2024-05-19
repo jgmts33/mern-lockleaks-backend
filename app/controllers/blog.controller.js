@@ -80,17 +80,24 @@ export const updateBlog = async (req, res) => {
   try {
 
     const blog = await Blog.findByPk(id);
-    blog.update({
+    let updateData = {
       title: title,
       moderatorInfo: {
         name: req.body['moderatorInfo[name]'],
-        avatar: avatar,
         description: req.body['moderatorInfo[description]'],
       },
       shortContent: shortContent,
       content: content,
-      banner: JSON.stringify(banner)
-    });
+    }
+    if (banner) {
+      updateData.banner = banner
+    }
+    if (avatar) {
+      updateData.moderatorInfo.avatar = avatar;
+    }
+    blog.update(
+      ...updateData
+    );
 
     res.status(200).send({
       message: "Blog updated Successfully!"
