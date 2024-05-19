@@ -48,16 +48,31 @@ export const createBlog = async (req, res) => {
 
   try {
 
+    const currentDate = new Date().toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
+    
+    const bannerFilePath = path.join(`./blogs/banners/${banner.name.slice(0, -4)}_${currentDate}.png`);
+    const avatarFilePath = path.join(`./blogs/avatars/${avatar.name.slice(0, -4)}_${currentDate}.png`);
+
+    await file.mv(bannerFilePath);
+    await file.mv(avatarFilePath);
+
     await Blog.create({
       title: title,
       moderatorInfo: {
         name: req.body['moderatorInfo[name]'],
-        avatar: avatar,
+        avatar: `https://server.lockleaks.com/blogs/avatars/${avatar.name.slice(0, -4)}_${currentDate}.png`,
         description: req.body['moderatorInfo[description]'],
       },
       shortContent: shortContent,
       content: content,
-      banner: JSON.stringify(banner)
+      banner: `https://server.lockleaks.com/blogs/banners/${banner.name.slice(0, -4)}_${currentDate}.png`
     });
 
     res.status(200).send({
