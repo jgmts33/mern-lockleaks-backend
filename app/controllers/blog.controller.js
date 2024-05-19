@@ -56,7 +56,7 @@ export const createBlog = async (req, res) => {
       },
       shortContent: shortContent,
       content: content,
-      banner: banner
+      banner: JSON.stringify(banner)
     });
 
     res.status(200).send({
@@ -89,7 +89,7 @@ export const updateBlog = async (req, res) => {
       },
       shortContent: shortContent,
       content: content,
-      banner: banner
+      banner: JSON.stringify(banner)
     });
 
     res.status(200).send({
