@@ -1,4 +1,3 @@
-import axios from "axios";
 import db from "../models/index.js";
 import path from 'path';
 import fs from 'fs';
@@ -75,21 +74,6 @@ export const downloadDmcaImages = async (req, res) => {
     const filePath = path.join(`./uploads/${req.query.filename}`);
 
     res.download(filePath);
-
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-    });
-  }
-}
-
-export const getDmcaImage = async (req, res) => {
-
-  try {
-
-    const filePath = path.join(`/root/lockleaks-backend/uploads/${req.query.filename}`);
-
-    res.status(200).sendFile(filePath);
 
   } catch (err) {
     res.status(500).send({

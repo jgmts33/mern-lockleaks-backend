@@ -11,6 +11,7 @@ import { Server } from 'socket.io';
 import usernamesRoutes from './app/routes/usernames.routes.js';
 import dmcaRoutes from './app/routes/dmca.routes.js';
 import blogRoutes from './app/routes/blog.routes.js';
+import imagesRoutes from './app/routes/images.routes.js';
 
 configDotenv();
 
@@ -70,6 +71,7 @@ io.on("connection", (socket) => {
   usernamesRoutes(app);
   dmcaRoutes(app);
   blogRoutes(app);
+  imagesRoutes(app);
 
   socket.on('disconnect', (info) => {
     console.log("disconnected:", info);
