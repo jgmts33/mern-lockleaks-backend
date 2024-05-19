@@ -4,7 +4,7 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.STRING
     },
     banner: {
-      type: Sequelize.BYTEA
+      type: Sequelize.TEXT
     },
     moderatorInfo: {
       type: Sequelize.JSONB,
