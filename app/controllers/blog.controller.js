@@ -10,7 +10,7 @@ export const getBlogs = async (req, res) => {
 
     const blogList = await Blog.findAll({
       order: [['createdAt', 'DESC']],
-      attributes: ['id', 'title', 'shortContent', 'moderatorInfo']
+      attributes: ['id', 'title', 'shortContent', 'moderatorInfo', 'banner']
     });
 
     res.status(200).send(blogList);
