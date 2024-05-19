@@ -19,6 +19,10 @@ export default function (sequelize, Sequelize) {
     },
     content: {
       type: Sequelize.TEXT
+    },
+    tags: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      defaultValue: []
     }
   });
 

@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { createBlog, deleteBlog, getBlog, getBlogs, updateBlog } from "../controllers/blog.controller.js";
+import { createBlog, deleteBlog, getBlog, getBlogs, getSimilarBlogs, updateBlog } from "../controllers/blog.controller.js";
 // import multer from 'multer';
 
 // const upload = multer();
@@ -35,6 +35,12 @@ export default function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     updateBlog
   )
+
+  app.get(
+    "blogs/simiar",
+    getSimilarBlogs
+  )
+  
 
   app.delete(
     "/blogs/:id",

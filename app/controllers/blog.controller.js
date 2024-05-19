@@ -1,3 +1,4 @@
+import { Sequelize } from "sequelize";
 import db from "../models/index.js";
 import path from 'path';
 
@@ -41,7 +42,7 @@ export const getBlog = async (req, res) => {
 export const createBlog = async (req, res) => {
 
   console.log("req:", req.files);
-  const { title, content, shortContent } = req.body;
+  const { title, content, shortContent, tags } = req.body;
   const banner = req.files['banner'];
   const avatar = req.files['moderatorInfo[avatar]'];
 
@@ -71,7 +72,8 @@ export const createBlog = async (req, res) => {
       },
       shortContent: shortContent,
       content: content,
-      banner: `${banner.name.slice(0, -4)}_${currentDate}.png`
+      banner: `${banner.name.slice(0, -4)}_${currentDate}.png`,
+      tags
     });
 
     res.status(200).send({
@@ -97,9 +99,10 @@ export const updateBlog = async (req, res) => {
     const blog = await Blog.findByPk(id);
 
     let updateData = {
-      title: title,
-      shortContent: shortContent,
-      content: content,
+      title,
+      shortContent,
+      content,
+      tags
     }
     if (banner) {
       updateData.banner = banner
@@ -131,6 +134,28 @@ export const updateBlog = async (req, res) => {
     res.status(500).send({
       message: err.message,
     });
+  }
+};
+
+export const getSimilarBlogs = async (req, res) => {
+  const { tags } = req.query;
+
+  try {
+    const randomBlogs = await Blog.findAll({
+      where: {
+        tags: {
+          [Op.contains]: tags // Find blogs with tags that contain at least one of the specified tags
+        }
+      },
+      order: Sequelize.literal('random()'), // Get random order of blogs
+      limit: 4 // Limit to 4 blogs
+    });
+
+    res.json(randomBlogs);
+    
+  } catch (error) {
+    console.error('Error fetching random blogs:', error);
+    res.status(500).json({ error: 'An error occurred while fetching random blogs' });
   }
 };
 
