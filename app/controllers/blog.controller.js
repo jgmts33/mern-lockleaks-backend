@@ -89,15 +89,22 @@ export const updateBlog = async (req, res) => {
     if (banner) {
       updateData.banner = banner
     }
-    let moderatorUpdateQueryStr = `jsonb_set(moderatorInfo, '{description, name}', '[${req.body['moderatorInfo[name]']}, ${req.body['moderatorInfo[description]']}]')`;
+    let moderatorInfo = {
+      name: req.body['moderatorInfo[name]'],
+      description: req.body['moderatorInfo[description]']
+    }
 
     if (avatar) {
-      moderatorUpdateQueryStr = `jsonb_set(moderatorInfo, '{description, name, avatar}', '[${req.body['moderatorInfo[name]']}, ${req.body['moderatorInfo[description]']}, ${avatar}]')`;
+      moderatorInfo = {
+        name: req.body['moderatorInfo[name]'],
+        description: req.body['moderatorInfo[description]'],
+        avatar: avatar
+      }
     }
 
     blog.update({
       ...updateData,
-      moderatorInfo: Sequelize.literal(moderatorUpdateQueryStr)
+      moderatorInfo,
     });
 
     res.status(200).send({
