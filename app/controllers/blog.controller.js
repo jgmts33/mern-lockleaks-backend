@@ -95,9 +95,9 @@ export const updateBlog = async (req, res) => {
     if (avatar) {
       updateData.moderatorInfo.avatar = avatar;
     }
-    blog.update(
+    blog.update({
       ...updateData
-    );
+    });
 
     res.status(200).send({
       message: "Blog updated Successfully!"
