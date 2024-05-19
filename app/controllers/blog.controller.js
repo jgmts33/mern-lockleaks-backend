@@ -74,7 +74,7 @@ export const updateBlog = async (req, res) => {
 
   const { id } = req.params;
   const { title, content, shortContent } = req.body;
-  const banner = Buffer.from(req.files['banner']);
+  const banner = req.files['banner'];
   const avatar = req.files['moderatorInfo[avatar]'];
 
   try {
@@ -89,7 +89,7 @@ export const updateBlog = async (req, res) => {
       },
       shortContent: shortContent,
       content: content,
-      banner: banner
+      banner: banner.toString('base64')
     });
 
     res.status(200).send({
