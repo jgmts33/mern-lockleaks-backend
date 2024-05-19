@@ -82,21 +82,21 @@ export const updateBlog = async (req, res) => {
     const blog = await Blog.findByPk(id);
     let updateData = {
       title: title,
-      moderatorInfo: {
-        name: req.body['moderatorInfo[name]'],
-        description: req.body['moderatorInfo[description]'],
-      },
       shortContent: shortContent,
       content: content,
     }
     if (banner) {
       updateData.banner = banner
     }
+    let moderatorUpdateQueryStr = `jsonb_set(moderatorInfo, '{description, name}', '[${req.body['moderatorInfo[name]']}, ${req.body['moderatorInfo[description]']}]')`;
+
     if (avatar) {
-      updateData.moderatorInfo.avatar = avatar;
+      moderatorUpdateQueryStr = `jsonb_set(moderatorInfo, '{description, name, avatar}', '[${req.body['moderatorInfo[name]']}, ${req.body['moderatorInfo[description]']}, ${avatar}]')`;
     }
+
     blog.update({
-      ...updateData
+      ...updateData,
+      moderatorInfo: Sequelize.literal(moderatorUpdateQueryStr)
     });
 
     res.status(200).send({
