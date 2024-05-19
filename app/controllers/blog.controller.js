@@ -59,8 +59,8 @@ export const createBlog = async (req, res) => {
     const bannerFilePath = path.join(`./blogs/banners/${banner.name.slice(0, -4)}_${currentDate}.png`);
     const avatarFilePath = path.join(`./blogs/avatars/${avatar.name.slice(0, -4)}_${currentDate}.png`);
 
-    await file.mv(bannerFilePath);
-    await file.mv(avatarFilePath);
+    await banner.mv(bannerFilePath);
+    await avatar.mv(avatarFilePath);
 
     await Blog.create({
       title: title,
