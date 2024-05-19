@@ -41,10 +41,10 @@ export const getBlog = async (req, res) => {
 
 export const createBlog = async (req, res) => {
 
-  console.log("req:", req.files);
   const { title, content, shortContent, tags } = req.body;
   const banner = req.files['banner'];
   const avatar = req.files['moderatorInfo[avatar]'];
+  console.log(req.body);
 
   try {
 
@@ -152,7 +152,7 @@ export const getSimilarBlogs = async (req, res) => {
     });
 
     res.json(randomBlogs);
-    
+
   } catch (error) {
     console.error('Error fetching random blogs:', error);
     res.status(500).json({ error: 'An error occurred while fetching random blogs' });
