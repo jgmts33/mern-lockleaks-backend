@@ -42,8 +42,6 @@ export const createBlog = async (req, res) => {
 
   console.log("req:", req);
   const { title, content, shortContent, moderatorInfo } = req.body;
-  const banner = req.files['banner']?.[0];
-  const avatar = req.files['moderatorInfo[avatar]']?.[0];
 
   try {
 
