@@ -26,6 +26,8 @@ app.use(
   })
 );
 
+app.use(express.json());
+
 db.sequelize.sync({ force: true }).then(() => {
   db.role.create({
     id: 1,
