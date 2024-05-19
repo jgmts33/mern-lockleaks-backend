@@ -81,6 +81,7 @@ export const updateBlog = async (req, res) => {
   try {
 
     const blog = await Blog.findByPk(id);
+
     let updateData = {
       title: title,
       shortContent: shortContent,
@@ -91,7 +92,8 @@ export const updateBlog = async (req, res) => {
     }
     let moderatorInfo = {
       name: req.body['moderatorInfo[name]'],
-      description: req.body['moderatorInfo[description]']
+      description: req.body['moderatorInfo[description]'],
+      avatar: blog.moderatorInfo.avatar
     }
 
     if (avatar) {
