@@ -73,7 +73,7 @@ export const createBlog = async (req, res) => {
       shortContent: shortContent,
       content: content,
       banner: `${banner.name.slice(0, -4)}_${currentDate}.png`,
-      tags
+      tags: tags.split(",")
     });
 
     res.status(200).send({
