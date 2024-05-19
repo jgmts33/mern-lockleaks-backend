@@ -74,7 +74,7 @@ export const updateBlog = async (req, res) => {
 
   const { id } = req.params;
   const { title, content, shortContent } = req.body;
-  const banner = req.files['banner'];
+  const banner = Buffer.from(req.files['banner']);
   const avatar = req.files['moderatorInfo[avatar]'];
 
   try {
