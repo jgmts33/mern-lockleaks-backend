@@ -73,16 +73,23 @@ export const createBlog = async (req, res) => {
 export const updateBlog = async (req, res) => {
 
   const { id } = req.params;
-  const { title, moderatorInfo, shortContent, content } = req.body;
+  const { title, content, shortContent } = req.body;
+  const banner = req.files['banner'];
+  const avatar = req.files['moderatorInfo[avatar]'];
 
   try {
 
     const blog = await Blog.findByPk(id);
     blog.update({
-      title,
-      moderatorInfo,
-      shortContent,
-      content
+      title: title,
+      moderatorInfo: {
+        name: req.body['moderatorInfo[name]'],
+        avatar: avatar,
+        description: req.body['moderatorInfo[description]'],
+      },
+      shortContent: shortContent,
+      content: content,
+      banner: banner
     });
 
     res.status(200).send({
