@@ -1,5 +1,6 @@
 import axios from "axios";
 import db from "../models/index.js";
+import { Sequelize } from "sequelize";
 
 const { blog: Blog } = db;
 
