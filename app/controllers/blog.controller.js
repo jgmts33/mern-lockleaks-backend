@@ -56,7 +56,7 @@ export const createBlog = async (req, res) => {
       },
       shortContent: shortContent,
       content: content,
-      banner: banner
+      banner: banner.toString('base64')
     });
 
     res.status(200).send({
