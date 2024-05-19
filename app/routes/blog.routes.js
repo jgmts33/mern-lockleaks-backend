@@ -37,7 +37,7 @@ export default function (app) {
   )
 
   app.get(
-    "blogs/similar",
+    "/similar-blogs",
     getSimilarBlogs
   )
   
