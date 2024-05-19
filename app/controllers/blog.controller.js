@@ -48,12 +48,12 @@ export const createBlog = async (req, res) => {
       title: data.title,
       moderatorInfo: {
         name: data[`moderatorInfo[name]`],
-        avatar: data[`moderatorInfo[avatar]`],
+        avatar: req.files[`moderatorInfo[avatar]`]?.[0],
         description: data[`moderatorInfo[description]`],
       },
       shortContent: data.shortContent,
       content: data.content,
-      banner: data.banner
+      banner: data.req.files[`banner`]?.[0]
     });
 
     res.status(200).send({
