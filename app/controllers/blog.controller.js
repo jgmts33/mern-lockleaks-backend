@@ -41,7 +41,7 @@ export const getBlog = async (req, res) => {
 export const createBlog = async (req, res) => {
 
   console.log("req:", req.files);
-  const { title, content, shortContent, moderatorInfo } = req.body;
+  const { title, content, shortContent } = req.body;
   const banner = req.files['banner'];
   const avatar = req.files['moderatorInfo[avatar]'];
 
@@ -50,9 +50,9 @@ export const createBlog = async (req, res) => {
     await Blog.create({
       title: title,
       moderatorInfo: {
-        name: moderatorInfo.name,
+        name: req.body['moderatorInfo[name]'],
         avatar: avatar,
-        description: moderatorInfo.description,
+        description: req.body['moderatorInfo[description]'],
       },
       shortContent: shortContent,
       content: content,
