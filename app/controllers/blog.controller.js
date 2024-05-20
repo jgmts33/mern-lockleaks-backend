@@ -144,7 +144,7 @@ export const getSimilarBlogs = async (req, res) => {
     const randomBlogs = await Blog.findAll({
       where: {
         tags: {
-          [Op.contains]: tags // Find blogs with tags that contain at least one of the specified tags
+          [Op.overlap]: tags // Find blogs with tags that contain at least one of the specified tags
         }
       },
       order: Sequelize.literal('random()'), // Get random order of blogs
