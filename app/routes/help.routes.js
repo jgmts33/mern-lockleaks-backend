@@ -53,7 +53,6 @@ export default function (app) {
   );
   app.get(
     "/help/categories",
-    [authJwt.verifyToken, authJwt.isAdmin],
     getCategories
   );
 };
