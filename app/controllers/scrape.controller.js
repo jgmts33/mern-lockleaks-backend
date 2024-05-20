@@ -239,26 +239,28 @@ export const getScrapedDataListByUser = async (req, res) => {
 
 export const getScrapedDataList = async (req, res) => {
 
-  const { only } = req.query;
+  const { only, lastOne } = req.query;
 
-  let scrapedData;
+  let whereCondition = {
+    where: {
+
+    }
+  };
 
   switch (only) {
     case 'google':
-      scrapedData = await ScrapeSummary.findAll({
+      whereCondition = {
         where: {
           only_google: true
-        },
-        order: [['createdAt', 'DESC']]
-      });
+        }
+      }
       break;
     case 'bing':
-      scrapedData = await ScrapeSummary.findAll({
+      whereCondition = {
         where: {
           only_bing: true
-        },
-        order: [['createdAt', 'DESC']]
-      });
+        }
+      }
       break;
     default:
       scrapedData = await ScrapeSummary.findAll({
@@ -266,6 +268,16 @@ export const getScrapedDataList = async (req, res) => {
       });
       break;
   }
+
+  if (lastOne) whereCondition = {
+    ...whereCondition,
+    limit: 1,
+  }
+
+  let scrapedData = await ScrapeSummary.findAll({
+    ...whereCondition,
+    order: [['createdAt', 'DESC']]
+  });
 
   res.status(200).send(scrapedData);
 }
