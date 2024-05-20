@@ -195,72 +195,48 @@ export const acceptOrder = async (req, res) => {
 
 export const getScrapedDataListByUser = async (req, res) => {
 
-  const { only } = req.query;
+  const { only, lastOne } = req.query;
   const { id } = req.params;
 
-  switch (only) {
-    case 'google':
-      scrapedData = await ScrapeSummary.findAll({
-        where: {
-          user_id: id,
-          only_google: true
-        },
-        order: [['createdAt', 'DESC']]
-      });
-      break;
-    case 'bing':
-      scrapedData = await ScrapeSummary.findAll({
-        where: {
-          user_id: id,
-          only_bing: true
-        },
-        order: [['createdAt', 'DESC']]
-      });
-      break;
-    default:
-      scrapedData = await ScrapeSummary.findAll({
-        where: {
-          user_id: id
-        },
-        order: [['createdAt', 'DESC']]
-      });
-      break;
-  }
-
-  const scrapedData = await ScrapeSummary.findAll({
+  let findCondition = {
     where: {
       user_id: id
     },
     order: [['createdAt', 'DESC']]
-  });
+  };
+  
+  if (lastOne) findCondition.limit = 1;
+
+  if (only == 'google') findCondition.where.only_google = true;
+  if (only == 'bing') findCondition.where.only_bing = true;
+
+  const scrapedData = await ScrapeSummary.findAll(findCondition);
 
   res.status(200).send(scrapedData);
 }
 
 export const getScrapedDataList = async (req, res) => {
 
-  const { only, lastOne } = req.query;
+  const { only } = req.query;
 
-  let whereCondition = {
-    where: {
-
-    }
-  };
+  let scrapedData;
 
   switch (only) {
     case 'google':
-      whereCondition = {
+      scrapedData = await ScrapeSummary.findAll({
         where: {
           only_google: true
-        }
-      }
+        },
+        order: [['createdAt', 'DESC']]
+      });
       break;
     case 'bing':
-      whereCondition = {
+      scrapedData = await ScrapeSummary.findAll({
         where: {
           only_bing: true
-        }
-      }
+        },
+        order: [['createdAt', 'DESC']]
+      });
       break;
     default:
       scrapedData = await ScrapeSummary.findAll({
@@ -268,16 +244,6 @@ export const getScrapedDataList = async (req, res) => {
       });
       break;
   }
-
-  if (lastOne) whereCondition = {
-    ...whereCondition,
-    limit: 1,
-  }
-
-  let scrapedData = await ScrapeSummary.findAll({
-    ...whereCondition,
-    order: [['createdAt', 'DESC']]
-  });
 
   res.status(200).send(scrapedData);
 }
