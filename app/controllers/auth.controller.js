@@ -35,6 +35,8 @@ export const signup = async (req, res) => {
   })
     .then(async user => {
 
+      io.emit(`admin:dashboardInfo`, 'scan-finished');
+
       const token = jwt.sign(
         {
           id: user.id
@@ -411,6 +413,8 @@ export const googleAuthenticateUser = async (req, res) => {
       social: "google"
     });
 
+    io.emit(`admin:dashboardInfo`, 'scan-finished');
+
     await user.setRoles([1]);
   }
 
@@ -480,6 +484,8 @@ export const facebookAuthenticateUser = async (req, res) => {
         social: "facebook"
       });
 
+      io.emit(`admin:dashboardInfo`, 'scan-finished');
+
       await user.setRoles([1]);
     }
 
@@ -547,6 +553,8 @@ export const twitterAuthenticateUser = async (req, res) => {
       },
       social: "twitter"
     });
+
+    io.emit(`admin:dashboardInfo`, 'scan-finished');
 
     await user.setRoles([1]);
   }
