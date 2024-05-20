@@ -138,7 +138,7 @@ export const updateBlog = async (req, res) => {
 };
 
 export const getSimilarBlogs = async (req, res) => {
-  const { tags } = req.query;
+  const { id, tags } = req.query;
 
   try {
     const randomBlogs = await Blog.findAll({
