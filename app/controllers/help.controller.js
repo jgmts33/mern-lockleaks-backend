@@ -149,12 +149,27 @@ export const deleteArticle = async (req, res) => {
 }
 
 export const getArticles = async (req, res) => {
+  const { categoryId } = req.query;
   try {
-    const articles = await HelpArticles.findAll({
-      attributes: ['id', 'title', 'categoryId']
-    });
 
-    res.status(200).send(articles);
+    if (categoryId) {
+      const articles = await HelpArticles.findAll({
+        where: {
+          categoryId
+        },
+        attributes: ['id', 'title', 'categoryId']
+      });
+
+      res.status(200).send(articles);
+    }
+
+    else {
+      const articles = await HelpArticles.findAll({
+        attributes: ['id', 'title', 'categoryId']
+      });
+
+      res.status(200).send(articles);
+    }
   }
   catch (err) {
     res.status(500).send({
