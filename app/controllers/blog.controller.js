@@ -101,7 +101,7 @@ export const updateBlog = async (req, res) => {
     minute: '2-digit',
     second: '2-digit',
   }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
-  
+
   try {
 
     const blog = await Blog.findByPk(id);
@@ -116,24 +116,11 @@ export const updateBlog = async (req, res) => {
       const bannerFilePath = path.join(`./uploads/${banner.name.slice(0, -4)}_${currentDate}.png`);
       await banner.mv(bannerFilePath);
       updateData = {
-       ...updateData,
+        ...updateData,
         banner: `${banner.name.slice(0, -4)}_${currentDate}.png`
       }
     }
-    if (avatar) {
-      const avatarFilePath = path.join(`./uploads/${avatar.name.slice(0, -4)}_${currentDate}.png`);
-      await avatar.mv(avatarFilePath);
-
-      updateData = {
-       ...updateData,
-        moderatorInfo: {
-          name: req.body['moderatorInfo[name]'],
-          avatar: `${avatar.name.slice(0, -4)}_${currentDate}.png`,
-          description: req.body['moderatorInfo[description]'],
-        }
-      }
-    } 
-
+    
     let moderatorInfo = {
       name: req.body['moderatorInfo[name]'],
       description: req.body['moderatorInfo[description]'],
@@ -141,11 +128,15 @@ export const updateBlog = async (req, res) => {
     }
 
     if (avatar) {
+      const avatarFilePath = path.join(`./uploads/${avatar.name.slice(0, -4)}_${currentDate}.png`);
+      await avatar.mv(avatarFilePath);
+
       moderatorInfo = {
         name: req.body['moderatorInfo[name]'],
+        avatar: `${avatar.name.slice(0, -4)}_${currentDate}.png`,
         description: req.body['moderatorInfo[description]'],
-        avatar: avatar
       }
+
     }
 
     blog.update({
