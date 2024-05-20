@@ -160,7 +160,7 @@ export const getSimilarBlogs = async (req, res) => {
 
   let _tags = [","];
   if (typeof tags === 'string') {
-    _tags = _tags.push(tags);
+    _tags.push(tags);
   } else {
     _tags = tags;
   }
