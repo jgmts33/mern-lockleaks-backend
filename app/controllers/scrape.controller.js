@@ -195,7 +195,37 @@ export const acceptOrder = async (req, res) => {
 
 export const getScrapedDataListByUser = async (req, res) => {
 
+  const { only } = req.query;
   const { id } = req.params;
+
+  switch (only) {
+    case 'google':
+      scrapedData = await ScrapeSummary.findAll({
+        where: {
+          user_id: id,
+          only_google: true
+        },
+        order: [['createdAt', 'DESC']]
+      });
+      break;
+    case 'bing':
+      scrapedData = await ScrapeSummary.findAll({
+        where: {
+          user_id: id,
+          only_bing: true
+        },
+        order: [['createdAt', 'DESC']]
+      });
+      break;
+    default:
+      scrapedData = await ScrapeSummary.findAll({
+        where: {
+          user_id: id
+        },
+        order: [['createdAt', 'DESC']]
+      });
+      break;
+  }
 
   const scrapedData = await ScrapeSummary.findAll({
     where: {
