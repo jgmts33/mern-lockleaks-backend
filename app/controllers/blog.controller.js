@@ -147,7 +147,7 @@ export const getSimilarBlogs = async (req, res) => {
           [Op.contains]: tags // Find blogs with tags that contain at least one of the specified tags
         },
         id: {
-          [Op.not]: id
+          [Op.ne]: id
         }
       },
       order: Sequelize.literal('random()'), // Get random order of blogs
