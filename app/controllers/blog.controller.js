@@ -44,7 +44,6 @@ export const createBlog = async (req, res) => {
   const { title, content, shortContent, tags } = req.body;
   const banner = req.files['banner'];
   const avatar = req.files['moderatorInfo[avatar]'];
-  console.log(req.body);
 
   try {
 
@@ -94,6 +93,15 @@ export const updateBlog = async (req, res) => {
   const banner = req.files ? req.files['banner'] : null;
   const avatar = req.files ? req.files['moderatorInfo[avatar]'] : null;
 
+  const currentDate = new Date().toLocaleString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
+  
   try {
 
     const blog = await Blog.findByPk(id);
@@ -105,8 +113,27 @@ export const updateBlog = async (req, res) => {
       tags: tags.split(",")
     }
     if (banner) {
-      updateData.banner = banner
+      const bannerFilePath = path.join(`./uploads/${banner.name.slice(0, -4)}_${currentDate}.png`);
+      await banner.mv(bannerFilePath);
+      updateData = {
+       ...updateData,
+        banner: `${banner.name.slice(0, -4)}_${currentDate}.png`
+      }
     }
+    if (avatar) {
+      const avatarFilePath = path.join(`./uploads/${avatar.name.slice(0, -4)}_${currentDate}.png`);
+      await avatar.mv(avatarFilePath);
+
+      updateData = {
+       ...updateData,
+        moderatorInfo: {
+          name: req.body['moderatorInfo[name]'],
+          avatar: `${avatar.name.slice(0, -4)}_${currentDate}.png`,
+          description: req.body['moderatorInfo[description]'],
+        }
+      }
+    } 
+
     let moderatorInfo = {
       name: req.body['moderatorInfo[name]'],
       description: req.body['moderatorInfo[description]'],
@@ -146,7 +173,7 @@ export const getSimilarBlogs = async (req, res) => {
         tags: {
           [Op.overlap]: tags // Find blogs with tags that contain at least one of the specified tags
         },
-        id : {
+        id: {
           [Op.ne]: id,
         }
       },
