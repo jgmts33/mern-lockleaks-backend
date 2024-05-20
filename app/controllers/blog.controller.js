@@ -120,7 +120,7 @@ export const updateBlog = async (req, res) => {
         banner: `${banner.name.slice(0, -4)}_${currentDate}.png`
       }
     }
-    
+
     let moderatorInfo = {
       name: req.body['moderatorInfo[name]'],
       description: req.body['moderatorInfo[description]'],
@@ -158,7 +158,11 @@ export const updateBlog = async (req, res) => {
 export const getSimilarBlogs = async (req, res) => {
   const { id, tags } = req.query;
 
-  let _tags = tags.split(",");
+  let _tags = [];
+
+  tags.map(tag => {
+    _tags.push(tag.trim());
+  });
 
   try {
     const randomBlogs = await Blog.findAll({
