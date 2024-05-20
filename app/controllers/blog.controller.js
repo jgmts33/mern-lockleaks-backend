@@ -145,10 +145,13 @@ export const getSimilarBlogs = async (req, res) => {
       where: {
         tags: {
           [Op.overlap]: tags // Find blogs with tags that contain at least one of the specified tags
+        },
+        id : {
+          [Op.ne]: id,
         }
       },
       order: Sequelize.literal('random()'), // Get random order of blogs
-      limit: 5 // Limit to 4 blogs
+      limit: 4 // Limit to 4 blogs
     });
 
     res.json(randomBlogs);
