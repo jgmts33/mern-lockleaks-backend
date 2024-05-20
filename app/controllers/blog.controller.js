@@ -158,11 +158,13 @@ export const updateBlog = async (req, res) => {
 export const getSimilarBlogs = async (req, res) => {
   const { id, tags } = req.query;
 
+  let _tags = tags.split(",");
+
   try {
     const randomBlogs = await Blog.findAll({
       where: {
         tags: {
-          [Op.overlap]: tags // Find blogs with tags that contain at least one of the specified tags
+          [Op.overlap]: _tags // Find blogs with tags that contain at least one of the specified tags
         },
         id: {
           [Op.ne]: id,
