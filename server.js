@@ -66,18 +66,20 @@ io.on("connection", (socket) => {
 
   authRoutes(app);
   userRoutes(app);
-  keywordsRoutes(app);
   scrapeRoutes(app);
-  usernamesRoutes(app);
-  dmcaRoutes(app);
-  blogRoutes(app);
-  imagesRoutes(app);
 
   socket.on('disconnect', (info) => {
     console.log("disconnected:", info);
   });
 
 })
+
+keywordsRoutes(app);
+usernamesRoutes(app);
+dmcaRoutes(app);
+blogRoutes(app);
+imagesRoutes(app);
+
 const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () => {

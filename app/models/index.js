@@ -11,6 +11,8 @@ import scrapeSummaryModel from "./scrap-summary.model.js";
 import usernamesModel from "./usernames.model.js";
 import dmcaImagesModel from "./dmca-images.model.js";
 import blogModel from "./blog.model.js";
+import helpCategoriesModel from "./help-category.model.js";
+import helpArticlesModel from "./help-article.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -41,6 +43,8 @@ db.scrapeSummary = scrapeSummaryModel(sequelize, Sequelize);
 db.usernames = usernamesModel(sequelize, Sequelize);
 db.dmcaImages = dmcaImagesModel(sequelize, Sequelize);
 db.blog = blogModel(sequelize, Sequelize);
+db.helpCategories = helpCategoriesModel(sequelize, Sequelize);
+db.helpArticles = helpArticlesModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -60,7 +64,6 @@ db.refreshToken.belongsTo(db.user, {
 db.user.hasOne(db.refreshToken, {
   foreignKey: 'userId', targetKey: 'id'
 });
-
 db.ROLES = ["user", "admin", "moderator"];
 
 export default db;
