@@ -158,7 +158,7 @@ export const updateBlog = async (req, res) => {
 export const getSimilarBlogs = async (req, res) => {
   const { id, tags } = req.query;
 
-  let _tags = [];
+  let _tags = [","];
   if (typeof tags === 'string') {
     _tags = _tags.push(tags);
   } else {
