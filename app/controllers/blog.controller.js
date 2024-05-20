@@ -151,7 +151,8 @@ export const getSimilarBlogs = async (req, res) => {
         }
       },
       order: Sequelize.literal('random()'), // Get random order of blogs
-      limit: 4 // Limit to 4 blogs
+      limit: 4, // Limit to 4 blogs,
+      attributes: ['id', 'title', 'shortContent', 'moderatorInfo', 'banner']
     });
 
     res.json(randomBlogs);
