@@ -138,13 +138,16 @@ export const updateBlog = async (req, res) => {
 };
 
 export const getSimilarBlogs = async (req, res) => {
-  const { tags } = req.query;
+  const { tags, id } = req.query;
 
   try {
     const randomBlogs = await Blog.findAll({
       where: {
         tags: {
           [Op.contains]: tags // Find blogs with tags that contain at least one of the specified tags
+        },
+        id: {
+          [Op.not]: id
         }
       },
       order: Sequelize.literal('random()'), // Get random order of blogs
