@@ -12,6 +12,7 @@ import usernamesRoutes from './app/routes/usernames.routes.js';
 import dmcaRoutes from './app/routes/dmca.routes.js';
 import blogRoutes from './app/routes/blog.routes.js';
 import imagesRoutes from './app/routes/images.routes.js';
+import helpRoutes from './app/routes/help.routes.js';
 
 configDotenv();
 
@@ -79,6 +80,7 @@ usernamesRoutes(app);
 dmcaRoutes(app);
 blogRoutes(app);
 imagesRoutes(app);
+helpRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
