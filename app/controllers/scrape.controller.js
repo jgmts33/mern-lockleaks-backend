@@ -115,6 +115,8 @@ export const scrapeData = async (req, res) => {
 
     await ScrapeSummary.create({ ...data });
 
+    io.emit(`admin:dashboardInfo`, 'scan-finished');
+
     res.status(200).send({
       message: "Scraped Successfully!"
     });
