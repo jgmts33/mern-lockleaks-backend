@@ -159,10 +159,11 @@ export const getSimilarBlogs = async (req, res) => {
   const { id, tags } = req.query;
 
   let _tags = [];
-
-  tags.map(tag => {
-    _tags.push(tag.trim());
-  });
+  if (typeof tags === 'string') {
+    _tags = _tags.push(tags);
+  } else {
+    _tags = tags;
+  }
 
   try {
     const randomBlogs = await Blog.findAll({
