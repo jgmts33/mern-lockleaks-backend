@@ -101,10 +101,11 @@ export const getDmcaBadgesPositions = async (req, res) => {
     const data = await Positions.findOne({
       where: {
         name: 'dmcaBadges'
-      }
+      },
+      attributes: ['positions']
     });
 
-    return res.status(200).send(data.positions);
+    return res.status(200).send(data);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error Getting data');
