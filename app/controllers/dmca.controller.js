@@ -2,7 +2,7 @@ import db from "../models/index.js";
 import path from 'path';
 import fs from 'fs';
 
-const { dmcaImages: DmcaImages } = db;
+const { dmcaImages: DmcaImages, postions: Positions } = db;
 
 export const getDmcaImages = async (req, res) => {
 
@@ -16,54 +16,6 @@ export const getDmcaImages = async (req, res) => {
     res.status(500).send({
       message: err.message,
     });
-  }
-};
-
-export const updateDmcaImageOrder = async (req, res) => {
-  const { id } = req.params;
-  const { newOrder } = req.body;
-
-  try {
-    // Find the image with the specified ID
-    const image = await DmcaImages.findByPk(id);
-
-    if (!image) {
-      return res.status(404).send('Image not found');
-    }
-
-    // Get the current order of the image
-    const currentOrder = image.order;
-
-    // Update the order of the image
-    await image.update({ order: newOrder });
-
-    // Adjust the orders of other images
-    if (newOrder > currentOrder) {
-      // Decrement the order of images with orders between currentOrder and newOrder
-      await DmcaImages.update(
-        { order: Sequelize.literal('"order" - 1') },
-        {
-          where: {
-            order: { [Op.between]: [currentOrder + 1, newOrder] },
-          },
-        }
-      );
-    } else {
-      // Increment the order of images with orders between newOrder and currentOrder
-      await DmcaImages.update(
-        { order: Sequelize.literal('"order" + 1') },
-        {
-          where: {
-            order: { [Op.between]: [newOrder, currentOrder - 1] },
-          },
-        }
-      );
-    }
-
-    res.send('Order updated successfully');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error updating order');
   }
 };
 
@@ -142,3 +94,41 @@ export const deleteDmcaImage = async (req, res) => {
     res.status(500).send('Error deleting image');
   }
 };
+
+export const getDmcaBadgesPositions = async (req, res) => {
+
+  try {
+    const data = await Positions.findOne({
+      where: {
+        name: 'dmcaBadges'
+      }
+    });
+
+    return res.status(200).send(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error Getting data');
+  }
+
+}
+
+export const updateDmcaBadgesPositions = async (req, res) => {
+  const { data } = req.body;
+  try {
+    const dmcaPositions = await Positions.findOne({
+      where: {
+        name: 'dmcaBadges'
+      }
+    });
+
+    await dmcaPositions.update({
+      positions: data
+    });
+
+    return res.status(200).send(dmcaPositions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error Getting data');
+  }
+
+}

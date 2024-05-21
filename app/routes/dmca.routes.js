@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { downloadDmcaImages, getDmcaImages, updateDmcaImageOrder, uploadDmcaImages, deleteDmcaImage } from "../controllers/dmca.controller.js";
+import { downloadDmcaImages, getDmcaImages, uploadDmcaImages, deleteDmcaImage, getDmcaBadgesPositions, updateDmcaBadgesPositions } from "../controllers/dmca.controller.js";
 import upload from 'express-fileupload';
 
 export default function (app) {
@@ -25,12 +25,6 @@ export default function (app) {
     uploadDmcaImages
   );
 
-  app.put(
-    "/dmca-images/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    updateDmcaImageOrder
-  );
-
   app.get(
     "/dmca-images/download",
     downloadDmcaImages
@@ -40,5 +34,15 @@ export default function (app) {
     '/dmca-images/:id',
     [authJwt.verifyToken, authJwt.isAdmin],
     deleteDmcaImage
+  )
+
+  app.get(
+    "/dmca-images/order",
+    getDmcaBadgesPositions
+  )
+
+  app.patch(
+    "/dmca-images/order",
+    updateDmcaBadgesPositions
   )
 };

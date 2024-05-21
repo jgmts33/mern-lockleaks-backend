@@ -13,6 +13,7 @@ import dmcaImagesModel from "./dmca-images.model.js";
 import blogModel from "./blog.model.js";
 import helpCategoriesModel from "./help-category.model.js";
 import helpArticlesModel from "./help-article.model.js";
+import positionsModel from "./positions-model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -45,6 +46,7 @@ db.dmcaImages = dmcaImagesModel(sequelize, Sequelize);
 db.blog = blogModel(sequelize, Sequelize);
 db.helpCategories = helpCategoriesModel(sequelize, Sequelize);
 db.helpArticles = helpArticlesModel(sequelize, Sequelize);
+db.postions = positionsModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
