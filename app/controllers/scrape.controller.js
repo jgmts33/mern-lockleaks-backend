@@ -11,7 +11,7 @@ export const scrapeData = async (req, res) => {
 
   try {
 
-    let fullQuery = "", data = {
+    let queries = [], data = {
       scrate_date: "",
       total_google_links: 0,
       total_google_images: 0,
@@ -42,17 +42,15 @@ export const scrapeData = async (req, res) => {
         array_keywords = customKeyword.keywords.split(",");
         console.log("array_keywords", array_keywords);
         for (const item of array_keywords) {
-          fullQuery += `${eachData.username} ${item}, `;
+          queries.push(`${eachData.username} ${item}`);
         }
       } else {
         array_keywords = await BasicKeywords.findAll();
         for (const item of array_keywords) {
-          fullQuery += `${eachData.username} ${item.keyword}, `;
+          queries.push(`${eachData.username} ${item.keyword}`);
         }
       }
     }
-    fullQuery = fullQuery.slice(0, -2);
-    const queries = fullQuery.replaceAll(",", " ").split("  ");
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -61,7 +59,6 @@ export const scrapeData = async (req, res) => {
       minute: '2-digit',
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
-
 
     let requestData = {
       query: "",
@@ -73,7 +70,7 @@ export const scrapeData = async (req, res) => {
 
     if (only == 'google') requestData.no_bing = true;
     if (only == 'bing') requestData.no_google = true;
-    let index =1 ;
+    let index = 0 ;
     for (const query of queries) {
       requestData.query = query;
       index++;
