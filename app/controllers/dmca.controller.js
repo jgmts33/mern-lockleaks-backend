@@ -105,7 +105,7 @@ export const getDmcaBadgesPositions = async (req, res) => {
       attributes: ['positions']
     });
 
-    return res.status(200).send(data);
+    return res.status(200).send(data.positions);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error Getting data');
