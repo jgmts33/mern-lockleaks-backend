@@ -104,7 +104,7 @@ export const getDmcaBadgesPositions = async (req, res) => {
       }
     });
 
-    return res.status(200).send(data);
+    return res.status(200).send(data.positions);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error Getting data');
@@ -125,7 +125,7 @@ export const updateDmcaBadgesPositions = async (req, res) => {
       positions: data
     });
 
-    return res.status(200).send(dmcaPositions);
+    return res.status(200).send(dmcaPositions.positions);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error Getting data');
