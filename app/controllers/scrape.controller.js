@@ -74,7 +74,7 @@ export const scrapeData = async (req, res) => {
 
     if (only == 'google') requestData.no_bing = true;
     if (only == 'bing') requestData.no_google = true;
-    let index =1 ;
+    let index = 0 ;
     for (const query of queries) {
       requestData.query = query;
       index++;
@@ -82,7 +82,7 @@ export const scrapeData = async (req, res) => {
       const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
         ...requestData
       });
-      
+
       io.emit(`${id}:scrape`, {
         current: index,
         all: queries.length
