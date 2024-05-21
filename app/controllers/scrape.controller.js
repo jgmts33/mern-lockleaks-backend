@@ -21,11 +21,11 @@ export const scrapeData = async (req, res) => {
     if (only == 'google') requestData.no_bing = true;
     if (only == 'bing') requestData.no_google = true;
 
-    const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
+    const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
       ...requestData
     });
 
-    res.status(200).send(res.data);
+    res.status(200).send(response.data);
 
   } catch (err) {
     res.status(500).send({
@@ -46,7 +46,7 @@ export const saveScrapedData = async (req, res) => {
   await ScrapeSummary.create({ ...data, user_id: id });
 
   io.emit(`admin:dashboardInfo`, 'scan-finished');
-  
+
   res.status(200).send({
     message: "Sraped Data saved Successfully!"
   });
