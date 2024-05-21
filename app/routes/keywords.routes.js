@@ -13,13 +13,13 @@ export default function (app) {
 
   app.get(
     "/keywords/basic",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isAdmin],
     getBasicKeywords
   );
 
   app.get(
     "/keywords/custom",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isAdmin],
     getCustomKeywords
   );
 
