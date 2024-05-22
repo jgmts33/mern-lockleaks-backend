@@ -42,7 +42,7 @@ export const getBlog = async (req, res) => {
 export const getBlogWithViews = async (req, res) => {
 
   const { id } = req.params;
-  const { ip, userAgent, blogId } = req.body;
+  const { ip, userAgent, blog_id } = req.body;
 
   try {
 
