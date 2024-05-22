@@ -71,7 +71,7 @@ export const getBlogWithViews = async (req, res) => {
 
     res.status(200).send({
       ...blog,
-      views: views
+      views: count
     });
 
   } catch (err) {
