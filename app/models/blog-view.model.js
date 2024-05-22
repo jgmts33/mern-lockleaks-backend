@@ -3,7 +3,7 @@ export default function (sequelize, Sequelize) {
     ip: {
       type: Sequelize.STRING
     },
-    userAgent: {
+    user_agent: {
       type: Sequelize.STRING
     },
     blog_id: {

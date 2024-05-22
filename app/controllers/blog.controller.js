@@ -42,7 +42,7 @@ export const getBlog = async (req, res) => {
 export const getBlogWithViews = async (req, res) => {
 
   const { id } = req.params;
-  const { ip, userAgent } = req.body;
+  const { ip, user_agent } = req.body;
 
   try {
 
@@ -58,7 +58,7 @@ export const getBlogWithViews = async (req, res) => {
 
     if (!existingVisit) {
       // If not, create a new visit entry
-      await BlogViews.create({ ip, userAgent, blog_id: id, visited_at: new Date() });
+      await BlogViews.create({ ip, user_agent, blog_id: id, visited_at: new Date() });
     }
 
     const count = await BlogViews.count({
