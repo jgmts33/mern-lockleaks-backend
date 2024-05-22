@@ -1,5 +1,5 @@
 export default function (sequelize, Sequelize) {
-  const ProxiesBots = sequelize.define("proxys_bots", {
+  const ProxiesBots = sequelize.define("proxies_bots", {
     name: {
       type: Sequelize.STRING
     },
