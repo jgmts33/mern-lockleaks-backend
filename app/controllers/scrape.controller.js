@@ -65,7 +65,8 @@ export const scrapeData = async (req, res) => {
       currentDate,
       no_google: false,
       no_bing: false,
-      save_results: true
+      save_results: true,
+      max_pages: 2
     }
 
     if (only == 'google') requestData.no_bing = true;
