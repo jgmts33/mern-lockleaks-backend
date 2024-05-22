@@ -1,16 +1,31 @@
 export default function (sequelize, Sequelize) {
   const ProxiesBots = sequelize.define("proxies_bots", {
-    name: {
+    vps_source: {
       type: Sequelize.STRING
     },
-    proxies_count: {
-      type: Sequelize.INTEGER
+    ip_address: {
+      type: Sequelize.STRING
     },
-    expire_date: {
+    username: {
+      type: Sequelize.STRING
+    },
+    password: {
+      type: Sequelize.STRING
+    },
+    vps_expire_date: {
       type: Sequelize.DATE
     },
-    credentials: {
-      type: Sequelize.JSONB
+    proxy_source: {
+      type: Sequelize.STRING
+    },
+    proxy_credentials: {
+      type: Sequelize.STRING
+    },
+    proxy_type: {
+      type: Sequelize.STRING
+    },
+    proxy_expire_date: {
+      type: Sequelize.DATE
     }
   });
 

@@ -3,22 +3,42 @@ import db from "../models/index.js";
 const { proxiesBots: ProxiesBots } = db;
 
 export const addNewProxiesBot = async (req, res) => {
-  const { name, proxies_count, expire_date, credentials } = req.body;
+  const {
+    vps_source,
+    ip_address,
+    username,
+    password,
+    vps_expire_date,
+    proxy_source,
+    proxy_credentials,
+    proxy_type,
+    proxy_expire_date,
+  } = req.body;
 
   try {
     const newRow = await ProxiesBots.create({
-      name,
-      proxies_count,
-      expire_date,
-      credentials
+      vps_source,
+      ip_address,
+      username,
+      password,
+      vps_expire_date,
+      proxy_source,
+      proxy_credentials,
+      proxy_type,
+      proxy_expire_date,
     });
 
     res.status(200).send({
       id: newRow.id,
-      name: newRow.name,
-      proxies_count: newRow.proxies_count,
-      expire_date: newRow.expire_date,
-      credentials: newRow.credentials
+      vps_source: newRow.vps_source,
+      ip_address: newRow.ip_address,
+      username: newRow.username,
+      password: newRow.password,
+      vps_expire_date: newRow.vps_expire_date,
+      proxy_source: newRow.proxy_source,
+      proxy_credentials: newRow.proxy_credentials,
+      proxy_type: newRow.proxy_type,
+      proxy_expire_date: newRow.proxy_expire_date,
     });
 
   } catch (err) {
@@ -30,17 +50,32 @@ export const addNewProxiesBot = async (req, res) => {
 
 export const updateNewProxiesBot = async (req, res) => {
   const { id } = req.params;
-  const { name, proxies_count, expire_date, credentials } = req.body;
+  const {
+    vps_source,
+    ip_address,
+    username,
+    password,
+    vps_expire_date,
+    proxy_source,
+    proxy_credentials,
+    proxy_type,
+    proxy_expire_date,
+  } = req.body;
 
   try {
 
     const proxiesBot = await ProxiesBots.findByPk(id);
 
     await proxiesBot.update({
-      name,
-      proxies_count,
-      expire_date,
-      credentials
+      vps_source,
+      ip_address,
+      username,
+      password,
+      vps_expire_date,
+      proxy_source,
+      proxy_credentials,
+      proxy_type,
+      proxy_expire_date,
     });
 
     res.status(200).send({
@@ -75,7 +110,7 @@ export const deleteProxiesBot = async (req, res) => {
 };
 
 export const getProxiesBots = async (req, res) => {
-  
+
   try {
 
     const proxiesBots = await ProxiesBots.findAll();
