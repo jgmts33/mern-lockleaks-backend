@@ -42,13 +42,14 @@ export const getBlog = async (req, res) => {
 export const getBlogWithViews = async (req, res) => {
 
   const { id } = req.params;
-  const { ip, userAgent, blog_id } = req.body;
+  const { ip, userAgent } = req.body;
 
   try {
 
     const existingVisit = await BlogViews.findOne({
       where: {
         ip: ip,
+        blog_id: id,
         visited_at: {
           [Sequelize.Op.gte]: new Date(new Date().setHours(new Date().getHours() - 24)),
         },
@@ -57,7 +58,7 @@ export const getBlogWithViews = async (req, res) => {
 
     if (!existingVisit) {
       // If not, create a new visit entry
-      await BlogViews.create({ ip, userAgent, blog_id, visited_at: new Date() });
+      await BlogViews.create({ ip, userAgent, blog_id: id, visited_at: new Date() });
     }
 
     const count = await BlogViews.count({
