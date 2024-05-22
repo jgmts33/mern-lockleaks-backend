@@ -2,7 +2,7 @@ import { Sequelize, Op } from "sequelize";
 import db from "../models/index.js";
 import path from 'path';
 
-const { blog: Blog } = db;
+const { blog: Blog, blogViews: BlogViews } = db;
 
 export const getBlogs = async (req, res) => {
 
@@ -31,6 +31,47 @@ export const getBlog = async (req, res) => {
     const blog = await Blog.findByPk(id);
 
     res.status(200).send(blog);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+export const getBlogWithViews = async (req, res) => {
+
+  const { id } = req.params;
+  const { ip, userAgent, blogId } = req.body;
+
+  try {
+
+    const existingVisit = await BlogViews.findOne({
+      where: {
+        ip: ip,
+        visited_at: {
+          [Sequelize.Op.gte]: new Date(new Date().setHours(new Date().getHours() - 24)),
+        },
+      },
+    });
+
+    if (!existingVisit) {
+      // If not, create a new visit entry
+      await BlogViews.create({ ip, userAgent, blog_id, visited_at: new Date() });
+    }
+
+    const count = await BlogViews.count({
+      where: {
+        blog_id: id
+      }
+    });
+
+    const blog = await Blog.findByPk(id);
+
+    res.status(200).send({
+      ...blog,
+      views: views
+    });
 
   } catch (err) {
     res.status(500).send({

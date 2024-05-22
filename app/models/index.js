@@ -15,6 +15,7 @@ import helpCategoriesModel from "./help-category.model.js";
 import helpArticlesModel from "./help-article.model.js";
 import positionsModel from "./positions-model.js";
 import proxiesBotsModel from "./proxies-bots.model.js";
+import blogViewModel from "./blog-view.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -45,6 +46,7 @@ db.scrapeSummary = scrapeSummaryModel(sequelize, Sequelize);
 db.usernames = usernamesModel(sequelize, Sequelize);
 db.dmcaImages = dmcaImagesModel(sequelize, Sequelize);
 db.blog = blogModel(sequelize, Sequelize);
+db.blogViews = blogViewModel(sequelize, Sequelize);
 db.helpCategories = helpCategoriesModel(sequelize, Sequelize);
 db.helpArticles = helpArticlesModel(sequelize, Sequelize);
 db.postions = positionsModel(sequelize, Sequelize);
