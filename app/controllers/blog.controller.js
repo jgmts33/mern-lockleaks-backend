@@ -70,7 +70,7 @@ export const getBlogWithViews = async (req, res) => {
     const blog = await Blog.findByPk(id);
 
     res.status(200).send({
-      ...blog,
+      ...blog.dataValues,
       views: count
     });
 
