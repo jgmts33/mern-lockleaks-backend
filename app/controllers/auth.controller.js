@@ -17,7 +17,7 @@ apikey.apiKey = "0DB5ECD47CD2E0E29C03F8D73B7B07DF4DC19B94BEAC3B1AA0A59C5EA983D35
 
 let api = new ElasticEmail.EmailsApi()
 
-const { user: User, refreshToken: RefreshToken } = db;
+const { user: User, refreshToken: RefreshToken, subscriptionOptions: SubscriptionOptions } = db;
 
 export const signup = async (req, res) => {
 
@@ -29,7 +29,8 @@ export const signup = async (req, res) => {
     avatar: "",
     subscription: {
       payment_method: null,
-      expire_date: null
+      expire_date: null,
+      plan_id: null
     },
     social: ""
   })
@@ -131,6 +132,18 @@ export const signin = async (req, res) => {
 
       let refreshToken = await RefreshToken.createToken(user);
 
+      let subscription = user.subscription;
+
+      if (user.subscription.plan_id) {
+        const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+        subscription = {
+          payment_method: user.subscription.payment_method,
+          expire_date: user.subscription.expire_date,
+          plan_id: user.subscription.plan_id,
+          features: subscriptionFeatures
+        }
+      }
+
       user.getRoles().then(roles => {
 
         if (admin && !roles.find(p => p.name == "admin")) {
@@ -149,7 +162,7 @@ export const signin = async (req, res) => {
           name: user.name,
           avatar: user.avatar,
           verified: user.verified,
-          subscription: user.subscription,
+          subscription: subscription,
           social: user.social,
           tokens: {
             access: {
@@ -420,13 +433,25 @@ export const googleAuthenticateUser = async (req, res) => {
 
   let refreshToken = await RefreshToken.createToken(user);
 
+  let subscription = user.subscription;
+
+  if (user.subscription.plan_id) {
+    const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+    subscription = {
+      payment_method: user.subscription.payment_method,
+      expire_date: user.subscription.expire_date,
+      plan_id: user.subscription.plan_id,
+      features: subscriptionFeatures
+    }
+  }
+
   res.status(200).send({
     email: user.email,
     roles: ['user'],
     name: user.name,
     avatar: user.avatar,
     verified: user.verified,
-    subscription: user.subscription,
+    subscription: subscription,
     social: user.social,
     tokens: {
       access: {
@@ -491,13 +516,25 @@ export const facebookAuthenticateUser = async (req, res) => {
 
     let refreshToken = await RefreshToken.createToken(user);
 
+    let subscription = user.subscription;
+
+    if (user.subscription.plan_id) {
+      const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+      subscription = {
+        payment_method: user.subscription.payment_method,
+        expire_date: user.subscription.expire_date,
+        plan_id: user.subscription.plan_id,
+        features: subscriptionFeatures
+      }
+    }
+
     res.status(200).send({
       email: user.email,
       roles: ['user'],
       name: user.name,
       avatar: user.avatar,
       verified: user.verified,
-      subscription: user.subscription,
+      subscription: subscription,
       tokens: {
         access: {
           token: accessToken,
@@ -561,13 +598,25 @@ export const twitterAuthenticateUser = async (req, res) => {
 
   let refreshToken = await RefreshToken.createToken(user);
 
+  let subscription = user.subscription;
+
+  if (user.subscription.plan_id) {
+    const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+    subscription = {
+      payment_method: user.subscription.payment_method,
+      expire_date: user.subscription.expire_date,
+      plan_id: user.subscription.plan_id,
+      features: subscriptionFeatures
+    }
+  }
+
   res.status(200).send({
     email: user.email,
     roles: ['user'],
     name: user.name,
     avatar: user.avatar,
     verified: user.verified,
-    subscription: user.subscription,
+    subscription: subscription,
     social: user.social,
     tokens: {
       access: {
