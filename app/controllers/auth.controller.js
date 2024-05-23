@@ -254,6 +254,18 @@ export const verifyEmail = async (req, res) => {
 
     const user = await User.findByPk(decoded.id);
 
+    let subscription = user.subscription;
+
+    if (user.subscription.plan_id) {
+      const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+      subscription = {
+        payment_method: user.subscription.payment_method,
+        expire_date: user.subscription.expire_date,
+        plan_id: user.subscription.plan_id,
+        features: subscriptionFeatures
+      }
+    }
+
     if (user) {
       user.update({ verified: true });
 
@@ -265,7 +277,7 @@ export const verifyEmail = async (req, res) => {
         name: user.name,
         avatar: user.avatar,
         verified: user.verified,
-        subscription: user.subscription,
+        subscription: subscription,
         social: user.social,
         tokens: {
           access: {
