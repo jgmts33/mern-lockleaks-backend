@@ -45,7 +45,7 @@ export default function (sequelize, Sequelize) {
       allowNull: false
     },
     social_media_analyzer_tool_removal_report: {
-      type: Sequelize.BOOLEAN,
+      type: Sequelize.INTEGER,
       allowNull: false
     },
     adult_tubes_analyzer_tool_removal_report: {
@@ -61,7 +61,7 @@ export default function (sequelize, Sequelize) {
       allowNull: false
     },
     face_recognition_ai_analyzer_removal_report: {
-      type: Sequelize.BOOLEAN,
+      type: Sequelize.INTEGER,
       allowNull: false
     },
     monthly_rport_data_analytics_insights: {

@@ -11,6 +11,18 @@ export const getUserInfo = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
+      let subscription = user.subscription;
+
+      if (user.subscription.plan_id) {
+        const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+        subscription = {
+          payment_method: user.subscription.payment_method,
+          expire_date: user.subscription.expire_date,
+          plan_id: user.subscription.plan_id,
+          features: subscriptionFeatures
+        }
+      }
+
       user.getRoles().then(roles => {
 
         res.status(200).send({
@@ -19,7 +31,7 @@ export const getUserInfo = (req, res) => {
           name: user.name,
           avatar: user.avatar,
           verified: user.verified,
-          subscription: user.subscription,
+          subscription: subscription,
           social: user.social
         });
       });
@@ -30,7 +42,7 @@ export const getUserInfo = (req, res) => {
       });
     });
 }
-export const getUsersList = (req, res) => {
+export const getUsersList = async (req, res) => {
 
   const users = User.findAll({
     where: {
@@ -43,6 +55,19 @@ export const getUsersList = (req, res) => {
   const responseData = [];
 
   for (let user of users) {
+
+    let subscription = user.subscription;
+
+    if (user.subscription.plan_id) {
+      const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+      subscription = {
+        payment_method: user.subscription.payment_method,
+        expire_date: user.subscription.expire_date,
+        plan_id: user.subscription.plan_id,
+        features: subscriptionFeatures
+      }
+    }
+
     user.getRoles().then(roles => {
 
       responseData.push({
@@ -52,7 +77,7 @@ export const getUsersList = (req, res) => {
         name: user.name,
         avatar: user.avatar,
         verified: user.verified,
-        subscription: user.subscription,
+        subscription: subscription,
         social: user.social
       });
     });
