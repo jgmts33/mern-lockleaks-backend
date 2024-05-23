@@ -38,7 +38,7 @@ export const getCustomerReview = async (req, res) => {
 
 export const createCustomerView = async (req, res) => {
 
-  const { name, title, content, refer_link, discord, tiktok, telegram, twitter, facebook, reddit, instgram } = req.body;
+  const { name, title, content, refer_link, discord, tiktok, telegram, twitter, facebook, reddit, instagram } = req.body;
   const avatar = req.files['avatar'];
 
   try {
@@ -68,7 +68,7 @@ export const createCustomerView = async (req, res) => {
       twitter,
       facebook,
       reddit,
-      instgram
+      instagram
     });
 
     res.status(200).send({
@@ -84,7 +84,7 @@ export const createCustomerView = async (req, res) => {
 
 export const updateCustomerView = async (req, res) => {
   const { id } = req.params;
-  const { name, title, content, refer_link, discord, tiktok, telegram, twitter, facebook, reddit, instgram } = req.body;
+  const { name, title, content, refer_link, discord, tiktok, telegram, twitter, facebook, reddit, instagram } = req.body;
   const avatar = req.files ? req.files['avatar'] : null;
 
   try {
@@ -102,7 +102,7 @@ export const updateCustomerView = async (req, res) => {
       twitter,
       facebook,
       reddit,
-      instgram
+      instagram
     }
 
     if (avatar) {
