@@ -48,6 +48,10 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false
     },
+    social_media_profile_submition: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
     adult_tubes_analyzer_tool_removal_report: {
       type: Sequelize.BOOLEAN,
       allowNull: false
