@@ -85,7 +85,7 @@ export const createCustomerView = async (req, res) => {
 export const updateCustomerView = async (req, res) => {
   const { id } = req.params;
   const { name, title, content, discord, tiktok, telegram, twitter, facebook, reddit, instgram } = req.body;
-  const avatar = req.files['avatar'];
+  const avatar = req.files ? req.files['avatar'] : null;
 
   try {
 
