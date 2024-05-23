@@ -15,6 +15,7 @@ import imagesRoutes from './app/routes/images.routes.js';
 import helpRoutes from './app/routes/help.routes.js';
 import proxiesBotRoutes from './app/routes/proxies-bot.routes.js';
 import customerReviewRoutes from './app/routes/customer-review.routes.js';
+import socialMediaProfilesRoutes from './app/routes/social-media-profiles.routes.js';
 
 configDotenv();
 
@@ -85,6 +86,7 @@ imagesRoutes(app);
 helpRoutes(app);
 proxiesBotRoutes(app);
 customerReviewRoutes(app);
+socialMediaProfilesRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 

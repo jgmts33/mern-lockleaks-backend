@@ -18,6 +18,7 @@ import proxiesBotsModel from "./proxies-bots.model.js";
 import blogViewModel from "./blog-view.model.js";
 import customerReviewModel from "./customer-review.model.js";
 import subscriptionOptionsModel from "./subscription-options.model.js";
+import socialMediaProfilesModel from "./social-media-profiles.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -55,6 +56,7 @@ db.postions = positionsModel(sequelize, Sequelize);
 db.proxiesBots = proxiesBotsModel(sequelize, Sequelize);
 db.customerReviews = customerReviewModel(sequelize, Sequelize);
 db.subscriptionOptions = subscriptionOptionsModel(sequelize, Sequelize);
+db.socialMediaProfiles = socialMediaProfilesModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
