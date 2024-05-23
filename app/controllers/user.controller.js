@@ -1,7 +1,7 @@
 import { Sequelize, where } from "sequelize";
 import db from "../models/index.js";
 
-const { user: User, scrapeSummary: ScrapeSummary } = db;
+const { user: User, scrapeSummary: ScrapeSummary, subscriptionOptions: SubscriptionOptions } = db;
 
 export const getUserInfo = (req, res) => {
   const { id } = req.params;
