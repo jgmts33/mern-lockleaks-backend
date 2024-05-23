@@ -15,31 +15,31 @@ export default function (app) {
   });
 
   app.get(
-    "/blogs",
+    "/customer-reviews",
     getCustomerReViews
   );
 
   app.get(
-    "/blogs/:id",
+    "/customer-reviews/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     getCustomerReview
   )
 
   app.post(
-    "/blogs/new",
+    "/customer-reviews/new",
     [authJwt.verifyToken, authJwt.isAdmin],
     createCustomerView
   )
 
   app.patch(
-    "/blogs/:id",
+    "/customer-reviews/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateCustomerView
   )
   
 
   app.delete(
-    "/blogs/:id",
+    "/customer-reviews/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     deleteCustomerReview
   )
