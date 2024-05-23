@@ -1,0 +1,46 @@
+import authJwt from "../middleware/authjwt.js";
+import { createCustomerView, deleteCustomerReview, getCustomerReViews, getCustomerReview, updateCustomerView } from '../controllers/customer-review.controller.js';
+// import multer from 'multer';
+
+// const upload = multer();
+
+export default function (app) {
+
+  app.use(function (req, res, next) {
+    res.header(
+      "Access-Control-Allow-Headers",
+      "x-access-token, Origin, Content-Type, Accept"
+    );
+    next();
+  });
+
+  app.get(
+    "/blogs",
+    getCustomerReViews
+  );
+
+  app.get(
+    "/blogs/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getCustomerReview
+  )
+
+  app.post(
+    "/blogs/new",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    createCustomerView
+  )
+
+  app.patch(
+    "/blogs/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    updateCustomerView
+  )
+  
+
+  app.delete(
+    "/blogs/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    deleteCustomerReview
+  )
+};

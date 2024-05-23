@@ -16,6 +16,7 @@ import helpArticlesModel from "./help-article.model.js";
 import positionsModel from "./positions-model.js";
 import proxiesBotsModel from "./proxies-bots.model.js";
 import blogViewModel from "./blog-view.model.js";
+import customerReviewModel from "./customer-review.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -51,6 +52,7 @@ db.helpCategories = helpCategoriesModel(sequelize, Sequelize);
 db.helpArticles = helpArticlesModel(sequelize, Sequelize);
 db.postions = positionsModel(sequelize, Sequelize);
 db.proxiesBots = proxiesBotsModel(sequelize, Sequelize);
+db.customerReviews = customerReviewModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
