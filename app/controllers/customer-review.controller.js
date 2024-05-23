@@ -120,7 +120,7 @@ export const updateCustomerView = async (req, res) => {
       requestData.avatar = avatar;
     }
     await CustomerReview.update({
-      ...updateCustomerView
+      ...requestData
     });
 
     res.status(200).send({
