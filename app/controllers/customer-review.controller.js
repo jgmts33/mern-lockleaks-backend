@@ -117,7 +117,7 @@ export const updateCustomerView = async (req, res) => {
       const avatarFilePath = path.join(`./uploads/${avatar.name.slice(0, -4)}_${currentDate}.png`);
       await avatar.mv(avatarFilePath);
 
-      requestData.avatar = avatar;
+      requestData.avatar = `${avatar.name.slice(0, -4)}_${currentDate}.png`;
     }
     await CustomerReview.update({
       ...requestData
