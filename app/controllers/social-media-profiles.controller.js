@@ -98,11 +98,6 @@ export const storeSocialMediaProfiles = async (req, res) => {
     archive.append(fs.createReadStream(txtFilePath), { name: 'profiles.txt' });
     archive.finalize();
 
-    // After finalizing the archive, delete the text file
-    fs.unlink(txtFilePath, () => {
-      
-    });
-
     // Save data to the database
     await SocialMediaProfiles.create({
       name: currentDate,
