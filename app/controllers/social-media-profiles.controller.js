@@ -74,12 +74,18 @@ export const storeSocialMediaProfiles = async (req, res) => {
     });
 
     // Write the content to a.txt file
-    const txtFilePath = path.join(__dirname, '..', 'data', `${currentDate}_profiles.txt`);
+    const txtFilePath = path.join(__dirname, '../../', 'data', `${currentDate}_profiles.txt`);
+
+    // Ensure the directory exists
+    const dirPath = path.dirname(txtFilePath);
+    await fs.promises.mkdir(dirPath, { recursive: true });
+
+    // Now safely write the file
     await fs.promises.writeFile(txtFilePath, content);
 
     // Create a ZIP file
     const archiveName = `social.${id}.${currentDate}.zip`;
-    const archivePath = path.join(__dirname, '..', 'data', archiveName);
+    const archivePath = path.join(__dirname, '../../', 'data', archiveName);
     const output = fs.createWriteStream(archivePath);
     const archive = archiver('zip', {
       zlib: { level: 9 }, // Sets the compression level.
