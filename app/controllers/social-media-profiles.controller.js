@@ -86,7 +86,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
       // Extract the domain part of the URL to determine the social media platform
 
       // Check if there's a mapping for the domain
-
+      let domain = "";
       const foundIndex = domainMapping.findIndex(p => p.validValues.some(value => link.startsWith(value)));
       const mappedPlatform = domainMapping[foundIndex].value;
       if (mappedPlatform) {
