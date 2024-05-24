@@ -1,5 +1,5 @@
 import db from "../models/index.js";
-import { sys } from 'ping'
+import pkg from 'ping'
 
 const { vpsList: VpsList } = db;
 
@@ -107,7 +107,7 @@ export const deleteVps = async (req, res) => {
 export const checkStatus = async (req, res) => {
   const { ip_address } = req.body
 
-  sys.probe(ip_address, (isAlive, err) => {
+  pkg.sys.probe(ip_address, (isAlive, err) => {
 
     if (err) {
       res.status(500).send({
