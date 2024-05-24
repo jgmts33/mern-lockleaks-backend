@@ -175,7 +175,7 @@ export const getSocialMediaSubmitions = async (req, res) => {
 };
 
 export const downloadZipFile = async (req, res) => {
-  const { user_id, file_name } = req.query;
+  const { file_name } = req.query;
   try {
     
     const submition = await SocialMediaProfiles.findOne({
@@ -185,7 +185,7 @@ export const downloadZipFile = async (req, res) => {
     });
     
     // Define the path to the ZIP file
-    const zipFilePath = path.join(__dirname, '../../', 'data', `social.${user_id}.${file_name}.zip`); // Adjust the path as necessary
+    const zipFilePath = path.join(__dirname, '../../', 'data', `social.${submition.user_id}.${file_name}.zip`); // Adjust the path as necessary
     
     await submition.update({
       accepted: true
