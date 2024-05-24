@@ -8,6 +8,10 @@ export default function (sequelize, Sequelize) {
     },
     user_id: {
       type: Sequelize.INTEGER
+    },
+    accepted: {
+      type: Sequelize.BOOLEAN,
+      default: false
     }
   });
 

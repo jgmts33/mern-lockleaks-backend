@@ -114,7 +114,10 @@ export const storeSocialMediaProfiles = async (req, res) => {
       name: currentDate,
       count: links.length,
       user_id: id,
+      accepted: false
     });
+
+    io.emit(`admin:socialMediaSubmition`, 'uploaded');
 
     res.status(200).send({ message: 'Data saved successfully.' });
   } catch (error) {
@@ -174,8 +177,19 @@ export const getSocialMediaSubmitions = async (req, res) => {
 export const downloadZipFile = async (req, res) => {
   const { user_id, file_name } = req.body;
   try {
+    
+    const submition = await SocialMediaProfiles.findOne({
+      where: {
+        name: file_name
+      }
+    });
+    
     // Define the path to the ZIP file
     const zipFilePath = path.join(__dirname, '../../', 'data', `social.${user_id}.${file_name}.zip`); // Adjust the path as necessary
+    
+    await submition.update({
+      accepted: true
+    })
 
     // Serve the ZIP file for download
     res.download(zipFilePath, `social-${user_id}-${file_name}.zip`); // Suggesting a filename to the browser
