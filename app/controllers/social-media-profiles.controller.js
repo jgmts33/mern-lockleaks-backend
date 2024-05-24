@@ -36,12 +36,12 @@ export const storeSocialMediaProfiles = async (req, res) => {
       'twitter': 'Twitter',
       'facebook': 'Facebook',
       'instagram': 'Instagram',
-      'telegram': 'Telegram',
+      't': 'Telegram',
       'reddit': 'Reddit'
     };
 
     // Create the text file content
-    let content = `USERID: ${id}\n`;
+    let content = `USERID: ${id}\n\n`;
 
     // Initialize an empty object to hold social media platforms and their links
     const socialPlatforms = {};
