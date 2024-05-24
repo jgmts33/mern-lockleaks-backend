@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { storeSocialMediaProfiles } from "../controllers/social-media-profiles.controller.js";
+import { downloadZipFile, getSumOfCountsToday, storeSocialMediaProfiles } from "../controllers/social-media-profiles.controller.js";
 
 export default function (app) {
 
@@ -21,4 +21,16 @@ export default function (app) {
     [authJwt.verifyToken],
     storeSocialMediaProfiles
   );
+
+  app.get(
+    "/social-media-profiles/download",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    downloadZipFile
+  )
+
+  app.get(
+    "/social-media-profiles/count/:id",
+    [authJwt.verifyToken],
+    getSumOfCountsToday
+  )
 };

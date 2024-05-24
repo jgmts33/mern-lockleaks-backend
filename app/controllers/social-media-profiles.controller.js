@@ -115,6 +115,9 @@ export const storeSocialMediaProfiles = async (req, res) => {
 };
 
 export const getSumOfCountsToday = async (req, res) => {
+
+  const { id } = req.params;
+
   try {
     const currentDate = new Date().toISOString().slice(0, 10); // Format YYYY-MM-DD
 
@@ -124,6 +127,7 @@ export const getSumOfCountsToday = async (req, res) => {
         [Sequelize.fn('SUM', Sequelize.col('count')), 'totalCount'],
       ],
       where: {
+        id,
         createdAt: {
           [Sequelize.Op.gte]: currentDate + 'T00:00:00Z', // Start of the day
           [Sequelize.Op.lt]: currentDate + 'T23:59:59Z', // End of the day
@@ -138,5 +142,19 @@ export const getSumOfCountsToday = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while calculating the total count.' });
+  }
+};
+
+export const downloadZipFile = async (req, res) => {
+  const { user_id, file_name } = req.body;
+  try {
+    // Define the path to the ZIP file
+    const zipFilePath = path.join(__dirname, '../../', 'data', `social.${user_id}.${file_name}.zip`); // Adjust the path as necessary
+
+    // Serve the ZIP file for download
+    res.download(zipFilePath, `social-${user_id}-${file_name}.zip`); // Suggesting a filename to the browser
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while serving the ZIP file.' });
   }
 };
