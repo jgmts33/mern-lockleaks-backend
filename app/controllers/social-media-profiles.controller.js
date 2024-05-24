@@ -29,14 +29,51 @@ export const storeSocialMediaProfiles = async (req, res) => {
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
     // Mapping of common domains to their canonical names
-    const domainMapping = {
-      'x': 'Twitter',
-      'twitter': 'Twitter',
-      'facebook': 'Facebook',
-      'instagram': 'Instagram',
-      't': 'Telegram',
-      'reddit': 'Reddit'
-    };
+    const domainMapping = [
+      {
+        value: 'Facebook',
+        validValues: [
+          'www.facebook.com',
+          'facebook.com',
+          'https://facebook.com',
+          'https://www.facebook.com'
+        ]
+      }, {
+        value: 'Instagram',
+        validValues: [
+          'www.instagram.com',
+          'instagram.com',
+          'https://instagram.com',
+          'https://www.instagram.com'
+        ]
+      }, {
+        value: 'Twitter',
+        validValues: [
+          'www.twitter.com',
+          'twitter.com',
+          'https://twitter.com',
+          'https://www.twitter.com',
+          'www.x.com',
+          'x.com',
+          'https://x.com',
+          'https://www.x.com'
+        ]
+      }, {
+        value: 'Telegram',
+        validValues: [
+          't.me',
+          'https://t.me'
+        ]
+      }, {
+        value: 'Reddit',
+        validValues: [
+          'reddit.com',
+          'www.reddit.com',
+          'https://reddit.com/',
+          'https://www.reddit.com/'
+        ]
+      }
+    ]
 
     // Create the text file content
     let content = `USERID: ${id}\n\n`;
@@ -47,10 +84,11 @@ export const storeSocialMediaProfiles = async (req, res) => {
     // Process each link and categorize them by social media platform
     links.forEach(link => {
       // Extract the domain part of the URL to determine the social media platform
-      let domain = new URL(`https://${link}`).hostname.split('.')[0];
 
       // Check if there's a mapping for the domain
-      const mappedPlatform = domainMapping[domain];
+
+      const foundIndex = domainMapping.findIndex(p => p.validValues.some(value => link.startsWith(value)));
+      const mappedPlatform = domainMapping[foundIndex].value;
       if (mappedPlatform) {
         // If there's a mapping, use the mapped platform name
         domain = mappedPlatform;
@@ -67,7 +105,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
 
     // Now, iterate over the socialPlatforms object to generate the content
     Object.entries(socialPlatforms).forEach(([platform, links]) => {
-      content += `${platform.toUpperCase()}\n`;
+      content += `${platform}\n`;
       links.forEach(link => {
         content += `${link}\n`;
       });
@@ -176,16 +214,16 @@ export const getSocialMediaSubmitions = async (req, res) => {
 export const downloadZipFile = async (req, res) => {
   const { file_name } = req.query;
   try {
-    
+
     const submition = await SocialMediaProfiles.findOne({
       where: {
         name: file_name
       }
     });
-    
+
     // Define the path to the ZIP file
     const zipFilePath = path.join(__dirname, '../../', 'data', `social.${submition.user_id}.${file_name}.zip`); // Adjust the path as necessary
-    
+
     await submition.update({
       accepted: true
     })
