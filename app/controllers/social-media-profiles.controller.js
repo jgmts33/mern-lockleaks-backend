@@ -99,7 +99,9 @@ export const storeSocialMediaProfiles = async (req, res) => {
     archive.finalize();
 
     // After finalizing the archive, delete the text file
-    fs.unlink(txtFilePath);
+    fs.unlink(txtFilePath, () => {
+      
+    });
 
     // Save data to the database
     await SocialMediaProfiles.create({
