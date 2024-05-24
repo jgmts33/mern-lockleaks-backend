@@ -46,7 +46,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
     // Process each link and categorize them by social media platform
     links.forEach(link => {
       // Extract the domain part of the URL to determine the social media platform
-      const domain = new URL(link).hostname.split('.')[0];
+      const domain = new URL(`https://${link}`).hostname.split('.')[0];
 
       // Check if there's a mapping for the domain
       const mappedPlatform = domainMapping[domain];
