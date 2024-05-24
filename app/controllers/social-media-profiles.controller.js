@@ -144,7 +144,7 @@ export const getSumOfCountsToday = async (req, res) => {
       },
     });
 
-    console.log("result:", result[0]?.totalCount);
+    console.log("result:", result[0]);
 
     // Assuming the result is an array with one element, extract the totalCount
     const totalCount = result[0]?.totalCount || 0;
