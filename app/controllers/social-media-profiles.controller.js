@@ -192,7 +192,7 @@ export const downloadZipFile = async (req, res) => {
     })
 
     // Serve the ZIP file for download
-    res.download(zipFilePath, `social-${user_id}-${file_name}.zip`); // Suggesting a filename to the browser
+    res.download(zipFilePath, `social-${submition.user_id}-${file_name}.zip`); // Suggesting a filename to the browser
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while serving the ZIP file.' });
