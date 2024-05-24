@@ -175,7 +175,7 @@ export const getSocialMediaSubmitions = async (req, res) => {
 };
 
 export const downloadZipFile = async (req, res) => {
-  const { user_id, file_name } = req.body;
+  const { user_id, file_name } = req.query;
   try {
     
     const submition = await SocialMediaProfiles.findOne({
