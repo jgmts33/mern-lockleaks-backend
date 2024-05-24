@@ -29,10 +29,10 @@ export const storeSocialMediaProfiles = async (req, res) => {
 
     // Mapping of common domains to their canonical names
     const domainMapping = {
-      'x.com': 'Twitter',
-      'twitter.com': 'Twitter',
-      'facebook.com': 'Facebook',
-      'instagram.com': 'Instagram',
+      'x': 'Twitter',
+      'twitter': 'Twitter',
+      'facebook': 'Facebook',
+      'instagram': 'Instagram',
       'telegram': 'Telegram',
       'reddit': 'Reddit'
     };
