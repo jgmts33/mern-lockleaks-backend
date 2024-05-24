@@ -97,6 +97,9 @@ export const storeSocialMediaProfiles = async (req, res) => {
     archive.append(fs.createReadStream(txtFilePath), { name: 'profiles.txt' });
     archive.finalize();
 
+    // After finalizing the archive, delete the text file
+    fs.unlink(txtFilePath);
+
     // Save data to the database
     await SocialMediaProfiles.create({
       name: currentDate,
@@ -108,5 +111,32 @@ export const storeSocialMediaProfiles = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while processing your request.' });
+  }
+};
+
+export const getSumOfCountsToday = async (req, res) => {
+  try {
+    const currentDate = new Date().toISOString().slice(0, 10); // Format YYYY-MM-DD
+
+    // Calculate the sum of counts for records created today
+    const result = await SocialMediaProfiles.findAll({
+      attributes: [
+        [Sequelize.fn('SUM', Sequelize.col('count')), 'totalCount'],
+      ],
+      where: {
+        createdAt: {
+          [Sequelize.Op.gte]: currentDate + 'T00:00:00Z', // Start of the day
+          [Sequelize.Op.lt]: currentDate + 'T23:59:59Z', // End of the day
+        },
+      },
+    });
+
+    // Assuming the result is an array with one element, extract the totalCount
+    const totalCount = result[0]?.totalCount || 0;
+
+    res.status(200).json({ totalCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while calculating the total count.' });
   }
 };
