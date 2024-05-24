@@ -130,8 +130,8 @@ export const getSumOfCountsToday = async (req, res) => {
       where: {
         id,
         createdAt: {
-          [Sequelize.Op.gte]: currentDate + 'T00:00:00Z', // Start of the day
-          [Sequelize.Op.lt]: currentDate + 'T23:59:59Z', // End of the day
+          [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
+          [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
         },
       },
     });
