@@ -154,6 +154,23 @@ export const getSumOfCountsToday = async (req, res) => {
   }
 };
 
+export const getSocialMediaSubmitions = async (req, res) => {
+
+  try {
+
+    // Calculate the sum of counts for records created today
+    const result = await SocialMediaProfiles.findAll({
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).json(result);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while getting the total list.' });
+  }
+};
+
 export const downloadZipFile = async (req, res) => {
   const { user_id, file_name } = req.body;
   try {

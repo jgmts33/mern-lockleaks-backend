@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { downloadZipFile, getSumOfCountsToday, storeSocialMediaProfiles } from "../controllers/social-media-profiles.controller.js";
+import { downloadZipFile, getSocialMediaSubmitions, getSumOfCountsToday, storeSocialMediaProfiles } from "../controllers/social-media-profiles.controller.js";
 
 export default function (app) {
 
@@ -11,10 +11,11 @@ export default function (app) {
     next();
   });
 
-  // app.get(
-  //   "/social-media-profiles",
-  //   [authJwt.verifyToken, authJwt.isAdmin],
-  // );
+  app.get(
+    "/social-media-profiles",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getSocialMediaSubmitions
+  );
 
   app.post(
     "/social-media-profiles/:id",
