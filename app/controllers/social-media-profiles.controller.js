@@ -136,11 +136,11 @@ export const getSumOfCountsToday = async (req, res) => {
         [Sequelize.fn('SUM', Sequelize.col('count')), 'totalCount'],
       ],
       where: {
-        id,
-        // createdAt: {
-        //   [Sequelize.Op.gte]: moment.utc(`${currentDate}T00:00:00Z`).tz('Etc/GMT+2').format(), // Start of the day
-        //   [Sequelize.Op.lt]: moment.utc(`${currentDate}T23:59:59Z`).tz('Etc/GMT+2').format(), // End of the day
-        // },
+        user_id: id,
+        createdAt: {
+          [Sequelize.Op.gte]: moment.utc(`${currentDate}T00:00:00Z`).tz('Etc/GMT+2').format(), // Start of the day
+          [Sequelize.Op.lt]: moment.utc(`${currentDate}T23:59:59Z`).tz('Etc/GMT+2').format(), // End of the day
+        },
       },
     });
 
