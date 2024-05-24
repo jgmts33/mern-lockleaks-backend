@@ -97,7 +97,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
 
     // Append the.txt file to the ZIP
     archive.append(fs.createReadStream(txtFilePath), { name: 'profiles.txt' });
-    archive.finalize();
+    await archive.finalize();
 
     fs.unlink(txtFilePath, (err) => {
       if (err) {
@@ -137,10 +137,10 @@ export const getSumOfCountsToday = async (req, res) => {
       ],
       where: {
         id,
-        createdAt: {
-          [Sequelize.Op.gte]: moment.utc(`${currentDate}T00:00:00Z`).tz('Etc/GMT+2').format(), // Start of the day
-          [Sequelize.Op.lt]: moment.utc(`${currentDate}T23:59:59Z`).tz('Etc/GMT+2').format(), // End of the day
-        },
+        // createdAt: {
+        //   [Sequelize.Op.gte]: moment.utc(`${currentDate}T00:00:00Z`).tz('Etc/GMT+2').format(), // Start of the day
+        //   [Sequelize.Op.lt]: moment.utc(`${currentDate}T23:59:59Z`).tz('Etc/GMT+2').format(), // End of the day
+        // },
       },
     });
 
