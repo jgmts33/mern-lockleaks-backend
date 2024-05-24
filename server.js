@@ -16,6 +16,7 @@ import helpRoutes from './app/routes/help.routes.js';
 import proxiesBotRoutes from './app/routes/proxies-bot.routes.js';
 import customerReviewRoutes from './app/routes/customer-review.routes.js';
 import socialMediaProfilesRoutes from './app/routes/social-media-profiles.routes.js';
+import vpsListRoutes from './app/routes/vps-list.routes.js';
 
 configDotenv();
 
@@ -68,16 +69,15 @@ io.on("connection", (socket) => {
 
   socket.emit("welcome", "Conncted to Socket Server.");
 
-  authRoutes(app);
-  userRoutes(app);
-  scrapeRoutes(app);
-
   socket.on('disconnect', (info) => {
     console.log("disconnected:", info);
   });
 
 })
 
+authRoutes(app);
+userRoutes(app);
+scrapeRoutes(app);
 keywordsRoutes(app);
 usernamesRoutes(app);
 dmcaRoutes(app);
@@ -87,6 +87,7 @@ helpRoutes(app);
 proxiesBotRoutes(app);
 customerReviewRoutes(app);
 socialMediaProfilesRoutes(app);
+vpsListRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
