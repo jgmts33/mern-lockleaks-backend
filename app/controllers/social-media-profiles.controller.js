@@ -5,6 +5,7 @@ import archiver from 'archiver';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { Sequelize } from "sequelize";
+import moment from "moment-timezone";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -137,8 +138,8 @@ export const getSumOfCountsToday = async (req, res) => {
       where: {
         id,
         createdAt: {
-          [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
-          [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
+          [Sequelize.Op.gte]: moment.utc(`${currentDate}T00:00:00Z`).tz('Etc/GMT+2').format(), // Start of the day
+          [Sequelize.Op.lt]: moment.utc(`${currentDate}T23:59:59Z`).tz('Etc/GMT+2').format(), // End of the day
         },
       },
     });
