@@ -120,7 +120,7 @@ export const getSumOfCountsToday = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const currentDate = new Date().toISOString().slice(0, 10); // Format YYYY-MM-DD
+    const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
 
     // Calculate the sum of counts for records created today
     const result = await SocialMediaProfiles.findAll({
