@@ -98,6 +98,16 @@ export const storeSocialMediaProfiles = async (req, res) => {
     archive.append(fs.createReadStream(txtFilePath), { name: 'profiles.txt' });
     archive.finalize();
 
+    fs.unlink(txtFilePath, (err) => {
+      if (err) {
+        console.error('Error deleting the text file:', err);
+        // Handle the error appropriately, e.g., log it, notify someone, etc.
+      } else {
+        console.log('Text file deleted successfully.');
+        // Optionally, you can perform actions after the file is deleted, like sending a confirmation message to the user
+      }
+    });
+
     // Save data to the database
     await SocialMediaProfiles.create({
       name: currentDate,
