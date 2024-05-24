@@ -1,4 +1,5 @@
 import db from "../models/index.js";
+import { sys } from 'ping'
 
 const { vpsList: VpsList } = db;
 
@@ -102,3 +103,26 @@ export const deleteVps = async (req, res) => {
     });
   }
 };
+
+export const checkStatus = async (req, res) => {
+  const { ip_address } = req.body
+
+  sys.probe(ip_address, (isAlive, err) => {
+
+    if (err) {
+      res.status(500).send({
+        message: err.message,
+      });
+    }
+
+    if (isAlive) {
+      res.status(200).send('online');
+    } else {
+      res.status(200).send('offline');
+    }
+  }, {
+    timeout: 10,
+    extra: ['-i', '2'],
+  });
+
+}

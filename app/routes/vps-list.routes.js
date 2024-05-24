@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { createVps, deleteVps, getVpsInfo, getVpsList, updateVpsInfo } from '../controllers/vps-list.controller.js'
+import { checkStatus, createVps, deleteVps, getVpsInfo, getVpsList, updateVpsInfo } from '../controllers/vps-list.controller.js'
 // import multer from 'multer';
 
 // const upload = multer();
@@ -43,5 +43,11 @@ export default function (app) {
     "/vps-list/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     deleteVps
+  )
+
+  app.post(
+    "/vps-status",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    checkStatus
   )
 };
