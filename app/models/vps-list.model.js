@@ -1,5 +1,5 @@
 export default function (sequelize, Sequelize) {
-  const VpsList = sequelize.define("vps_list", {
+  const VpsList = sequelize.define("vps_lists", {
     ip_address: {
       type: Sequelize.STRING
     },
