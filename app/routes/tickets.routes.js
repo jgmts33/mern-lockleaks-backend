@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { createNewTicket, getMessagesByTicket, getTickets, sendMessage, updateTicketStatus } from '../controllers/tickets.controller.js';
+import { createNewTicket, getMessagesByTicket, getTickets, getTicketsByUser, sendMessage, updateTicketStatus } from '../controllers/tickets.controller.js';
 // import multer from 'multer';
 
 // const upload = multer();
@@ -16,9 +16,15 @@ export default function (app) {
 
   app.get(
     "/tickets",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isAdmin],
     getTickets
   );
+
+  app.get(
+    "/tickets-user/:id",
+    [authJwt.verifyToken],
+    getTicketsByUser
+  )
 
   app.get(
     "/tickets/:id",

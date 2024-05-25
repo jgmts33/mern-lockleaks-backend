@@ -20,6 +20,28 @@ export const getTickets = async (req, res) => {
   }
 };
 
+export const getTicketsByUser = async (req, res) => {
+
+  const { id } = req.params;
+
+  try {
+
+    const tickets = await Tickets.findAll({
+      where: {
+        user_id: id
+      },
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).send(tickets);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
 export const getMessagesByTicket = async (req, res) => {
 
   const { id } = req.params;
