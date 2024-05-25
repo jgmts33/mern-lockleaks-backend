@@ -45,7 +45,7 @@ export default function (app) {
   )
 
   app.post(
-    "/tickets/message",
+    "/tickets-message",
     [authJwt.verifyToken],
     sendMessage
   )
