@@ -77,8 +77,7 @@ export const createNewTicket = async (req, res) => {
     });
 
     await Messages.create({
-      user_id,
-      sender: user_id,
+      sender_id: user_id,
       content,
       attched_images: [],
       ticket_id: ticket.id
