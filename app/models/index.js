@@ -20,6 +20,8 @@ import customerReviewModel from "./customer-review.model.js";
 import subscriptionOptionsModel from "./subscription-options.model.js";
 import socialMediaProfilesModel from "./social-media-profiles.model.js";
 import vpsListModel from "./vps-list.model.js";
+import ticketsModel from "./tickets.model.js";
+import messagesModel from "./messages.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -59,6 +61,8 @@ db.customerReviews = customerReviewModel(sequelize, Sequelize);
 db.subscriptionOptions = subscriptionOptionsModel(sequelize, Sequelize);
 db.socialMediaProfiles = socialMediaProfilesModel(sequelize, Sequelize);
 db.vpsList = vpsListModel(sequelize, Sequelize);
+db.tickets = ticketsModel(sequelize, Sequelize);
+db.messages = messagesModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
