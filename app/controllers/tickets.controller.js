@@ -120,8 +120,13 @@ export const updateTicketStatus = async (req, res) => {
 };
 
 export const sendMessage = async (req, res) => {
-  const { sender_id, content, ticket_id } = req.body;
-  const attached_images = req.files ? req.files['images'] : [];
+  const { sender_id, content, ticket_id, attached_image_length } = req.body;
+
+  let attached_images = [];
+
+  for (let i = 0; i < attached_image_length; i++) {
+    attached_images.push(req.files[`images[${i}]`]);
+  }
 
   try {
     let attachedImageNames = []
