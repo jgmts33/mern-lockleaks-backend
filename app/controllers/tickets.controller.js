@@ -1,6 +1,6 @@
 import { io } from "../../server.js";
 import db from "../models/index.js";
-import pkg from 'ping'
+import path from 'path';
 
 const { tickets: Tickets, messages: Messages } = db;
 
