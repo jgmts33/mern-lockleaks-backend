@@ -77,6 +77,8 @@ export const createNewTicket = async (req, res) => {
       user_id
     });
 
+    io.emit(`created_new_ticket`, ticket);
+    
     await Messages.create({
       sender_id: user_id,
       content,
@@ -84,8 +86,7 @@ export const createNewTicket = async (req, res) => {
       ticket_id: ticket.id
     });
 
-    io.emit('created_new_ticket', ticket);
-
+    
     res.status(200).send({
       message: "New Ticket created Successfully!"
     })
@@ -110,11 +111,12 @@ export const updateTicketStatus = async (req, res) => {
       status
     });
 
+    io.emit(`update_ticket_status_${id}`, status);
+
     res.status(200).send({
       message: "Ticket Status updated Successfully!"
     })
 
-    io.emit(`update_ticket_status_${id}`, status);
 
   } catch (err) {
     res.status(500).send({
