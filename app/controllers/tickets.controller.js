@@ -85,7 +85,7 @@ export const createNewTicket = async (req, res) => {
     });
 
     res.status(200).send({
-      message: "New Ticker created Successfully!"
+      message: "New Ticket created Successfully!"
     })
 
   } catch (err) {
@@ -111,6 +111,8 @@ export const updateTicketStatus = async (req, res) => {
     res.status(200).send({
       message: "Ticket Status updated Successfully!"
     })
+
+    io.emit(`update_ticket_status_${id}`, status);
 
   } catch (err) {
     res.status(500).send({

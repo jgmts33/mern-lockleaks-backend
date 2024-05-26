@@ -7,7 +7,7 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.TEXT
     },
     attached_images: {
-      type: Sequelize.ARRAY(Sequelize.STRING)
+      type: Sequelize.ARRAY(Sequelize.STRING),
     },
     ticket_id: {
       type: Sequelize.STRING
