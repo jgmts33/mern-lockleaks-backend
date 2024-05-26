@@ -84,6 +84,8 @@ export const createNewTicket = async (req, res) => {
       ticket_id: ticket.id
     });
 
+    io.emit('created_new_ticket', ticket);
+
     res.status(200).send({
       message: "New Ticket created Successfully!"
     })
