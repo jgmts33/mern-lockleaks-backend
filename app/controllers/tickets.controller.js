@@ -86,7 +86,7 @@ export const createNewTicket = async (req, res) => {
       ticket_id: ticket.id
     });
 
-    
+
     res.status(200).send({
       message: "New Ticket created Successfully!"
     })
@@ -111,7 +111,7 @@ export const updateTicketStatus = async (req, res) => {
       status
     });
 
-    io.emit(`update_ticket_status_${id}`, status);
+    io.emit(`update_ticket_status`, { id, status });
 
     res.status(200).send({
       message: "Ticket Status updated Successfully!"
