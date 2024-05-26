@@ -78,7 +78,7 @@ export const createNewTicket = async (req, res) => {
     });
 
     io.emit(`created_new_ticket`, ticket);
-    
+
     await Messages.create({
       sender_id: user_id,
       content,
@@ -107,7 +107,7 @@ export const updateTicketStatus = async (req, res) => {
 
     const ticket = await Tickets.findByPk(id);
 
-    ticket.update({
+    await ticket.update({
       status
     });
 
