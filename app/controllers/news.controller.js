@@ -142,7 +142,7 @@ export const sendNews = async (req, res) => {
             Content: news.content
           })
         ],
-        Subject: "Email Verification | LockLeaks",
+        Subject: news.title,
         From: elasticEmailConfig.auth.newsEmail,
       }
     });
