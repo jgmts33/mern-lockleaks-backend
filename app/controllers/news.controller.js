@@ -174,6 +174,18 @@ export const createNewSubsribeUser = async (req, res) => {
 
   try {
 
+    const user = await SubscribedUsers.findOne({
+      where: {
+        email
+      }
+    })
+
+    if (user) {
+      res.status(500).send({
+        message: "You already subscribed"
+      })
+    }
+
     await SubscribedUsers.create({
       email
     })
