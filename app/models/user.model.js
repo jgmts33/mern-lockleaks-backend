@@ -14,7 +14,6 @@ export default function (sequelize, Sequelize) {
     },
     name: {
       type: Sequelize.STRING,
-      allowNull: false
     },
     avatar: {
       type: Sequelize.STRING,
