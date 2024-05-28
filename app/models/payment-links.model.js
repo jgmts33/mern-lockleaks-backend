@@ -19,6 +19,9 @@ export default function (sequelize, Sequelize) {
     status: {
       type: Sequelize.STRING, // expired, paid , active
       default: 'active'
+    },
+    amount: {
+      type: Sequelize.INTEGER
     }
   });
 
