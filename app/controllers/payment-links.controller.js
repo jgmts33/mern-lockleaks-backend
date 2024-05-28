@@ -45,15 +45,15 @@ export const createPaymentLink = async (req, res) => {
       }
     });
 
+    if (!user) {
+      res.status(404).send("User Not Found");
+    }
+    
     await user.update({
       agency: true,
       user_counts,
       amount
     })
-
-    if (!user) {
-      res.status(404).send("User Not Found");
-    }
 
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
