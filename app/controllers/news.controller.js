@@ -10,7 +10,7 @@ import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
 
 let apikey = defaultClient.authentications['apikey'];
-apikey.apiKey = "3D1F0FA1C5A6F371A302FE01088309D36EFFF8B9267447BEE543CEE904A4DD37ED7B42310822A28268C0278EF8D77F7C"
+apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
@@ -143,7 +143,7 @@ export const sendNews = async (req, res) => {
           })
         ],
         Subject: "Email Verification | LockLeaks",
-        From: elasticEmailConfig.auth.user,
+        From: elasticEmailConfig.auth.newsEmail,
       }
     });
 

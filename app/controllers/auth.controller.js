@@ -14,7 +14,7 @@ import { Client, auth } from "twitter-api-sdk"
 let defaultClient = ElasticEmail.ApiClient.instance;
 
 let apikey = defaultClient.authentications['apikey'];
-apikey.apiKey = "3D1F0FA1C5A6F371A302FE01088309D36EFFF8B9267447BEE543CEE904A4DD37ED7B42310822A28268C0278EF8D77F7C"
+apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
@@ -38,6 +38,7 @@ export const signup = async (req, res) => {
     .then(async user => {
 
       io.emit(`admin:dashboardInfo`, 'scan-finished');
+      // TODO : check the email is veried or
 
       const token = jwt.sign(
         {
@@ -63,7 +64,7 @@ export const signup = async (req, res) => {
             })
           ],
           Subject: "Email Verification | LockLeaks",
-          From: elasticEmailConfig.auth.user,
+          From: elasticEmailConfig.auth.authEmail,
         }
       });
 
@@ -333,7 +334,7 @@ export const forgotPassword = async (req, res) => {
           })
         ],
         Subject: "Reset Password | LockLeaks",
-        From: elasticEmailConfig.auth.user,
+        From: elasticEmailConfig.auth.authEmail,
       }
     });
 
