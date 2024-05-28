@@ -50,12 +50,12 @@ export const createPaymentLink = async (req, res) => {
         message: "User Not Found"
       });
     }
-
-    await user.update({
-      agency: true,
-      user_counts,
-      amount
-    })
+    if (user_counts) {
+      await user.update({
+        agency: true,
+        user_counts
+      })
+    }
 
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
@@ -74,13 +74,15 @@ export const createPaymentLink = async (req, res) => {
       user_id: user.id,
       usernames,
       expire_date,
-      status: 'active'
+      status: 'active',
+      amount
     });
 
     setTimeout(() => {
-      payment_link.update({
-        status: 'expired'
-      });
+      if (payment_link.status != 'paid')
+        payment_link.update({
+          status: 'expired'
+        });
       // set as Expired after 48 hours
     }, 1000 * 60 * 60 * 24 * 2)
 
