@@ -3,6 +3,7 @@ import config from '../config/auth.config.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import axios from 'axios';
+import { io } from "../../server.js";
 
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
