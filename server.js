@@ -19,6 +19,7 @@ import socialMediaProfilesRoutes from './app/routes/social-media-profiles.routes
 import vpsListRoutes from './app/routes/vps-list.routes.js';
 import ticketsRoutes from './app/routes/tickets.routes.js';
 import paymentLinksRoutes from './app/routes/payment-links.routes.js';
+import newsRoutes from './app/routes/news.routes.js';
 
 configDotenv();
 
@@ -92,6 +93,7 @@ socialMediaProfilesRoutes(app);
 vpsListRoutes(app);
 ticketsRoutes(app);
 paymentLinksRoutes(app);
+newsRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
