@@ -148,6 +148,7 @@ export const sendNews = async (req, res) => {
     });
 
     var callback = function (error, data, response) {
+      console.log(data, response);
       if (error) {
         console.error(error);
       } else {
