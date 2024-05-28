@@ -26,7 +26,7 @@ export const getPaymentLinkInfo = async (req, res) => {
 
 export const createPaymentLink = async (req, res) => {
 
-  const { email, usernames, user_counts } = req.body;
+  const { email, usernames, user_counts, amount } = req.body;
 
   try {
 
@@ -39,6 +39,7 @@ export const createPaymentLink = async (req, res) => {
     await user.update({
       agency: true,
       user_counts,
+      amount
     })
 
     if (!user) {
