@@ -33,7 +33,7 @@ export default function (app) {
   )
 
   app.post(
-    "/send-news",
+    "/send-news/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     sendNews
   )
