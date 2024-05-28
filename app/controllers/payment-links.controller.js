@@ -18,7 +18,10 @@ export const getPaymentLinkInfo = async (req, res) => {
     const user = await User.findByPk(paymentLink.user_id);
 
     res.status(200).send({
-      ...paymentLink,
+      usernames: paymentLink.usernames,
+      expire_date: paymentLink.expire_date,
+      status: paymentLink.status,
+      amount: paymentLink.amount,
       user_counts: user.user_counts,
       email: user.email
     });
