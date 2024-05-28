@@ -23,7 +23,7 @@ export default function (app) {
   app.get(
     "/news/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
-    getNewsList
+    getNews
   );
 
   app.post(
