@@ -46,9 +46,11 @@ export const createPaymentLink = async (req, res) => {
     });
 
     if (!user) {
-      res.status(404).send("User Not Found");
+      res.status(404).send({
+        message: "User Not Found"
+      });
     }
-    
+
     await user.update({
       agency: true,
       user_counts,
