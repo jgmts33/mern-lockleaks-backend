@@ -46,10 +46,11 @@ export const createPaymentLink = async (req, res) => {
     });
 
     if (!user) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "User Not Found"
       });
     }
+
     if (user_counts) {
       await user.update({
         agency: true,
@@ -107,7 +108,7 @@ export const createFanPaymentLink = async (req, res) => {
     const user = await User.findByPk(id);
 
     if (!user) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "User Not Found"
       });
     }
@@ -165,7 +166,7 @@ export const updatePaymentLink = async (req, res) => {
     });
 
     if (paymentLink.status != 'active') {
-      res.status(500).send({
+      return res.status(500).send({
         message: 'Payment Link is not invalid!'
       });
     }
