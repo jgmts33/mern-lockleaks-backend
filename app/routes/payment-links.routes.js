@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { createPaymentLink, getPaymentLinkInfo, updatePaymentLink } from '../controllers/payment-links.controller.js'
+import { createFanPaymentLink, createPaymentLink, getPaymentLinkInfo, updatePaymentLink } from '../controllers/payment-links.controller.js'
 // import multer from 'multer';
 
 // const upload = multer();
@@ -18,6 +18,12 @@ export default function (app) {
     "/payment",
     [authJwt.verifyToken, authJwt.isAdmin],
     createPaymentLink
+  );
+
+  app.post(
+    "/payment/:id",
+    [authJwt.verifyToken],
+    createFanPaymentLink
   );
 
   app.get(
