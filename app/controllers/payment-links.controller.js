@@ -55,7 +55,7 @@ export const createPaymentLink = async (req, res) => {
       second: '2-digit',
     }).replace(/[/,:]/g, '').replace(/\s/g, '');
 
-    const code = `agency${currentDate}${user.id}`;
+    const code = `auto-pay${currentDate}${user.id}`;
     const expire_date = new Date().setDate(new Date().getDate() - 1);
 
     const payment_link = await PaymentLinks.create({
