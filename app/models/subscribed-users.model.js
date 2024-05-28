@@ -1,5 +1,5 @@
 export default function (sequelize, Sequelize) {
-  const SubscribedUsers = sequelize.define("subcribed_users", {
+  const SubscribedUsers = sequelize.define("subscribed_users", {
     email: {
       type: Sequelize.STRING
     },
