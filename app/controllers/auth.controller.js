@@ -13,7 +13,7 @@ import { Client, auth } from "twitter-api-sdk"
 let defaultClient = ElasticEmail.ApiClient.instance;
 
 let apikey = defaultClient.authentications['apikey'];
-apikey.apiKey = "0DB5ECD47CD2E0E29C03F8D73B7B07DF4DC19B94BEAC3B1AA0A59C5EA983D359EEA7C209680E82D451CE91B369DF0561"
+apikey.apiKey = "3D1F0FA1C5A6F371A302FE01088309D36EFFF8B9267447BEE543CEE904A4DD37ED7B42310822A28268C0278EF8D77F7C"
 
 let api = new ElasticEmail.EmailsApi()
 
