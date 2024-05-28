@@ -5,7 +5,7 @@ const { paymentLinks: PaymentLinks, user: User, usernames: Usernames } = db;
 
 export const getPaymentLinkInfo = async (req, res) => {
 
-  const { code } = req.body
+  const { code } = req.query
 
   try {
 
@@ -95,7 +95,7 @@ export const updatePaymentLink = async (req, res) => {
       }
     });
 
-    if ( paymentLink.status != 'active' ) {
+    if (paymentLink.status != 'active') {
       res.status(500).send({
         message: 'Payment Link is not invalid!'
       });
