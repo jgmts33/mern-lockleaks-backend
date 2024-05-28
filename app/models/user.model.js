@@ -35,13 +35,17 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.STRING,
       defaultValue: ""
     },
-    createdAt: {
-      type: Sequelize.DATE,
-      defaultValue: Sequelize.NOW
+    agency: {
+      type: Sequelize.BOOLEAN,
+      default: false
     },
-    updatedAt: {
-      type: Sequelize.DATE,
-      defaultValue: Sequelize.NOW
+    user_counts: {
+      type: Sequelize.INTEGER,
+      default: 0
+    },
+    users_info_images: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      default: []
     }
   });
 

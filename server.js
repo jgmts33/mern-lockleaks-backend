@@ -18,6 +18,7 @@ import customerReviewRoutes from './app/routes/customer-review.routes.js';
 import socialMediaProfilesRoutes from './app/routes/social-media-profiles.routes.js';
 import vpsListRoutes from './app/routes/vps-list.routes.js';
 import ticketsRoutes from './app/routes/tickets.routes.js';
+import paymentLinksRoutes from './app/routes/payment-links.routes.js';
 
 configDotenv();
 
@@ -90,6 +91,7 @@ customerReviewRoutes(app);
 socialMediaProfilesRoutes(app);
 vpsListRoutes(app);
 ticketsRoutes(app);
+paymentLinksRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
