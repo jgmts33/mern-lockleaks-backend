@@ -175,6 +175,10 @@ export const updatePaymentStatus = async (req, res) => {
       }
     });
 
+    res.status(200).send({
+      message: `Payment was successed as ${plan}/${payment_method}`
+    });
+
   } catch (err) {
     console.log(err);
     res.status(500).send({
