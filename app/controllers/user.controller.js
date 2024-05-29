@@ -166,7 +166,7 @@ export const updatePaymentStatus = async (req, res) => {
       });
     }
 
-    await User.update({
+    await user.update({
       subscription: {
         payment_method: payment_method,
         expire_date,
