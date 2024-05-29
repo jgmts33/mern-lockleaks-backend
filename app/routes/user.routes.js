@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -35,6 +35,12 @@ export default function (app) {
     "/extra-report",
     [authJwt.verifyToken, authJwt.isAdmin],
     getExtraReport
+  )
+
+  app.patch(
+    "/subscription/:id",
+    [authJwt.verifyToken],
+    updatePaymentStatus
   )
 
 };

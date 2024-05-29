@@ -2,16 +2,19 @@ import { Sequelize } from "sequelize";
 import db from "./app/models/index.js";
 import axios from "axios";
 
-const { scrapeSummary: ScrapeSummary } = db;
+const { scrapeSummary: ScrapeSummary, user: User } = db;
 
 (async () => {
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() - 30); // Calculate 30 days ago
 
+  // Setting the scraped data as expired after 30 days.
   try {
+
+    const scrapedExpirationDate = new Date();
+    scrapedExpirationDate.setDate(scrapedExpirationDate.getDate() - 30); // Calculate 30 days ago
+
     const expiredData = await ScrapeSummary.findAll({
       where: {
-        createdAt: { [Sequelize.Op.lt]: expirationDate },
+        createdAt: { [Sequelize.Op.lt]: scrapedExpirationDate },
         status: { [Sequelize.Op.ne]: 'expired' } // Exclude already expired data
       },
       attributes: ['id', 'scrape_date']
@@ -39,6 +42,41 @@ const { scrapeSummary: ScrapeSummary } = db;
     }
 
   } catch (error) {
-    console.error('Error updating expired data:', error);
+    console.error('Error in setting the scraped data as expired after 30 days:', error);
+  }
+
+  // Setting the Trial plan as expired after 3 days.
+
+  try {
+    
+    const users = User.findAll({
+      where: {
+        subscription: {
+          [Sequelize.Op.and]: [
+            { status: { [Sequelize.Op.ne]: 'expired' } },
+            { expire_date: { [Sequelize.Op.lt]: new Date() } }
+          ]
+        }
+      }
+    });
+
+    for (const user of users) {
+      try {
+        await user.update({
+          subscription: {
+            ...user.subscription,
+            status: 'expired' // 'active'| 'expired'
+          }
+        });
+
+        console.log(`Trial Expired for the user:${user.id}`)
+
+      } catch (err) {
+        console.log("err:", err);
+      }
+    }
+
+  } catch (error) {
+    console.error('Error in setting the Trial plan as expired after 3 days.:', error);
   }
 })();

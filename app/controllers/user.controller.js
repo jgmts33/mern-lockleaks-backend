@@ -140,3 +140,46 @@ export const getExtraReport = async (req, res) => {
 
 
 }
+
+export const updatePaymentStatus = async (req, res) => {
+
+  const { id } = req.params;
+  const { payment_method, plan } = req.body;
+  // trial , starter, pro, star
+
+  try {
+    const user = await User.findByPk(id);
+    const subscriptionOption = await SubscriptionOptions.findOne({
+      where: {
+        option_name: plan
+      }
+    });
+
+    let expire_date = new Date();
+
+    if (plan == 'trial') expire_date.setDate(expire_date.getDate() + 3);
+    else expire_date.setDate(expire_date.getDate() + 30);
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User Not Found!"
+      });
+    }
+
+    await User.update({
+      subscription: {
+        payment_method: payment_method,
+        expire_date,
+        plan_id: subscriptionOption.id,
+        status: 'active' // 'active'| 'expired'
+      }
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
+  }
+
+}

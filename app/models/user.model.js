@@ -26,7 +26,9 @@ export default function (sequelize, Sequelize) {
     subscription: {
       type: Sequelize.JSONB,
       defaultValue: {
+        plan_id: null,
         payment_method: null,
+        status: '',
         expire_date: null
       }
     },

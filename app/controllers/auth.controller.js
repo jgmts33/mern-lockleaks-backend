@@ -31,7 +31,8 @@ export const signup = async (req, res) => {
     subscription: {
       payment_method: null,
       expire_date: null,
-      plan_id: null
+      plan_id: null,
+      status: ''
     },
     social: ""
   })
@@ -142,6 +143,7 @@ export const signin = async (req, res) => {
           payment_method: user.subscription.payment_method,
           expire_date: user.subscription.expire_date,
           plan_id: user.subscription.plan_id,
+          status: user.subscription.status,
           features: subscriptionFeatures
         }
       }
@@ -264,6 +266,7 @@ export const verifyEmail = async (req, res) => {
         payment_method: user.subscription.payment_method,
         expire_date: user.subscription.expire_date,
         plan_id: user.subscription.plan_id,
+        status: user.subscription.status,
         features: subscriptionFeatures
       }
     }
@@ -455,6 +458,7 @@ export const googleAuthenticateUser = async (req, res) => {
       payment_method: user.subscription.payment_method,
       expire_date: user.subscription.expire_date,
       plan_id: user.subscription.plan_id,
+      status: user.subscription.status,
       features: subscriptionFeatures
     }
   }
@@ -538,6 +542,7 @@ export const facebookAuthenticateUser = async (req, res) => {
         payment_method: user.subscription.payment_method,
         expire_date: user.subscription.expire_date,
         plan_id: user.subscription.plan_id,
+        status: user.subscription.status,
         features: subscriptionFeatures
       }
     }
@@ -620,6 +625,7 @@ export const twitterAuthenticateUser = async (req, res) => {
       payment_method: user.subscription.payment_method,
       expire_date: user.subscription.expire_date,
       plan_id: user.subscription.plan_id,
+      status: user.subscription.status,
       features: subscriptionFeatures
     }
   }
