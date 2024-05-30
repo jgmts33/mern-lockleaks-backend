@@ -25,6 +25,7 @@ import messagesModel from "./messages.model.js";
 import paymentLinksModel from "./payment-links.model.js";
 import newsModel from "./news.model.js";
 import subscribedUsersModel from "./subscribed-users.model.js";
+import pingModelsModel from "./ping-models.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -69,6 +70,7 @@ db.messages = messagesModel(sequelize, Sequelize);
 db.paymentLinks = paymentLinksModel(sequelize, Sequelize);
 db.news = newsModel(sequelize, Sequelize);
 db.subscribedUsers = subscribedUsersModel(sequelize, Sequelize);
+db.pingModels = pingModelsModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
