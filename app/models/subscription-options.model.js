@@ -8,15 +8,43 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    personal_agent_requests: {
+    scanner: {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    unlimited_takedowns: {
+    adult_tubs: {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
-    daily_reports: {
+    file_hosted: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false
+    },
+    google: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    bing: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    ai_face_images: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    ai_face_profiles: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    sm_scanner: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    sm_submit: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    r2r_of_user_content: {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
@@ -24,55 +52,19 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
-    monthly_pdf_reports: {
+    data_report: {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
-    analyzer_tool_search_engines_scans_perDay: {
+    data_analytics: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false
+    },
+    personal_agent: {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    reverify_reanalyzer_tool_rescans_perDay: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    google_results_images_videos_removal_report: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-    },
-    bing_results_images_videos_removal_report: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-    },
-    social_media_analyzer_tool_removal_report: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    social_media_profile_submition: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    adult_tubes_analyzer_tool_removal_report: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-    },
-    forums_analyzer_removal_report: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-    },
-    file_host_analyzer_tool_removal_report: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-    },
-    face_recognition_ai_analyzer_removal_report: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    monthly_rport_data_analytics_insights: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-    },
-    usernames_history_content_recovery_removal_report: {
+    download_data: {
       type: Sequelize.BOOLEAN,
       allowNull: false
     }
