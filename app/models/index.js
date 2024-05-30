@@ -90,6 +90,7 @@ db.refreshToken.belongsTo(db.user, {
 db.user.hasOne(db.refreshToken, {
   foreignKey: 'userId', targetKey: 'id'
 });
+
 db.ROLES = ["user", "admin", "moderator"];
 
 export default db;

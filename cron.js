@@ -115,9 +115,15 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
     ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 6); // Calculate 6 days ago
 
     const tickets = await Tickets.findAll({
-      include: [{
-        model: Messages,
-        required: true,
+      where: {
+        status: 'open'
+      }
+    });
+
+    console.log("tickets:", tickets);
+
+    for (const ticket of tickets) {
+      const messages = Messages.findAll({
         where: {
           sender_id: {
             [Sequelize.Op.ne]: 1 // Not equal to 1
@@ -128,22 +134,15 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
         },
         order: [['createdAt', 'DESC']], // Order messages by createdAt DESC to get the latest one
         limit: 1 // Only take the latest message per ticket
-      }],
-      group: ['Tickets.id'] // Group by ticket to ensure we get distinct tickets
-    });
+      });
 
-    console.log("tickets:", tickets);
-
-    // for (const ticket of tickets) {
-    //   try {
-    //     await ticket.update({
-    //       status: 'closed'
-    //     });
-    //     console.log(`Tciket closed after 7 days with not response:${ticket.id}`)
-    //   } catch (err) {
-    //     console.log("err:", err);
-    //   }
-    // }
+      if (messages.length) {
+        await ticket.update({
+          status: 'closed'
+        });
+        console.log(`Tciket closed after 7 days with not response:${ticket.id}`);
+      }
+    }
 
   } catch (error) {
     console.error('Error in setting the Trial plan as expired after 7 days.:', error);
