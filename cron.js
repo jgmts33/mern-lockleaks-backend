@@ -58,7 +58,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
           ]
         }
       }
-    });
+    }) || [];
 
     for (const user of users) {
       try {
@@ -92,7 +92,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
         createdAt: { [Sequelize.Op.lt]: ticketExpirationDate },
         status: { [Sequelize.Op.ne]: 'open' }
       },
-    });
+    }) || [];
 
     for (const ticket of tickets) {
       try {
