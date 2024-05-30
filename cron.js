@@ -116,7 +116,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
 
     const tickets = await Tickets.findAll({
       include: [{
-        model: models.Messages,
+        model: Messages,
         required: true,
         where: {
           sender_id: {
@@ -146,7 +146,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
     // }
 
   } catch (error) {
-    console.error('Error in setting the Trial plan as expired after 3 days.:', error);
+    console.error('Error in setting the Trial plan as expired after 7 days.:', error);
   }
 
 })();
