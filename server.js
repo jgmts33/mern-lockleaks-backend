@@ -20,7 +20,7 @@ import vpsListRoutes from './app/routes/vps-list.routes.js';
 import ticketsRoutes from './app/routes/tickets.routes.js';
 import paymentLinksRoutes from './app/routes/payment-links.routes.js';
 import newsRoutes from './app/routes/news.routes.js';
-import pingModelsModel from './app/models/ping-models.model.js';
+import pingModelsRoutes from './app/routes/ping-models.routes.js';
 
 configDotenv();
 
@@ -95,7 +95,7 @@ vpsListRoutes(app);
 ticketsRoutes(app);
 paymentLinksRoutes(app);
 newsRoutes(app);
-pingModelsModel(app);
+pingModelsRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
