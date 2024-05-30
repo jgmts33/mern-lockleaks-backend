@@ -49,7 +49,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
 
   try {
 
-    const users = User.findAll({
+    const users = await User.findAll({
       where: {
         subscription: {
           [Sequelize.Op.and]: [
@@ -87,7 +87,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
     const ticketExpirationDate = new Date();
     ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 30); // Calculate 30 days ago
 
-    const tickets = Tickets.findAll({
+    const tickets = await Tickets.findAll({
       where: {
         createdAt: { [Sequelize.Op.lt]: ticketExpirationDate },
         status: { [Sequelize.Op.ne]: 'open' }
