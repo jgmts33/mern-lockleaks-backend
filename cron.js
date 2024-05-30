@@ -123,7 +123,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
     console.log("tickets:", tickets);
 
     for (const ticket of tickets) {
-      const messages = Messages.findAll({
+      const messages = await Messages.findAll({
         where: {
           sender_id: {
             [Sequelize.Op.ne]: 1 // Not equal to 1
