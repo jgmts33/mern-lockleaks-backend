@@ -120,7 +120,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
         required: true,
         where: {
           sender_id: {
-            [Op.ne]: 1 // Not equal to 1
+            [Sequelize.Op.ne]: 1 // Not equal to 1
           },
           createdAt: {
             [Sequelize.Op.lt]: ticketExpirationDate // Greater than 7 days ago
