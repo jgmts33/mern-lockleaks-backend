@@ -85,7 +85,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
   try {
 
     const ticketExpirationDate = new Date();
-    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 30); // Calculate 30 days ago
+    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 2); // Calculate 30 days ago
 
     const tickets = await Tickets.findAll({
       where: {
@@ -112,7 +112,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
   try {
 
     const ticketExpirationDate = new Date();
-    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 6); // Calculate 6 days ago
+    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 1); // Calculate 6 days ago
 
     const tickets = await Tickets.findAll({
       where: {
