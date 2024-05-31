@@ -160,7 +160,7 @@ export const createFanPaymentLink = async (req, res) => {
 
 export const updatePaymentLink = async (req, res) => {
 
-  const { code } = req.body;
+  const { code, payment_method } = req.body;
 
   try {
 
@@ -180,8 +180,6 @@ export const updatePaymentLink = async (req, res) => {
       status: 'paid'
     });
 
-    io.emit(`payment_link_status_${code}`, 'paid');
-
     for (let item of paymentLink.usernames) {
       const { username, link } = item;
       await Usernames.create({
@@ -190,6 +188,23 @@ export const updatePaymentLink = async (req, res) => {
         userId: paymentLink.user_id
       })
     }
+
+    let expire_date = new Date();
+
+    expire_date.setDate(expire_date.getDate() + 30);
+
+    const user = await User.findByPk(paymentLink.user_id);
+
+    await user.update({
+      subscription: {
+        payment_method: payment_method,
+        expire_date,
+        plan_id: 4 /* Star Plan */,
+        status: 'active' // 'active'| 'expired'
+      }
+    });
+
+    io.emit(`payment_link_status_${code}`, 'paid');
 
     res.status(200).send({
       message: `Payment Link was updated as 'Paid' successfully and usernames were created to ${paymentLink.user_id}`
