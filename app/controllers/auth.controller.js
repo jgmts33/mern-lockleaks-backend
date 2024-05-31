@@ -112,7 +112,17 @@ export const signup = async (req, res) => {
 }
 
 export const sendEmailVerification = async (req, res) => {
-  const { email } = req.body;
+  const { email, id } = req.body;
+
+  const token = jwt.sign(
+    {
+      id
+    },
+    config.secret,
+    {
+      expiresIn: config.jwtExpiration,
+    }
+  );
 
   try {
     let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
