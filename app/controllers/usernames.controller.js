@@ -31,6 +31,28 @@ export const getUsernames = async (req, res) => {
   }
 };
 
+export const checkDoubleUsername = async (req, res) => {
+  const { username, link } = req.params;
+
+  try {
+
+    const row = await Usernames.findOne({
+      where: {
+        username,
+        link
+      }
+    });
+
+    if (row) res.status(200).send({ valid: false });
+    else res.status(200).send({ valid: true });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
 export const createUserNames = async (req, res) => {
   const { id } = req.params;
   const { usernames } = req.body;

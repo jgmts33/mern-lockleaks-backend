@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { createUserNames, getUsernames } from "../controllers/usernames.controller.js";
+import { checkDoubleUsername, createUserNames, getUsernames } from "../controllers/usernames.controller.js";
 
 export default function (app) {
 
@@ -22,4 +22,10 @@ export default function (app) {
     [authJwt.verifyToken],
     createUserNames
   );
+
+  app.post(
+    "/username-validation",
+    [authJwt.verifyToken],
+    checkDoubleUsername
+  )
 };
