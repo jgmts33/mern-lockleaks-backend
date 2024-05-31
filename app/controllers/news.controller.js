@@ -123,16 +123,15 @@ export const sendNews = async (req, res) => {
 
     const news = await News.findByPk(id);
 
-    const emails = await SubscribedUsers.findAll({
+    const rows = await SubscribedUsers.findAll({
       attributes: ['email']
     });
 
-    console.log("emails:", emails);
-
     let Recipients = [];
 
-    for (const email of emails) {
-      Recipients.push(new ElasticEmail.EmailRecipient(email))
+    for (const row of rows) {
+      console.log("row:", row.email);
+      Recipients.push(new ElasticEmail.EmailRecipient(row.email))
     }
 
     let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
