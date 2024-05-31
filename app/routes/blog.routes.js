@@ -31,7 +31,7 @@ export default function (app) {
   )
 
   app.post(
-    "/blogs/new",
+    "/blogs",
     [authJwt.verifyToken, authJwt.isAdmin],
     createBlog
   )
