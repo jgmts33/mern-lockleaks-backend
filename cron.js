@@ -85,7 +85,8 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
   try {
 
     const ticketExpirationDate = new Date();
-    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 2); // Calculate 30 days ago
+    // ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 30); // Calculate 30 days ago
+    ticketExpirationDate = new Date( Number(ticketExpirationDate) - 3 * 60 * 1000 );
 
     const tickets = await Tickets.findAll({
       where: {
@@ -112,7 +113,8 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
   try {
 
     const ticketExpirationDate = new Date();
-    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 1); // Calculate 6 days ago
+    // ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 1); // Calculate 6 days ago
+    ticketExpirationDate = new Date( Number(ticketExpirationDate) - 2 * 60 * 1000 );
 
     const tickets = await Tickets.findAll({
       where: {
@@ -129,7 +131,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
             [Sequelize.Op.ne]: 1 // Not equal to 1
           },
           createdAt: {
-            [Sequelize.Op.lt]: ticketExpirationDate // Greater than 7 days ago
+            [Sequelize.Op.lt]: ticketExpirationDate
           }
         },
         order: [['createdAt', 'DESC']], // Order messages by createdAt DESC to get the latest one
