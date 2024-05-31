@@ -32,7 +32,7 @@ export const getUsernames = async (req, res) => {
 };
 
 export const checkDoubleUsername = async (req, res) => {
-  const { username, link } = req.params;
+  const { username, link } = req.body;
 
   try {
 
