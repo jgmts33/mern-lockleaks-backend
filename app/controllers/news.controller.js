@@ -127,6 +127,8 @@ export const sendNews = async (req, res) => {
       attributes: ['email']
     });
 
+    console.log("emails:", emails);
+
     let Recipients = [];
 
     for (const email of emails) {
