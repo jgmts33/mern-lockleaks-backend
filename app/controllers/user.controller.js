@@ -64,7 +64,8 @@ export const getUsersList = async (req, res) => {
         payment_method: user.subscription.payment_method,
         expire_date: user.subscription.expire_date,
         plan_id: user.subscription.plan_id,
-        features: subscriptionFeatures
+        features: subscriptionFeatures,
+        status: user.subscription.status
       }
     }
 
