@@ -137,6 +137,21 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
       });
 
       if (messages.length) {
+        await Messages.create({
+          sender_id: 1,
+          ticket_id: ticket.id,
+          content: `Hello again,
+          \n\n
+          We noticed that we haven't received any further information from you regarding your issue. If you could provide us with your account username and any error messages you're encountering, we would be happy to assist you further.
+          \n\n
+          Please note that if we do not hear back from you within the next 24 hours, your ticket will be automatically closed. If your issue persists, you can always reopen a new ticket or respond to this message, and we'll be here to help.
+          \n\n
+          Thank you for your understanding.
+          \n\n
+          Best regards, \n
+          [Admin Name]\n
+          LockLeaks Support Team \n`
+        })
         await ticket.update({
           status: 'closed'
         });

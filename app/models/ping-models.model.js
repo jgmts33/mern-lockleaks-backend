@@ -1,13 +1,16 @@
 export default function (sequelize, Sequelize) {
   const PingModels = sequelize.define("ping_models", {
     model_name: {
-      type: Sequelize.STRING
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      default: []
     },
     platform: {
-      type: Sequelize.STRING
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      default: []
     },
     social_media: {
-      type: Sequelize.STRING
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      default: []
     },
     response: {
       type: Sequelize.BOOLEAN,
