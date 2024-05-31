@@ -1,3 +1,4 @@
+import { io } from "../../server.js";
 import db from "../models/index.js";
 import pkg from 'ping'
 
@@ -79,11 +80,12 @@ export const createPaymentLink = async (req, res) => {
       amount
     });
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (payment_link.status != 'paid')
-        payment_link.update({
+        await payment_link.update({
           status: 'expired'
         });
+      io.emit(`payment_link_status_${code}`, 'expired');
       // set as Expired after 48 hours
     }, 1000 * 60 * 5)
     // }, 1000 * 60 * 60 * 24 * 2)
@@ -135,11 +137,12 @@ export const createFanPaymentLink = async (req, res) => {
       amount
     });
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (payment_link.status != 'paid')
-        payment_link.update({
+        await payment_link.update({
           status: 'expired'
         });
+      io.emit(`payment_link_status_${code}`, 'expired');
       // set as Expired after 48 hours
     }, 1000 * 60 * 5)
     // }, 1000 * 60 * 60 * 24 * 2)
@@ -176,6 +179,8 @@ export const updatePaymentLink = async (req, res) => {
     await paymentLink.update({
       status: 'paid'
     });
+
+    io.emit(`payment_link_status_${code}`, 'paid');
 
     for (let item of paymentLink.usernames) {
       const { username, link } = item;
