@@ -84,7 +84,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
 
   try {
 
-    const ticketExpirationDate = new Date();
+    let ticketExpirationDate = new Date();
     // ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 30); // Calculate 30 days ago
     ticketExpirationDate = new Date( Number(ticketExpirationDate) - 3 * 60 * 1000 );
 
@@ -112,7 +112,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
 
   try {
 
-    const ticketExpirationDate = new Date();
+    let ticketExpirationDate = new Date();
     // ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 1); // Calculate 6 days ago
     ticketExpirationDate = new Date( Number(ticketExpirationDate) - 2 * 60 * 1000 );
 
