@@ -1,5 +1,5 @@
 import { checkDuplicateUsernameOrEmail, checkRolesExisted } from "../middleware/verifySignUp.js";;
-import { signin, signup, refreshToken, verifyEmail, googleAuthenticateUser, facebookAuthenticateUser, twitterAuthenticateUser, forgotPassword, resetPassword } from '../controllers/auth.controller.js';
+import { signin, signup, refreshToken, verifyEmail, googleAuthenticateUser, facebookAuthenticateUser, twitterAuthenticateUser, forgotPassword, resetPassword, sendEmailVerification } from '../controllers/auth.controller.js';
 
 export default function (app) {
 
@@ -21,4 +21,5 @@ export default function (app) {
   app.post("/auth/reset-password", resetPassword);
   app.post("/auth/refresh-token", refreshToken);
   app.post("/auth/verify-email", verifyEmail);
+  app.post("/auth/send-verification-email", sendEmailVerification);
 };
