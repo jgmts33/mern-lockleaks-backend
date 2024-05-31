@@ -155,7 +155,7 @@ export const sendNews = async (req, res) => {
         console.log('API called successfully.');
 
         res.status(200).send({
-          message: "News Sent Successfully!"
+          count: Recipients.length
         })
 
       }
