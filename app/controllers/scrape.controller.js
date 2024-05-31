@@ -76,7 +76,7 @@ export const scrapeData = async (req, res) => {
       requestData.query = query;
       index++;
       console.log("query:", query, " userindex:", id, " index:", index);
-      const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scrape`, {
+      const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/scrape`, {
         ...requestData
       });
 
