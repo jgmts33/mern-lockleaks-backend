@@ -157,8 +157,11 @@ export const updatePaymentStatus = async (req, res) => {
 
     let expire_date = new Date();
 
-    if (plan == 'trial') expire_date.setDate(expire_date.getDate() + 3);
-    else expire_date.setDate(expire_date.getDate() + 30);
+    // if (plan == 'trial') expire_date.setDate(expire_date.getDate() + 3);
+    if (plan == 'trial') expire_date.setDate(expire_date.getDate() + 1);
+
+    // else expire_date.setDate(expire_date.getDate() + 30);
+    else expire_date.setDate(expire_date.getDate() + 2);
 
     if (!user) {
       return res.status(404).send({
