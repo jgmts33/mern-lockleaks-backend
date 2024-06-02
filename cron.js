@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import db from "./app/models/index.js";
 import axios from "axios";
+import { io } from "./server.js";
 
 const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets } = db;
 
@@ -20,9 +21,13 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
       attributes: ['id', 'scrape_date']
     });
 
+    let scrapedIds = [];
+
     for (const data of expiredData) {
 
       try {
+
+        scrapedIds.push(data.id);
 
         await ScrapeSummary.update(
           { status: 'expired' },
@@ -39,7 +44,11 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
         console.log("err:", err);
       }
 
+      io.emit(`scraped_data_expired_${data.user_id}`, data.id);
+
     }
+
+    id.emit(`scraped_data_expired_admin`, scrapedIds);
 
   } catch (error) {
     console.error('Error in setting the scraped data as expired after 30 days:', error);
@@ -71,6 +80,8 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
 
         console.log(`Trial Expired for the user:${user.id}`)
 
+        io.emit(`payment_status_${user.id}`, 'expired');
+
       } catch (err) {
         console.log("err:", err);
       }
@@ -80,7 +91,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
     console.error('Error in setting the Trial plan as expired after 3 days.:', error);
   }
 
-  // Clear the Tickets and Messages after 30 days.
+  // Delete the Tickets and Messages after 30 days.
 
   try {
 
@@ -102,6 +113,7 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
       } catch (err) {
         console.log("err:", err);
       }
+      io.emit(`ticket_deleted`, ticket.id);
     }
 
   } catch (error) {
@@ -159,6 +171,10 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
         });
         console.log(`Tciket closed after 7 days with not response:${ticket.id}`);
       }
+
+      io.emit(`ticket_closed_${user_id}`, ticket.id);
+      io.emit(`ticket_closed_admin`, ticket.id);
+
     }
 
   } catch (error) {
