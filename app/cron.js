@@ -5,7 +5,7 @@ import { io } from "../server.js";
 
 const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets } = db;
 
-(async () => {
+export default async () => {
 
   // Setting the scraped data as expired after 30 days.
   try {
@@ -181,4 +181,4 @@ const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: T
     console.error('Error in setting the Trial plan as expired after 7 days.:', error);
   }
 
-})();
+};

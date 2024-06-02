@@ -21,6 +21,7 @@ import ticketsRoutes from './app/routes/tickets.routes.js';
 import paymentLinksRoutes from './app/routes/payment-links.routes.js';
 import newsRoutes from './app/routes/news.routes.js';
 import pingModelsRoutes from './app/routes/ping-models.routes.js';
+import cronFunc from './app/cron.js';
 
 configDotenv();
 
@@ -57,6 +58,11 @@ db.sequelize.sync({ force: true }).then(() => {
 
 app.get("/", (req, res) => {
   res.send({ mesage: "Server is alive" });
+})
+
+app.get("/cron-job", async(req, res) => {
+  const result = await cronFunc();
+  res.send({ mesage: "Cron worked correctly" });
 })
 
 const server = http.createServer(app);
