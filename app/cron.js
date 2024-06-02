@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
-import db from "./app/models/index.js";
+import db from "./models/index.js";
 import axios from "axios";
-import { io } from "./server.js";
+import { io } from "../server.js";
 
 const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets } = db;
 
