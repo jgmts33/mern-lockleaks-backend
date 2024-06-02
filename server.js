@@ -60,11 +60,6 @@ app.get("/", (req, res) => {
   res.send({ mesage: "Server is alive" });
 })
 
-app.get("/cron-job", async(req, res) => {
-  const result = await cronFunc();
-  res.send({ mesage: "Cron worked correctly" });
-})
-
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -83,6 +78,11 @@ io.on("connection", (socket) => {
     console.log("disconnected:", info);
   });
 
+})
+
+app.get("/cron-job", async(req, res) => {
+  const result = await cronFunc();
+  res.send({ mesage: "Cron worked correctly" });
 })
 
 authRoutes(app);
