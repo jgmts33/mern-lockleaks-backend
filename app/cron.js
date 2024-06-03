@@ -139,9 +139,7 @@ export default async () => {
     for (const ticket of tickets) {
       const messages = await Messages.findAll({
         where: {
-          sender_id: {
-            [Sequelize.Op.ne]: 1 // Not equal to 1
-          },
+          sender_id: 1,
           updatedAt: {
             [Sequelize.Op.lt]: ticketExpirationDate
           }
