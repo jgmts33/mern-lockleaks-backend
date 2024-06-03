@@ -96,8 +96,7 @@ export default async () => {
   try {
 
     let ticketExpirationDate = new Date();
-    // ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 30); // Calculate 30 days ago
-    ticketExpirationDate = new Date( Number(ticketExpirationDate) - 5 * 60 * 1000 );
+    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 30); // Calculate 30 days ago
 
     const tickets = await Tickets.findAll({
       where: {
@@ -125,8 +124,7 @@ export default async () => {
   try {
 
     let ticketExpirationDate = new Date();
-    // ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 1); // Calculate 6 days ago
-    ticketExpirationDate = new Date( Number(ticketExpirationDate) - 2 * 60 * 1000 );
+    ticketExpirationDate.setDate(ticketExpirationDate.getDate() - 7); // Calculate 6 days ago
 
     const tickets = await Tickets.findAll({
       where: {
