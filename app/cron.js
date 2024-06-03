@@ -142,7 +142,7 @@ export default async () => {
           sender_id: {
             [Sequelize.Op.ne]: 1 // Not equal to 1
           },
-          createdAt: {
+          updatedAt: {
             [Sequelize.Op.lt]: ticketExpirationDate
           }
         },
