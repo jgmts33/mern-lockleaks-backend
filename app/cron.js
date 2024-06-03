@@ -166,7 +166,7 @@ LockLeaks Support Team \n`
         console.log(`Tciket closed after 7 days with not response:${ticket.id}`);
       }
 
-      io.emit(`ticket_closed_${user_id}`, ticket.id);
+      io.emit(`ticket_closed_${ticket.user_id}`, ticket.id);
       io.emit(`ticket_closed_admin`, ticket.id);
 
     }
