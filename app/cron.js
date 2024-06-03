@@ -48,7 +48,7 @@ export default async () => {
 
     }
 
-    id.emit(`scraped_data_expired_admin`, scrapedIds);
+    io.emit(`scraped_data_expired_admin`, scrapedIds);
 
   } catch (error) {
     console.error('Error in setting the scraped data as expired after 30 days:', error);
