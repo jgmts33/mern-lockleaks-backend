@@ -16,9 +16,7 @@ export const getUserInfo = (req, res) => {
       if (user.subscription.plan_id) {
         const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
         subscription = {
-          payment_method: user.subscription.payment_method,
-          expire_date: user.subscription.expire_date,
-          plan_id: user.subscription.plan_id,
+          ...user.subscription,
           features: subscriptionFeatures
         }
       }
