@@ -78,6 +78,7 @@ export const signup = async (req, res) => {
           user.setRoles([1]).then(() => {
 
             res.status(200).send({
+              id: user.id,
               email: user.email,
               roles: ['user'],
               name: user.name,
@@ -212,6 +213,7 @@ export const signin = async (req, res) => {
         });
 
         res.status(200).send({
+          id: user.id,
           email: user.email,
           roles: roles.map((role) => role.name),
           name: user.name,
@@ -328,6 +330,7 @@ export const verifyEmail = async (req, res) => {
       let refreshToken = await RefreshToken.createToken(user);
 
       return res.status(200).send({
+        id: user.id,
         email: user.email,
         roles: user.role,
         name: user.name,
@@ -515,6 +518,7 @@ export const googleAuthenticateUser = async (req, res) => {
   }
 
   res.status(200).send({
+    id: user.id,
     email: user.email,
     roles: ['user'],
     name: user.name,
@@ -599,6 +603,7 @@ export const facebookAuthenticateUser = async (req, res) => {
     }
 
     res.status(200).send({
+      id: user.id,
       email: user.email,
       roles: ['user'],
       name: user.name,
@@ -682,6 +687,7 @@ export const twitterAuthenticateUser = async (req, res) => {
   }
 
   res.status(200).send({
+    id: user.id,
     email: user.email,
     roles: ['user'],
     name: user.name,

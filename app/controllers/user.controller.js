@@ -26,6 +26,7 @@ export const getUserInfo = (req, res) => {
       user.getRoles().then(roles => {
 
         res.status(200).send({
+          id: user.id,
           email: user.email,
           roles: roles.map((role) => role.name),
           name: user.name,
