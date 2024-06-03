@@ -110,6 +110,7 @@ export default async () => {
         await ticket.destroy();
         console.log(`Tciket deleted after 30 days for the ticket:${ticket.id}`)
         io.emit(`ticket_deleted`, ticket.id);
+        io.emit(`ticket_deleted_${ticket.user_id}`, ticket.id);
       } catch (err) {
         console.log("err:", err);
       }
