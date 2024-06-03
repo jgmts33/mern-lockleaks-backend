@@ -102,7 +102,6 @@ export default async () => {
     const tickets = await Tickets.findAll({
       where: {
         createdAt: { [Sequelize.Op.lt]: ticketExpirationDate },
-        status: { [Sequelize.Op.ne]: 'open' }
       },
     }) || [];
 
@@ -110,10 +109,10 @@ export default async () => {
       try {
         await ticket.destroy();
         console.log(`Tciket deleted after 30 days for the ticket:${ticket.id}`)
+        io.emit(`ticket_deleted`, ticket.id);
       } catch (err) {
         console.log("err:", err);
       }
-      io.emit(`ticket_deleted`, ticket.id);
     }
 
   } catch (error) {

@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
 })
 
 app.get("/cron-job", async(req, res) => {
-  const result = await cronFunc();
+  await cronFunc();
   res.send({ mesage: "Cron worked correctly" });
 })
 
