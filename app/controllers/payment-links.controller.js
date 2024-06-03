@@ -144,7 +144,7 @@ export const createFanPaymentLink = async (req, res) => {
         });
       io.emit(`payment_link_status_${code}`, 'expired');
       // set as Expired after 48 hours
-    }, 1000 * 60 * 5)
+    }, 1000 * 60 * 2)
     // }, 1000 * 60 * 60 * 24 * 2)
 
     res.status(200).send({
