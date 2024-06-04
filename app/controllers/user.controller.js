@@ -325,7 +325,7 @@ export const handleDeleteSubmition = async (req, res) => {
           })
         ],
         Subject: title,
-        From: elasticEmailConfig.auth.authEmail,
+        From: elasticEmailConfig.auth.deletionEmail,
       }
     });
 
