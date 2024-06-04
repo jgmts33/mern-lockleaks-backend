@@ -105,6 +105,18 @@ export const updateUserInfo = async (req, res) => {
       });
     }
 
+    const sameEmailUser = await User.findOne({
+      where: {
+        email
+      }
+    });
+
+    if ( sameEmailUser ) {
+      return res.status(403).send({
+        message: "That email already existed!"
+      });
+    }
+
     let updateData = {
       email
     }
