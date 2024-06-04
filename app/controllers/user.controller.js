@@ -111,7 +111,7 @@ export const updateUserInfo = async (req, res) => {
       }
     });
 
-    if ( sameEmailUser ) {
+    if (sameEmailUser) {
       return res.status(403).send({
         message: "That email already existed!"
       });
@@ -125,7 +125,7 @@ export const updateUserInfo = async (req, res) => {
       updateData.password = bcrypt.hashSync(password, 8)
     }
 
-    await user.update({...updateData});
+    await user.update({ ...updateData });
 
     res.status(200).send({
       message: `UserInfo updated ${user.id}`
@@ -308,15 +308,17 @@ export const handleDeleteSubmition = async (req, res) => {
   try {
 
     const title = `Delete Submition | ${name}`;
-    const content = `<div>Full Name: ${name}<br/>
+    const content = `<div> Full Name: ${name}<br/>
     Email used on lockleaks: ${email}<br/>
     Your capacity in making this request: ${capacityContent}<br/>
     Under which legislation are you making this request?: ${legislationContent}<br/>
-    Do you have a specific request related to your personal data?: ${specificContent}</div>
+    Do you have a specific request related to your personal data?: ${specificContent} <br/></div>
     `
 
     let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
-      Recipients: [new ElasticEmail.EmailRecipient(`support@lockleaks.com`)],
+      Recipients: [
+        new ElasticEmail.EmailRecipient(`support@lockleaks.com`)
+      ],
       Content: {
         Body: [
           ElasticEmail.BodyPart.constructFromObject({
@@ -333,6 +335,8 @@ export const handleDeleteSubmition = async (req, res) => {
       if (error) {
         console.error(error);
       } else {
+
+        console.log("data:----------------------------------------", data);
         console.log('API called successfully.');
 
         res.status(200).send({
