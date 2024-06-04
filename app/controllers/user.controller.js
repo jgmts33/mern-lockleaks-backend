@@ -128,6 +128,36 @@ export const updateUserInfo = async (req, res) => {
 
 }
 
+export const updateUserVisible = async (req, res) => {
+
+  const { id } = req.params;
+  const { ban } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User Not Found!"
+      });
+    }
+    await user.update({
+      ban
+    });
+
+    res.status(200).send({
+      message: `User Visible updated ${user.id}`
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
+  }
+
+}
+
 export const updateUserRole = async (req, res) => {
 
   const { id } = req.params;

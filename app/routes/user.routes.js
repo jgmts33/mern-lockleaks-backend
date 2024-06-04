@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -59,4 +59,11 @@ export default function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     updateUserRole
   )
+
+  app.patch(
+    "user-visible/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    updateUserVisible
+  )
+  
 };

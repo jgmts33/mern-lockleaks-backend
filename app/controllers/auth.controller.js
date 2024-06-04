@@ -94,7 +94,8 @@ export const signup = async (req, res) => {
                   token: refreshToken,
                   expires: refreshToken.expires
                 }
-              }
+              },
+              ban: user.ban
             });
 
           });
@@ -230,7 +231,8 @@ export const signin = async (req, res) => {
               token: refreshToken.token,
               expires: refreshToken.expires
             }
-          }
+          },
+          ban: user.ban
         });
       });
     })
@@ -347,7 +349,8 @@ export const verifyEmail = async (req, res) => {
             token: refreshToken.token,
             expires: refreshToken.expires
           }
-        }
+        },
+        ban: user.ban
       });
     } else {
       return res.status(500).send({
@@ -535,7 +538,8 @@ export const googleAuthenticateUser = async (req, res) => {
         token: refreshToken.token,
         expires: refreshToken.expires
       }
-    }
+    },
+    ban: user.ban
   });
 }
 
@@ -619,7 +623,8 @@ export const facebookAuthenticateUser = async (req, res) => {
           token: refreshToken.token,
           expires: refreshToken.expires
         }
-      }
+      },
+      ban: user.ban
     });
 
   }
@@ -704,7 +709,8 @@ export const twitterAuthenticateUser = async (req, res) => {
         token: refreshToken.token,
         expires: refreshToken.expires
       }
-    }
+    },
+    ban: user.ban
   });
 
 }

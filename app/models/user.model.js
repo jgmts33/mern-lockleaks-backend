@@ -47,6 +47,10 @@ export default function (sequelize, Sequelize) {
     users_info_images: {
       type: Sequelize.ARRAY(Sequelize.STRING),
       default: []
+    },
+    ban: {
+      type: Sequelize.BOOLEAN,
+      default: false
     }
   });
 
