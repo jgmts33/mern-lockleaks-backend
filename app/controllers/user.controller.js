@@ -56,7 +56,7 @@ export const getUsersList = async (req, res) => {
   const users = User.findAll({
     where: {
       email: {
-        [Op.not]: 'admin@lockleaks.com'
+        [Sequelize.Op.not]: 'admin@lockleaks.com'
       }
     }
   });
@@ -64,19 +64,6 @@ export const getUsersList = async (req, res) => {
   const responseData = [];
 
   for (let user of users) {
-
-    let subscription = user.subscription;
-
-    if (user.subscription.plan_id) {
-      const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
-      subscription = {
-        payment_method: user.subscription.payment_method,
-        expire_date: user.subscription.expire_date,
-        plan_id: user.subscription.plan_id,
-        features: subscriptionFeatures,
-        status: user.subscription.status
-      }
-    }
 
     user.getRoles().then(roles => {
 
@@ -87,7 +74,7 @@ export const getUsersList = async (req, res) => {
         name: user.name,
         avatar: user.avatar,
         verified: user.verified,
-        subscription: subscription,
+        subscription: user.subscription,
         social: user.social
       });
     });
