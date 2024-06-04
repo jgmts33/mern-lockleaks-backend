@@ -363,7 +363,7 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    await user.destory();
+    await user.destroy();
 
     res.status(200).send({
       message: `User deleted ${id}`
