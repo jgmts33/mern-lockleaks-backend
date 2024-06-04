@@ -312,7 +312,7 @@ export const handleDeleteSubmition = async (req, res) => {
     Email used on lockleaks: ${email}<br/>
     Your capacity in making this request: ${capacityContent}<br/>
     Under which legislation are you making this request?: ${legislationContent}<br/>
-    Do you have a specific request related to your personal data?: ${specificContent}
+    Do you have a specific request related to your personal data?: ${specificContent}</div>
     `
 
     let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
