@@ -106,7 +106,6 @@ export const getPingModels = async (req, res) => {
             }
           },
         ]
-
       }
     });
 
@@ -117,6 +116,7 @@ export const getPingModels = async (req, res) => {
     });
 
   } catch (err) {
+    console.log(err);
     res.status(500).send({
       message: err.message,
     });
