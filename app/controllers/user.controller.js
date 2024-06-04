@@ -220,7 +220,7 @@ export const handleDeleteSubmition = async (req, res) => {
           })
         ],
         Subject: title,
-        From: elasticEmailConfig.auth.newsEmail,
+        From: elasticEmailConfig.auth.authEmail,
       }
     });
 
