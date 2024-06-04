@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -43,4 +43,8 @@ export default function (app) {
     updatePaymentStatus
   )
 
+  app.post(
+    "/report-delete-data",
+    handleDeleteSubmition
+  )
 };

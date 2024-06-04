@@ -1,6 +1,16 @@
 import { Sequelize, where } from "sequelize";
 import db from "../models/index.js";
 
+let defaultClient = ElasticEmail.ApiClient.instance;
+
+import ElasticEmail from '@elasticemail/elasticemail-client';
+import elasticEmailConfig from '../config/elasticEmail.config..js';
+
+let apikey = defaultClient.authentications['apikey'];
+apikey.apiKey = elasticEmailConfig.auth.apiKey
+
+let api = new ElasticEmail.EmailsApi()
+
 const { user: User, scrapeSummary: ScrapeSummary, subscriptionOptions: SubscriptionOptions } = db;
 
 export const getUserInfo = (req, res) => {
@@ -185,4 +195,52 @@ export const updatePaymentStatus = async (req, res) => {
     })
   }
 
+}
+
+export const handleDeleteSubmition = async (req, res) => {
+  const { name, email, capacityContent, legislationContent, specificContent } = req.body;
+
+  try {
+
+    const title = `Delete Submition | ${name}`;
+    const content = `Full Name: ${name}\n`;
+    content += `Email used on lockleaks: ${email}\n
+    Your capacity in making this request: ${capacityContent}\n
+    Under which legislation are you making this request?: ${legislationContent}\n
+    Do you have a specific request related to your personal data?: ${specificContent}
+    `
+
+    let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+      Recipients: [new ElasticEmail.EmailRecipient(`support@lockleaks.com`)],
+      Content: {
+        Body: [
+          ElasticEmail.BodyPart.constructFromObject({
+            ContentType: "HTML",
+            Content: content
+          })
+        ],
+        Subject: title,
+        From: elasticEmailConfig.auth.newsEmail,
+      }
+    });
+
+    var callback = function (error, data, response) {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('API called successfully.');
+
+        res.status(200).send({
+          count: Recipients.length
+        })
+
+      }
+    };
+
+    api.emailsPost(emailContent, callback);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
 }
