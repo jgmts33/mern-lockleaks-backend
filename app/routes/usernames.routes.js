@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { checkDoubleUsername, createUserNames, getUsernames } from "../controllers/usernames.controller.js";
+import { checkDoubleUsername, createUserNames, deleteUsername, getUsernames, updateUserName } from "../controllers/usernames.controller.js";
 
 export default function (app) {
 
@@ -28,4 +28,16 @@ export default function (app) {
     [authJwt.verifyToken],
     checkDoubleUsername
   )
+
+  app.patch(
+    "/usernames/:id",
+    [authJwt.verifyToken],
+    updateUserName
+  );
+
+  app.delete(
+    "/usernames/:id",
+    [authJwt.verifyToken],
+    deleteUsername
+  );
 };

@@ -336,9 +336,6 @@ export const handleDeleteSubmition = async (req, res) => {
         console.error(error);
       } else {
 
-        console.log("data:----------------------------------------", response);
-        console.log('API called successfully.');
-
         res.status(200).send({
           message: "Data Submitted Successfully!"
         })
