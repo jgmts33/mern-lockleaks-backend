@@ -231,7 +231,7 @@ export const handleDeleteSubmition = async (req, res) => {
         console.log('API called successfully.');
 
         res.status(200).send({
-          count: Recipients.length
+          message: "Data Submitted Successfully!"
         })
 
       }
