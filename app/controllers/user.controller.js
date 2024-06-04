@@ -52,37 +52,113 @@ export const getUserInfo = (req, res) => {
     });
 }
 export const getUsersList = async (req, res) => {
-
-  const users = User.findAll({
-    where: {
-      email: {
-        [Sequelize.Op.not]: 'admin@lockleaks.com'
+  try {
+    const users = User.findAll({
+      where: {
+        email: {
+          [Sequelize.Op.not]: 'admin@lockleaks.com'
+        }
       }
-    }
-  });
-
-  const responseData = [];
-
-  for (let user of users) {
-
-    user.getRoles().then(roles => {
-
-      responseData.push({
-        id: user.id,
-        email: user.email,
-        roles: roles.map((role) => role.name),
-        name: user.name,
-        avatar: user.avatar,
-        verified: user.verified,
-        subscription: user.subscription,
-        social: user.social
-      });
     });
+
+    const responseData = [];
+
+    for (let user of users) {
+
+      user.getRoles().then(roles => {
+
+        responseData.push({
+          id: user.id,
+          email: user.email,
+          roles: roles.map((role) => role.name),
+          name: user.name,
+          avatar: user.avatar,
+          verified: user.verified,
+          subscription: user.subscription,
+          social: user.social
+        });
+      });
+    }
+
+    res.status(200).send(responseData);
+
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
+  }
+}
+
+export const updateUserInfo = async (req, res) => {
+
+  const { id } = req.params;
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User Not Found!"
+      });
+    }
+
+    let updateData = {
+      email
+    }
+
+    if (password) {
+      updateData.password = bcrypt.hashSync(password, 8)
+    }
+
+    await user.update(...updateData);
+
+    res.status(200).send({
+      message: `UserInfo updated ${user.id}`
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
   }
 
-  res.status(200).send(responseData);
+}
+
+export const updateUserRole = async (req, res) => {
+
+  const { id } = req.params;
+  const { roles } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User Not Found!"
+      });
+    }
+
+    await user.update({
+      roles
+    });
+
+    res.status(200).send({
+      message: `UserInfo updated ${user.id}`
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
+  }
 
 }
+
 
 export const getExtraReport = async (req, res) => {
 

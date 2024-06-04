@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -46,5 +46,17 @@ export default function (app) {
   app.post(
     "/report-delete-data",
     handleDeleteSubmition
+  )
+
+  app.patch(
+    "user/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    updateUserInfo
+  )
+
+  app.patch(
+    "user-role/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    updateUserRole
   )
 };
