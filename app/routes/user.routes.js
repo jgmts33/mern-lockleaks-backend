@@ -49,19 +49,19 @@ export default function (app) {
   )
 
   app.patch(
-    "user/:id",
+    "/user/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateUserInfo
   )
 
   app.patch(
-    "user-role/:id",
+    "/user-role/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateUserRole
   )
 
   app.patch(
-    "user-visible/:id",
+    "/user-visible/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateUserVisible
   )
