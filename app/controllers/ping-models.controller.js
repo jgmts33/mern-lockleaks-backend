@@ -89,17 +89,23 @@ export const getPingModels = async (req, res) => {
       limit: 6,
       offset: (page - 1) * 6,
       where: {
-        [Sequelize.Op.or]: {
-          model_name: {
-            [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+        [Sequelize.Op.or]: [
+          {
+            model_name: {
+              [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+            }
           },
-          platform: {
-            [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+          {
+            platform: {
+              [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+            }
           },
-          social_media: {
-            [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+          {
+            social_media: {
+              [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+            }
           },
-        }
+        ]
 
       }
     });

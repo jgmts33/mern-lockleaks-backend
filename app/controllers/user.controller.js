@@ -71,7 +71,7 @@ export const getUsersList = async (req, res) => {
                 }
               },
               {
-                username: {
+                name: {
                   [Sequelize.Op.like]: '%' + search + '%'
                 }
               }
