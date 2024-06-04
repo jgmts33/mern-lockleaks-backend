@@ -53,13 +53,31 @@ export const getUserInfo = (req, res) => {
 }
 export const getUsersList = async (req, res) => {
 
-  const { page } = req.query;
+  const { page, search } = req.query;
   try {
     const { count: totalCount, rows: users } = await User.findAndCountAll({
       where: {
-        email: {
-          [Sequelize.Op.ne]: 'admin@lockleaks.com'
-        }
+        [Sequelize.Op.and]: [
+          {
+            email: {
+              [Sequelize.Op.ne]: 'admin@lockleaks.com'
+            }
+          },
+          {
+            [Sequelize.Op.or]: [
+              {
+                email: {
+                  [Sequelize.Op.like]: '%' + search + '%'
+                }
+              },
+              {
+                username: {
+                  [Sequelize.Op.like]: '%' + search + '%'
+                }
+              }
+            ]
+          }
+        ]
       },
       limit: 6,
       offset: (page - 1) * 6

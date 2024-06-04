@@ -1,3 +1,4 @@
+import { Sequelize } from "sequelize";
 import db from "../models/index.js";
 
 const { pingModels: PingModels } = db;
@@ -80,13 +81,27 @@ export const deletePingModel = async (req, res) => {
 
 export const getPingModels = async (req, res) => {
 
-  const { page } = req.query;
+  const { page, search } = req.query;
 
   try {
 
     const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
       limit: 6,
-      offset: (page - 1) * 6
+      offset: (page - 1) * 6,
+      where: {
+        [Sequelize.Op.or]: {
+          model_name: {
+            [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+          },
+          platform: {
+            [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+          },
+          social_media: {
+            [Sequelize.Op.like]: '%' + search + '%', // Example search condition, adjust according to your model's attributes
+          },
+        }
+
+      }
     });
 
     res.status(200).send({
