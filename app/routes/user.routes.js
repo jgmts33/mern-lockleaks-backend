@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -65,5 +65,10 @@ export default function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     updateUserVisible
   )
-  
+
+  app.delete(
+    "/user/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    deleteUser
+  )
 };
