@@ -52,13 +52,17 @@ export const getUserInfo = (req, res) => {
     });
 }
 export const getUsersList = async (req, res) => {
+
+  const { page } = req.query;
   try {
-    const users = await User.findAll({
+    const { count: totalCount, rows: users } = await User.findAndCountAll({
       where: {
         email: {
           [Sequelize.Op.ne]: 'admin@lockleaks.com'
         }
-      }
+      },
+      limit: 6,
+      offset: (page - 1) * 6
     });
 
     const responseData = [];
@@ -80,7 +84,11 @@ export const getUsersList = async (req, res) => {
       });
     }
 
-    res.status(200).send(responseData);
+    res.status(200).send({
+      data: responseData,
+      totalCount: totalCount,
+      totalPage: Math.ceil(totalCount / 6)
+    });
 
   }
   catch (err) {
