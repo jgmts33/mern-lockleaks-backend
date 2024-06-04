@@ -113,7 +113,7 @@ export const updateUserInfo = async (req, res) => {
       updateData.password = bcrypt.hashSync(password, 8)
     }
 
-    await user.update(...updateData);
+    await user.update({...updateData});
 
     res.status(200).send({
       message: `UserInfo updated ${user.id}`
