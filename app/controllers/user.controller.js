@@ -53,7 +53,7 @@ export const getUserInfo = (req, res) => {
 }
 export const getUsersList = async (req, res) => {
   try {
-    const users = User.findAll({
+    const users = await User.findAll({
       where: {
         email: {
           [Sequelize.Op.ne]: 'admin@lockleaks.com'
