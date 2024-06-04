@@ -56,7 +56,7 @@ export const getUsersList = async (req, res) => {
     const users = User.findAll({
       where: {
         email: {
-          [Sequelize.Op.not]: 'admin@lockleaks.com'
+          [Sequelize.Op.ne]: 'admin@lockleaks.com'
         }
       }
     });
