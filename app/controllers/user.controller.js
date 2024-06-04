@@ -308,10 +308,10 @@ export const handleDeleteSubmition = async (req, res) => {
   try {
 
     const title = `Delete Submition | ${name}`;
-    const content = `Full Name: ${name}\n
-    Email used on lockleaks: ${email}\n
-    Your capacity in making this request: ${capacityContent}\n
-    Under which legislation are you making this request?: ${legislationContent}\n
+    const content = `<div>Full Name: ${name}<br/>
+    Email used on lockleaks: ${email}<br/>
+    Your capacity in making this request: ${capacityContent}<br/>
+    Under which legislation are you making this request?: ${legislationContent}<br/>
     Do you have a specific request related to your personal data?: ${specificContent}
     `
 
