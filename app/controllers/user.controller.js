@@ -65,7 +65,7 @@ export const getUsersList = async (req, res) => {
 
     for (let user of users) {
 
-      user.getRoles().then(roles => {
+      await user.getRoles().then(roles => {
 
         responseData.push({
           id: user.id,
