@@ -90,7 +90,7 @@ export const updateUserName = async (req, res) => {
   const { username, link } = req.body;
 
   try {
-    const row = Usernames.findByPk(id);
+    const row = await Usernames.findByPk(id);
 
     if (!row) {
       res.status(404).send({
@@ -120,7 +120,7 @@ export const deleteUsername = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const row = Usernames.findByPk(id);
+    const row = await Usernames.findByPk(id);
 
     if (!row) {
       res.status(404).send({
