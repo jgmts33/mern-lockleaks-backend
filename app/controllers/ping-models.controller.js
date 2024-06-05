@@ -90,17 +90,17 @@ export const getPingModels = async (req, res) => {
         [Sequelize.Op.or]: [
           {
             model_name: {
-              [Sequelize.Op.contains]: search
+              [Sequelize.Op.in]: search
             }
           },
           {
             platform: {
-              [Sequelize.Op.contains]: search
+              [Sequelize.Op.in]: search
             }
           },
           {
             social_media: {
-              [Sequelize.Op.contains]: search
+              [Sequelize.Op.in]: search
             }
           }
         ]
