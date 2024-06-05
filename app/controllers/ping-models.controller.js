@@ -80,26 +80,24 @@ export const deletePingModel = async (req, res) => {
 };
 
 export const getPingModels = async (req, res) => {
-
   const { page, search } = req.query;
 
   try {
-
     let whereCondition = {};
 
     if (search) {
+      // Directly embed the search term into the SQL string
       whereCondition = {
         [Sequelize.Op.or]: [
-          { model_name: Sequelize.literal(`model_name @> ARRAY[?]::varchar[]`) },
-          { platform: Sequelize.literal(`platform @> ARRAY[?]::varchar[]`) },
-          { social_media: Sequelize.literal(`social_media @> ARRAY[?]::varchar[]`) }
+          { model_name: Sequelize.literal(`model_name @> ARRAY['${search}']::varchar[]`) },
+          { platform: Sequelize.literal(`platform @> ARRAY['${search}']::varchar[]`) },
+          { social_media: Sequelize.literal(`social_media @> ARRAY['${search}']::varchar[]`) }
         ]
       };
     }
 
     const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
       where: whereCondition,
-      replacements: [search],
       limit: 6,
       offset: (page - 1) * 6
     });
@@ -116,5 +114,4 @@ export const getPingModels = async (req, res) => {
       message: err.message,
     });
   }
-
 }
