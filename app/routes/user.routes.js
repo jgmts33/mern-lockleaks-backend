@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit } from '../controllers/user.controller.js';
 
 export default function (app) {
 
@@ -70,5 +70,11 @@ export default function (app) {
     "/user/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     deleteUser
+  )
+
+  app.post(
+    "/user-kyc/:id"
+    [authJwt.verifyToken],
+    kycSubmit
   )
 };
