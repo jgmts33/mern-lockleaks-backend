@@ -89,7 +89,7 @@ export const getPingModels = async (req, res) => {
 
     if (search) {
       // Directly embed the search term into the SQL string
-      whereCondition = Sequelize.literal(`
+      whereCondition = `
       SELECT *
       FROM ping_models
       WHERE (
@@ -97,11 +97,11 @@ export const getPingModels = async (req, res) => {
         platform @> ARRAY[${searchPattern}] OR
         social_media @> ARRAY[${searchPattern}]
       )
-    `);
+    `;
     }
 
     const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
-      where: whereCondition,
+      where: search ? Sequelize.literal(whereCondition) : {},
       limit: 6,
       offset: (page - 1) * 6
     });
