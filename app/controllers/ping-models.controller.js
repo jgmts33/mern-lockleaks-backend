@@ -86,7 +86,8 @@ export const getPingModels = async (req, res) => {
   try {
 
     let whereCondition = {};
-    if (!search) {
+    
+    if (search) {
       whereCondition = {
         [Sequelize.Op.or]: [
           {
