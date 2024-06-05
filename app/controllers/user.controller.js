@@ -414,12 +414,15 @@ export const kycSubmit = async (req, res) => {
 
   const { id } = req.params;
   const { name } = req.body;
-  const id_card = req.files['idcard'];
-  const selfie = req.files['selfie'];
 
   archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
   try {
+
+    console.log("req.files:", req.files);
+
+    const id_card = req.files['idcard'];
+    const selfie = req.files['selfie'];
 
     const user = await User.findByPk(id);
 
