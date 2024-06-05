@@ -80,46 +80,40 @@ export const deletePingModel = async (req, res) => {
 };
 
 export const getPingModels = async (req, res) => {
+
   const { page, search } = req.query;
-  const pageSize = 6; // Define your page size
 
   try {
-    // Construct a condition to fetch rows based on a broader criterion
-    const whereCondition = {
-      [Sequelize.Op.or]: [
-        { model_name: { [Sequelize.Op.like]: `%${search}%` } },
-        { platform: { [Sequelize.Op.like]: `%${search}%` } },
-        { social_media: { [Sequelize.Op.like]: `%${search}%` } }
-      ]
-    };
 
-    // Fetch all rows based on the condition
-    const rows = await PingModels.findAll({ where: whereCondition });
+    let whereCondition = {};
 
-    // Calculate the total number of pages
-    const totalCount = rows.length;
-    const totalPages = Math.ceil(totalCount / pageSize);
+    if (search) {
+      whereCondition = {
+        [Sequelize.Op.or]: [
+          { model_name: Sequelize.where(Sequelize.literal(`ARRAY[?]::varchar[] LIKE '%${search}%'`), ['']) },
+          { platform: Sequelize.where(Sequelize.literal(`ARRAY[?]::varchar[] LIKE '%${search}%'`), ['']) },
+          { social_media: Sequelize.where(Sequelize.literal(`ARRAY[?]::varchar[] LIKE '%${search}%'`), ['']) }
+        ]
+      };
+    }
 
-    // Apply pagination
-    const paginatedRows = rows.slice((page - 1) * pageSize, page * pageSize);
-
-    // Filter rows in JavaScript to match the criteria
-    const filteredRows = paginatedRows.filter(row => {
-      return row.model_name.some(item => item.includes(search)) ||
-             row.platform.some(item => item.includes(search)) ||
-             row.social_media.some(item => item.includes(search));
+    const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
+      where: whereCondition,
+      limit: 6,
+      offset: (page - 1) * 6
     });
 
-    res.status(200).json({
-      data: filteredRows,
+    res.status(200).send({
+      data: pingModels,
       totalCount: totalCount,
-      totalPages: totalPages
+      totalPages: Math.ceil(totalCount / 6)
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
+    console.log(err);
+    res.status(500).send({
       message: err.message,
     });
   }
+
 }
