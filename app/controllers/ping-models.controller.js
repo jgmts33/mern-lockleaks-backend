@@ -86,27 +86,15 @@ export const getPingModels = async (req, res) => {
   try {
 
     let whereCondition = {};
-    
+
     if (search) {
-      whereCondition = {
-        [Sequelize.Op.or]: [
-          {
-            model_name: {
-              [Sequelize.Op.contains]: [search]
-            }
-          },
-          {
-            platform: {
-              [Sequelize.Op.contains]: [search]
-            }
-          },
-          {
-            social_media: {
-              [Sequelize.Op.contains]: [search]
-            }
-          }
-        ]
-      }
+      whereCondition = Sequelize.where(
+        Sequelize.or([
+          Sequelize.where(Sequelize.col('model_name'), Sequelize.Op.like, `%${search}%`),
+          Sequelize.where(Sequelize.col('platform'), Sequelize.Op.like, `%${search}%`),
+          Sequelize.where(Sequelize.col('social_media'), Sequelize.Op.like, `%${search}%`)
+        ])
+      );
     }
 
     const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
