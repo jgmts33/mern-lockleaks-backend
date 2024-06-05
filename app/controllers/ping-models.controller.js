@@ -89,9 +89,9 @@ export const getPingModels = async (req, res) => {
       // Directly embed the search term into the SQL string
       whereCondition = {
         [Sequelize.Op.or]: [
-          { model_name: Sequelize.literal(`model_name @> ARRAY['${search}']::varchar[]`) },
-          { platform: Sequelize.literal(`platform @> ARRAY['${search}']::varchar[]`) },
-          { social_media: Sequelize.literal(`social_media @> ARRAY['${search}']::varchar[]`) }
+          { model_name: Sequelize.where(Sequelize.fn('LIKE', Sequelize.col('model_name'), '%' + search + '%')) },
+          { platform: Sequelize.where(Sequelize.fn('LIKE', Sequelize.col('platform'), '%' + search + '%')) },
+          { social_media: Sequelize.where(Sequelize.fn('LIKE', Sequelize.col('social_media'), '%' + search + '%')) }
         ]
       };
     }
