@@ -90,15 +90,16 @@ export const getPingModels = async (req, res) => {
     if (search) {
       whereCondition = {
         [Sequelize.Op.or]: [
-          { model_name: Sequelize.literal(`model_name @> ARRAY[?]::varchar[]`), search },
-          { platform: Sequelize.literal(`platform @> ARRAY[?]::varchar[]`), search },
-          { social_media: Sequelize.literal(`social_media @> ARRAY[?]::varchar[]`), search }
+          { model_name: Sequelize.literal(`model_name @> ARRAY[?]::varchar[]`) },
+          { platform: Sequelize.literal(`platform @> ARRAY[?]::varchar[]`) },
+          { social_media: Sequelize.literal(`social_media @> ARRAY[?]::varchar[]`) }
         ]
       };
     }
 
     const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
       where: whereCondition,
+      replacements: [search],
       limit: 6,
       offset: (page - 1) * 6
     });
