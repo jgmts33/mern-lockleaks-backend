@@ -82,26 +82,34 @@ export const deletePingModel = async (req, res) => {
 export const getPingModels = async (req, res) => {
   const { page, search } = req.query;
 
-  const searchPattern = '%' + search + '%';
-
   try {
     let whereCondition = {};
 
     if (search) {
       // Directly embed the search term into the SQL string
-      whereCondition = `
-      SELECT *
-      FROM ping_models
-      WHERE (
-        model_name @> ARRAY[${searchPattern}] OR
-        platform @> ARRAY[${searchPattern}] OR
-        social_media @> ARRAY[${searchPattern}]
-      )
-    `;
+      whereCondition = {
+        [Sequelize.Op.or]: [
+          {
+            model_name: {
+              [Sequelize.Op.overlap]: [`%${search}%`]
+            }
+          },
+          {
+            platform: {
+              [Sequelize.Op.overlap]: [`%${search}%`]
+            }
+          },
+          {
+            social_media: {
+              [Sequelize.Op.overlap]: [`%${search}%`]
+            }
+          }
+        ]
+      };
     }
 
     const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
-      where: search ? Sequelize.literal(whereCondition) : {},
+      where: whereCondition,
       limit: 6,
       offset: (page - 1) * 6
     });
