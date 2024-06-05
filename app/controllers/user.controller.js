@@ -41,7 +41,9 @@ export const getUserInfo = (req, res) => {
           avatar: user.avatar,
           verified: user.verified,
           subscription: subscription,
-          social: user.social
+          social: user.social,
+          contract: user.contract,
+          copyright_holder: user.copyright_holder
         });
       });
     })

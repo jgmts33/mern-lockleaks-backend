@@ -51,6 +51,14 @@ export default function (sequelize, Sequelize) {
     ban: {
       type: Sequelize.BOOLEAN,
       default: false
+    },
+    contract: {
+      type: Sequelize.STRING,
+      default: ""
+    },
+    copyright_holder: {
+      type: Sequelize.STRING,
+      default: ""
     }
   });
 
