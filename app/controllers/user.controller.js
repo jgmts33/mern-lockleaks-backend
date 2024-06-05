@@ -1,5 +1,8 @@
 import { Sequelize, where } from "sequelize";
 import db from "../models/index.js";
+import crypto from 'crypto';
+import archiver from "archiver";
+import archiverZipEncryptable from 'archiver-zip-encryptable';
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -405,4 +408,81 @@ export const deleteUser = async (req, res) => {
     })
   }
 
+}
+
+export const kycSubmit = async (req, res) => {
+
+  const { id } = req.params;
+  const id_card = req.files['id_card'];
+  const selfie = req.files['selfie'];
+
+  archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
+
+  try {
+
+    const user = await User.findByPk(id);
+    
+    const key = crypto.randomBytes(32);
+    const password = key.toString('hex');
+
+    const archive = archiver('zip-encryptable', {
+      zlib: { level: 9 },
+      password
+    });
+
+    archive.on('error', err => {
+      console.log(err);
+
+      res.status(500).send({
+        message: `Error when zip: ${err.message}`
+      });
+    });
+
+    archive.append(id_card);
+    archive.append(selfie);
+
+    await archive.finalize();
+
+    let emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+      Recipients: [
+        new ElasticEmail.EmailRecipient(`support@lockleaks.com`)
+      ],
+      Content: {
+        Body: [
+          new ElasticEmail.Attachment({
+            Name: user.email, // The name of the file being attached
+            Type: 'application/octet-stream', // MIME type of the file
+            Data: archive // Read the file content synchronously
+          }),
+          // If you still want to include HTML content alongside attachments, you can add another BodyPart like before
+          ElasticEmail.BodyPart.constructFromObject({
+            ContentType: "HTML",
+            Content: "KYC Submition"
+          })
+        ],
+        Subject: 'KYC Submition',
+        From: elasticEmailConfig.auth.authEmail,
+      }
+    });
+
+    var callback = function (error, data, response) {
+      if (error) {
+        console.error(error);
+      } else {
+
+        res.status(200).send({
+          message: "Data Submitted Successfully!"
+        })
+
+      }
+    };
+
+    api.emailsPost(emailContent, callback);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
+  }
 }
