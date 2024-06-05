@@ -53,8 +53,11 @@ export default function (sequelize, Sequelize) {
       default: false
     },
     contract: {
-      type: Sequelize.STRING,
-      default: ""
+      type: Sequelize.JSONB,
+      default: {
+        pdf_path: "",
+        status: "" // ''|requested|approved
+      }
     },
     copyright_holder: {
       type: Sequelize.STRING,
