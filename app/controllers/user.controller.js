@@ -415,13 +415,14 @@ export const kycSubmit = async (req, res) => {
   const { id } = req.params;
   const id_card = req.files['id_card'];
   const selfie = req.files['selfie'];
+  const { name } = req.body;
 
   archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
   try {
 
     const user = await User.findByPk(id);
-    
+
     const key = crypto.randomBytes(32);
     const password = key.toString('hex');
 
@@ -457,7 +458,7 @@ export const kycSubmit = async (req, res) => {
           // If you still want to include HTML content alongside attachments, you can add another BodyPart like before
           ElasticEmail.BodyPart.constructFromObject({
             ContentType: "HTML",
-            Content: "KYC Submition"
+            Content: `KYC Submition - ${name}`
           })
         ],
         Subject: 'KYC Submition',
