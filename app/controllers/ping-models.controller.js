@@ -80,40 +80,46 @@ export const deletePingModel = async (req, res) => {
 };
 
 export const getPingModels = async (req, res) => {
-
   const { page, search } = req.query;
+  const pageSize = 6; // Define your page size
 
   try {
+    // Construct a condition to fetch rows based on a broader criterion
+    const whereCondition = {
+      [Sequelize.Op.or]: [
+        { model_name: { [Sequelize.Op.like]: `%${search}%` } },
+        { platform: { [Sequelize.Op.like]: `%${search}%` } },
+        { social_media: { [Sequelize.Op.like]: `%${search}%` } }
+      ]
+    };
 
-    let whereCondition = {};
+    // Fetch all rows based on the condition
+    const rows = await PingModels.findAll({ where: whereCondition });
 
-    if (search) {
-      whereCondition = {
-        [Sequelize.Op.or]: [
-          { model_name: { [Sequelize.Op.iLike]: `%${search}%` } },
-          { platform: { [Sequelize.Op.iLike]: `%${search}%` } },
-          { social_media: { [Sequelize.Op.iLike]: `%${search}%` } }
-        ]
-      };
-    }
+    // Calculate the total number of pages
+    const totalCount = rows.length;
+    const totalPages = Math.ceil(totalCount / pageSize);
 
-    const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
-      where: whereCondition,
-      limit: 6,
-      offset: (page - 1) * 6
+    // Apply pagination
+    const paginatedRows = rows.slice((page - 1) * pageSize, page * pageSize);
+
+    // Filter rows in JavaScript to match the criteria
+    const filteredRows = paginatedRows.filter(row => {
+      return row.model_name.some(item => item.includes(search)) ||
+             row.platform.some(item => item.includes(search)) ||
+             row.social_media.some(item => item.includes(search));
     });
 
-    res.status(200).send({
-      data: pingModels,
+    res.status(200).json({
+      data: filteredRows,
       totalCount: totalCount,
-      totalPages: Math.ceil(totalCount / 6)
+      totalPages: totalPages
     });
 
   } catch (err) {
-    console.log(err);
-    res.status(500).send({
+    console.error(err);
+    res.status(500).json({
       message: err.message,
     });
   }
-
 }
