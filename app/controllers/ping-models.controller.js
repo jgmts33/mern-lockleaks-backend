@@ -90,9 +90,9 @@ export const getPingModels = async (req, res) => {
     if (search) {
       whereCondition = {
         [Sequelize.Op.or]: [
-          { model_name: Sequelize.where(Sequelize.literal(`model_name @> ARRAY[?]::varchar[]`), [search]) },
-          { platform: Sequelize.where(Sequelize.literal(`platform @> ARRAY[?]::varchar[]`), [search]) },
-          { social_media: Sequelize.where(Sequelize.literal(`social_media @> ARRAY[?]::varchar[]`), [search]) }
+          { model_name: Sequelize.where(Sequelize.literal(`model_name @> ARRAY[?]::varchar[]`), search) },
+          { platform: Sequelize.where(Sequelize.literal(`platform @> ARRAY[?]::varchar[]`), search) },
+          { social_media: Sequelize.where(Sequelize.literal(`social_media @> ARRAY[?]::varchar[]`), search) }
         ]
       };
     }
