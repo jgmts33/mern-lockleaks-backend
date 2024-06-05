@@ -413,9 +413,9 @@ export const deleteUser = async (req, res) => {
 export const kycSubmit = async (req, res) => {
 
   const { id } = req.params;
-  const id_card = req.files['id_card'];
-  const selfie = req.files['selfie'];
   const { name } = req.body;
+  const id_card = req.files['idcard'];
+  const selfie = req.files['selfie'];
 
   archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
