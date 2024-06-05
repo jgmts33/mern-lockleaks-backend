@@ -419,7 +419,7 @@ export const kycSubmit = async (req, res) => {
 
   try {
 
-    console.log("req.files:", req.files);
+    console.log("req.files:", req.files, req.body);
 
     const id_card = req.files['idcard'];
     const selfie = req.files['selfie'];
