@@ -88,10 +88,28 @@ export const getPingModels = async (req, res) => {
     const { count: totalCount, rows: pingModels } = await PingModels.findAndCountAll({
       where: {
         [Sequelize.Op.or]: [
-          { model_name: { [Sequelize.Op.like]: '%' + search + '%' } },
-          { platform: { [Sequelize.Op.like]: '%' + search + '%' } },
-          { social_media: { [Sequelize.Op.like]: '%' + search + '%' } },
-        ],
+          {
+            model_name: {
+              [Sequelize.Op.contain]: {
+                [Sequelize.Op.like]: '%' + search + '%'
+              }
+            }
+          },
+          {
+            platform: {
+              [Sequelize.Op.contain]: {
+                [Sequelize.Op.like]: '%' + search + '%'
+              }
+            }
+          },
+          {
+            social_media: {
+              [Sequelize.Op.contain]: {
+                [Sequelize.Op.like]: '%' + search + '%'
+              }
+            }
+          }
+        ]
       },
       limit: 6,
       offset: (page - 1) * 6
