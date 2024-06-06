@@ -414,8 +414,7 @@ export const deleteUser = async (req, res) => {
 
 export const kycSubmit = async (req, res) => {
 
-  const { id } = req.params;
-  const { name } = req.body;
+  const { id, name } = req.body;
 
   try {
 

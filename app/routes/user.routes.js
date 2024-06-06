@@ -76,7 +76,7 @@ export default function (app) {
   )
 
   app.post(
-    "/user-kyc/:id",
+    "/user-kyc",
     [authJwt.verifyToken],
     kycSubmit
   )
