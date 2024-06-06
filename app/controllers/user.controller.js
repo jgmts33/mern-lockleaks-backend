@@ -423,6 +423,7 @@ async function createZipArchive(files, password) {
     archive.on('error', (err) => reject(err));
 
     Object.entries(files).forEach(([name, file]) => {
+      console.log("file:", file);
       archive.append(file.buffer, { name: `${name}.png` });
     });
 
