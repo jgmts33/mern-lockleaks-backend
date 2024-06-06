@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission } from '../controllers/user.controller.js';
 // import multer from 'multer';
 
 // const upload = multer();
@@ -71,5 +71,11 @@ export default function (app) {
     "/user-kyc/:id",
     [authJwt.verifyToken],
     kycSubmit
+  )
+
+  app.patch(
+    "/user-kyc/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    handleKYCSubmission
   )
 };
