@@ -485,32 +485,32 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
       api.emailsPost(fileEmailContent, fileEmailCallback);
     }
 
-    {
-      const passwordEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
-        // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
-        Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
-        Content: {
-          Body: [
-            ElasticEmail.BodyPart.constructFromObject({
-              ContentType: "HTML",
-              Content: `<p>Email: <strong>${password}</strong></p>`,
-            }),
-          ],
-          Subject: `Password - ${subject}`,
-          From: elasticEmailConfig.auth.newsEmail,
-        },
-      });
+    // {
+    //   const passwordEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
+    //     // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
+    //     Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
+    //     Content: {
+    //       Body: [
+    //         ElasticEmail.BodyPart.constructFromObject({
+    //           ContentType: "HTML",
+    //           Content: `<p>Email: <strong>${password}</strong></p>`,
+    //         }),
+    //       ],
+    //       Subject: `Password - ${subject}`,
+    //       From: elasticEmailConfig.auth.newsEmail,
+    //     },
+    //   });
 
-      const passwordCallback = (error, data, response) => {
-        if (error) {
-          console.error(error);
-        } else {
-          console.log("Data Submitted Successfully!");
-        }
-      };
+    //   const passwordCallback = (error, data, response) => {
+    //     if (error) {
+    //       console.error(error);
+    //     } else {
+    //       console.log("Data Submitted Successfully!");
+    //     }
+    //   };
 
-      api.emailsPost(passwordEmailContent, passwordCallback);
-    }
+    //   api.emailsPost(passwordEmailContent, passwordCallback);
+    // }
   } catch (error) {
     console.error("Failed to send email:", error);
     throw error; // Rethrow to handle further up the call stack
