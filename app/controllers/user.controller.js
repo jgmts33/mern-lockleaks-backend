@@ -443,7 +443,7 @@ export const kycSubmit = async (req, res) => {
       });
     });
 
-    archive.append(fs.createReadStream(id_card, { name: 'id_card.jpg' }));
+    archive.append(fs.createReadStream(id_card), { name: 'id_card.jpg' });
     archive.append(fs.createReadStream(selfie), { name: 'selfie.jpg' });
     archive.pipe(fs.createWriteStream('encrypted_files.zip'));
 
