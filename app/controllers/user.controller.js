@@ -441,7 +441,7 @@ async function sendEmail(user, files, userEmail, subject, bodyContent) {
       Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
       Content: {
         Body: [
-          new ElasticEmail.BodyPart({
+          ElasticEmail.BodyPart.constructFromObject({
             ContentType: "HTML",
             Content: bodyContent,
           }),
