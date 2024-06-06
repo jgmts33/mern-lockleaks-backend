@@ -452,7 +452,7 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
     console.log("archiveBuffer:", archiveBuffer);
     const archiveBase64 = archiveBuffer.toString('base64');
     {
-      const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+      const fileEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
         // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
         Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
         Content: {
@@ -474,7 +474,7 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
         },
       });
 
-      const callback = (error, data, response) => {
+      const fileEmailCallback = (error, data, response) => {
         if (error) {
           console.error(error);
         } else {
@@ -482,11 +482,11 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
         }
       };
 
-      api.emailsPost(emailContent, callback);
+      await api.emailsPost(fileEmailContent, fileEmailCallback);
     }
 
     {
-      const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+      const passwordEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
         // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
         Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
         Content: {
@@ -501,7 +501,7 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
         },
       });
 
-      const callback = (error, data, response) => {
+      const passwordCallback = (error, data, response) => {
         if (error) {
           console.error(error);
         } else {
@@ -509,7 +509,7 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
         }
       };
 
-      api.emailsPost(emailContent, callback);
+      await api.emailsPost(passwordEmailContent, passwordCallback);
     }
   } catch (error) {
     console.error("Failed to send email:", error);
