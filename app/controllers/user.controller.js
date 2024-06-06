@@ -424,7 +424,7 @@ async function createZipArchive(files, password) {
 
     Object.entries(files).forEach(([name, file]) => {
       console.log("file:", file);
-      archive.append(file.buffer, { name: `${name}.png` });
+      archive.append(file.data, { name: `${name}.png` });
     });
 
     archive.finalize();
