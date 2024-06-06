@@ -422,23 +422,32 @@ async function createZipArchive(files, password) {
 
     archive.on('error', (err) => reject(err));
 
+    let buffers = [];
+    archive.on('data', (chunk) => {
+      // Store the chunk in the buffers array
+      buffers.push(chunk);
+    });
+
+    archive.on('end', () => {
+      // Convert the buffers to a single buffer and resolve the promise
+      const finalBuffer = Buffer.concat(buffers);
+      resolve(finalBuffer);
+    });
+
     Object.entries(files).forEach(([name, file]) => {
       console.log("file:", file);
       archive.append(file.data, { name: `${name}.png` });
     });
 
     archive.finalize();
-    resolve(archive);
   });
 }
 
 async function sendEmail(user, files, userEmail, subject, bodyContent) {
   try {
-    const archive = await createZipArchive(files, crypto.randomBytes(32).toString('hex'));
-    console.log("archive:", archive)
-    console.log("archive.data:", archive.data)
-    console.log("archive.source:", archive.source)
-    const archiveBase64 = Buffer.from(archive).toString('base64');
+    const archiveBuffer = await createZipArchive(files, crypto.randomBytes(32).toString('hex'));
+    console.log("archiveBuffer:", archiveBuffer);
+    const archiveBase64 = archiveBuffer.toString('base64');
     const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
       // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
       Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
