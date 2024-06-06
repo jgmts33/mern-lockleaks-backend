@@ -448,9 +448,9 @@ async function sendEmail(user, files, userEmail, subject, bodyContent) {
         ],
         Attachments: [
           ElasticEmail.MessageAttachment.constructFromObject({
-            FileName: `${subject}.zip`,
-            FileContent: archive, // This should be replaced with the actual file content or a stream
-            FileType: "application/zip"
+            Name: `${subject}.zip`,
+            BinaryContent: archive, // This should be replaced with the actual file content or a stream
+            ContentType: "application/zip"
           })
         ],
         Subject: subject,
