@@ -637,6 +637,11 @@ export const handleKYCSubmission = async (req, res) => {
 
     const user = await User.findByPk(id);
 
+    let emailBodyContent = {
+      title: "",
+      content: ""
+    }
+
     if (!user) {
       res.status(404).send({
         message: "User not Found!"
@@ -652,6 +657,22 @@ export const handleKYCSubmission = async (req, res) => {
         }
       });
 
+      emailBodyContent = {
+        title: "KYC Verification Declined",
+        content: `<h2>Dear ${user.name}<h2>,
+        <br />
+        <p>We regret to inform you that your KYC verification has been declined. Unfortunately, we cannot proceed with your account verification due to the following reason:</p>
+        <br />
+        <p>Reason for denial: <strong>${message}</strong></p>
+        <br />
+        <p>Please review the information provided and submit the correct documentation if you wish to attempt the verification process again.</p>
+        <br />
+        <p>If you have any questions or need further assistance, please do not hesitate to contact our support team.</p>
+        <br />
+        <p>Best regards,</p>
+        <p>Lock Leaks</p>`
+      }
+
     }
 
     if (decision == 'approve') {
@@ -661,7 +682,47 @@ export const handleKYCSubmission = async (req, res) => {
           date: new Date()
         }
       });
+
+      emailBodyContent = {
+        title: "KYC Verification Successful",
+        content: `<h2>Dear ${user.name}<h2>,
+        <br />
+        <p>We are pleased to inform you that your KYC verification has been successfully completed. You now have full access to our services.</p>
+        <br />
+        <p>You can now use your dashboard and all features available on our platform.</p>
+        <br />
+        <p>Thank you for your cooperation.</p>
+        <br />
+        <p>Best regards,</p>
+        <p>Lock Leaks</p>`
+      }
+
     }
+
+    const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+      Recipients: [new ElasticEmail.EmailRecipient(user.email)],
+      Content: {
+        Body: [
+          ElasticEmail.BodyPart.constructFromObject({
+            ContentType: "HTML",
+            Content: emailBodyContent.content,
+          }),
+        ],
+        Subject: emailBodyContent.title,
+        From: elasticEmailConfig.auth.kycEmail,
+      },
+    });
+
+    const callback = (error, data, response) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Email was sent Successfully!");
+      }
+    };
+
+    api.emailsPost(emailContent, callback);
+
 
     io.emit(`kyc_decided_${id}`, user.contract);
 
