@@ -7,10 +7,10 @@ import archiverZipEncryptable from 'archiver-zip-encryptable';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
-let defaultClient = ElasticEmail.ApiClient.instance;
-
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
+
+let defaultClient = ElasticEmail.ApiClient.instance;
 
 let apikey = defaultClient.authentications['apikey'];
 apikey.apiKey = elasticEmailConfig.auth.apiKey
