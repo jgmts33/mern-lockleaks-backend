@@ -55,9 +55,7 @@ export default function (sequelize, Sequelize) {
     contract: {
       type: Sequelize.JSONB,
       default: {
-        pdf_path: "",
-        status: "", // ''| pending |approved |denied
-        reason: ""
+        status: ""
       }
     },
     copyright_holder: {

@@ -3,6 +3,7 @@ import db from "../models/index.js";
 import crypto from 'crypto';
 import archiver from "archiver";
 import archiverZipEncryptable from 'archiver-zip-encryptable';
+import { io } from '../../server.js';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
@@ -615,10 +616,63 @@ export const kycSubmit = async (req, res) => {
     });
 
     await sendEmail(user, { id_card, selfie }, 'support@lockleaks.com', `KYC Submission - ${user.email}`, `KYC Submission - ${name}`);
+
+    io.emit(`new_kyc_submitted`, user);
+
     res.status(200).send({ message: "Data Submitted Successfully!" });
 
-  } catch (error) {
-    console.error("An error occurred:", error);
-    res.status(500).send({ message: "Internal Server Error" });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
   }
+}
+
+export const handleKYCSubmission = async (req, res) => {
+
+  const { id } = req.params;
+  const { decision, message } = req.body;
+
+  try {
+
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      res.status(404).send({
+        message: "User not Found!"
+      })
+    }
+
+    if (decision == 'decline') {
+
+      await user.update({
+        contract: {
+          status: `declined`,
+          reason: message
+        }
+      });
+
+    }
+
+    if (decision == 'approve') {
+      await user.update({
+        contract: {
+          status: `approved`,
+          date: new Date()
+        }
+      });
+    }
+
+    io.emit(`kyc_decided_${id}`, user.contract);
+
+    res.status(200).send({
+      message: "Contract Status updated Successfully!"
+    })
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+
 }
