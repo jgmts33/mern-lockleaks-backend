@@ -451,39 +451,38 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
     const archiveBuffer = await createZipArchive(files, password);
     console.log("archiveBuffer:", archiveBuffer);
     const archiveBase64 = archiveBuffer.toString('base64');
-    {
-      const fileEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
-        // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
-        Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
-        Content: {
-          Body: [
-            ElasticEmail.BodyPart.constructFromObject({
-              ContentType: "HTML",
-              Content: bodyContent,
-            }),
-          ],
-          Attachments: [
-            ElasticEmail.MessageAttachment.constructFromObject({
-              Name: `${subject}.zip`,
-              BinaryContent: archiveBase64, // This should be replaced with the actual file content or a stream
-              ContentType: "application/zip"
-            })
-          ],
-          Subject: subject,
-          From: elasticEmailConfig.auth.newsEmail,
-        },
-      });
 
-      const fileEmailCallback = (error, data, response) => {
-        if (error) {
-          console.error(error);
-        } else {
-          console.log("Data Submitted Successfully!");
-        }
-      };
+    const fileEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
+      // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
+      Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
+      Content: {
+        Body: [
+          ElasticEmail.BodyPart.constructFromObject({
+            ContentType: "HTML",
+            Content: bodyContent,
+          }),
+        ],
+        Attachments: [
+          ElasticEmail.MessageAttachment.constructFromObject({
+            Name: `${subject}.zip`,
+            BinaryContent: archiveBase64, // This should be replaced with the actual file content or a stream
+            ContentType: "application/zip"
+          })
+        ],
+        Subject: subject,
+        From: elasticEmailConfig.auth.newsEmail,
+      },
+    });
 
-      api.emailsPost(fileEmailContent, fileEmailCallback);
-    }
+    const fileEmailCallback = (error, data, response) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Data Submitted Successfully!");
+      }
+    };
+
+    api.emailsPost(fileEmailContent, fileEmailCallback);
 
     // {
     //   const passwordEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
