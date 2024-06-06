@@ -14,19 +14,11 @@ export default function (app) {
     next();
   });
 
-  // app.get("/users", allAccess);
-
   app.get(
     "/users/:id",
     [authJwt.verifyToken],
     getUserInfo
   );
-
-  // app.get(
-  //   "/test/mod",
-  //   [authJwt.verifyToken, authJwt.isModerator],
-  //   moderatorBoard
-  // );
 
   app.get(
     "/users",

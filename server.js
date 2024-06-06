@@ -86,12 +86,12 @@ app.get("/cron-job", async(req, res) => {
 })
 
 authRoutes(app);
-userRoutes(app);
 scrapeRoutes(app);
 keywordsRoutes(app);
 usernamesRoutes(app);
 dmcaRoutes(app);
 blogRoutes(app);
+userRoutes(app);
 imagesRoutes(app);
 helpRoutes(app);
 proxiesBotRoutes(app);
