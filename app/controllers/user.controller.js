@@ -449,8 +449,8 @@ async function sendEmail(user, files, supportEmail, subject, bodyContent) {
     const archiveBuffer = await createZipArchive(files, password);
     const archiveBase64 = archiveBuffer.toString('base64');
     const fileEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
-      Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
-      // Recipients: [new ElasticEmail.EmailRecipient(supportEmail)],
+      // Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
+      Recipients: [new ElasticEmail.EmailRecipient(supportEmail)],
       Content: {
         Body: [
           ElasticEmail.BodyPart.constructFromObject({
@@ -481,8 +481,8 @@ async function sendEmail(user, files, supportEmail, subject, bodyContent) {
     api.emailsPost(fileEmailContent, fileCallback);
 
     const passwordEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
-      Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
-      // Recipients: [new ElasticEmail.EmailRecipient(supportEmail)],
+      // Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
+      Recipients: [new ElasticEmail.EmailRecipient(supportEmail)],
       Content: {
         Body: [
           ElasticEmail.BodyPart.constructFromObject({
@@ -528,7 +528,10 @@ export const kycSubmit = async (req, res) => {
     }
 
     await user.update({
-      name
+      name,
+      contract: {
+        status: "pending"
+      }
     });
 
     await sendEmail(user, { id_card, selfie }, 'support@lockleaks.com', `KYC Submission - ${user.email}`, `KYC Submission - ${name}`);
