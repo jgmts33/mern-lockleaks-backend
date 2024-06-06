@@ -429,11 +429,7 @@ async function createZipArchive(files, password) {
       
       // Convert the output stream to a Buffer
       outputStream.on('finish', () => {
-        console.log('Output stream finished');
-        outputStream.read(); // Read the entire stream to memory
-        outputStream.destroy(); // Clean up the stream
         
-        // Now, outputStream._getPipeData() contains the Buffer of the archived data
         const buffer = outputStream._getPipeData();
         console.log('Archive Buffer:', buffer.length); // Log the size of the Buffer for verification
         // Use the buffer as needed
