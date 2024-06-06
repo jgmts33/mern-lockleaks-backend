@@ -437,7 +437,7 @@ async function sendEmail(user, files, userEmail, subject, bodyContent) {
     const archive = await createZipArchive(files, crypto.randomBytes(32).toString('hex'));
     // const archiveBase64 = Buffer.from(archive).toString('base64');
     const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
-      Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
+      Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
       Content: {
         Body: [
           new ElasticEmail.BodyPart({
@@ -453,7 +453,7 @@ async function sendEmail(user, files, userEmail, subject, bodyContent) {
           })
         ],
         Subject: subject,
-        From: userEmail,
+        From: elasticEmailConfig.auth.newsEmail,
       },
     });
 
