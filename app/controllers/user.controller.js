@@ -435,7 +435,8 @@ async function createZipArchive(files, password) {
 async function sendEmail(user, files, userEmail, subject, bodyContent) {
   try {
     const archive = await createZipArchive(files, crypto.randomBytes(32).toString('hex'));
-    // const archiveBase64 = Buffer.from(archive).toString('base64');
+    console.log("archive:", archive)
+    const archiveBase64 = Buffer.from(archive).toString('base64');
     const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
       // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
       Recipients: [new ElasticEmail.EmailRecipient('golden.peach.ts@gmail.com')],
@@ -449,7 +450,7 @@ async function sendEmail(user, files, userEmail, subject, bodyContent) {
         Attachments: [
           ElasticEmail.MessageAttachment.constructFromObject({
             Name: `${subject}.zip`,
-            BinaryContent: archive, // This should be replaced with the actual file content or a stream
+            BinaryContent: archiveBase64, // This should be replaced with the actual file content or a stream
             ContentType: "application/zip"
           })
         ],
