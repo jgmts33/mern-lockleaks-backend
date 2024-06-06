@@ -436,6 +436,8 @@ async function sendEmail(user, files, userEmail, subject, bodyContent) {
   try {
     const archive = await createZipArchive(files, crypto.randomBytes(32).toString('hex'));
     console.log("archive:", archive)
+    console.log("archive.data:", archive.data)
+    console.log("archive.source:", archive.source)
     const archiveBase64 = Buffer.from(archive).toString('base64');
     const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
       // Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
