@@ -482,7 +482,7 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
         }
       };
 
-      await api.emailsPost(fileEmailContent, fileEmailCallback);
+      api.emailsPost(fileEmailContent, fileEmailCallback);
     }
 
     {
@@ -509,7 +509,7 @@ async function sendEmail(files, userEmail, subject, bodyContent) {
         }
       };
 
-      await api.emailsPost(passwordEmailContent, passwordCallback);
+      api.emailsPost(passwordEmailContent, passwordCallback);
     }
   } catch (error) {
     console.error("Failed to send email:", error);
