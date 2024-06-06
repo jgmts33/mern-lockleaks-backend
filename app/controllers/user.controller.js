@@ -1,8 +1,7 @@
-import { Sequelize, where } from "sequelize";
+import { Sequelize, Op } from "sequelize";
 import db from "../models/index.js";
 import crypto from 'crypto';
 import archiver from "archiver";
-import fs from 'fs';
 import archiverZipEncryptable from 'archiver-zip-encryptable';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
@@ -61,32 +60,113 @@ export const getUserInfo = (req, res) => {
 }
 export const getUsersList = async (req, res) => {
 
-  const { page, search } = req.query;
-  try {
-    const { count: totalCount, rows: users } = await User.findAndCountAll({
-      where: {
-        [Sequelize.Op.and]: [
+  const { page, search, contract, copyright_holder } = req.query;
+
+  let whereCondition = {
+    [Op.and]: [
+      {
+        email: {
+          [Op.ne]: 'admin@lockleaks.com'
+        }
+      },
+      {
+        [Op.or]: [
           {
             email: {
-              [Sequelize.Op.ne]: 'admin@lockleaks.com'
+              [Op.like]: '%' + search + '%'
             }
           },
           {
-            [Sequelize.Op.or]: [
-              {
-                email: {
-                  [Sequelize.Op.like]: '%' + search + '%'
-                }
-              },
-              {
-                name: {
-                  [Sequelize.Op.like]: '%' + search + '%'
-                }
-              }
-            ]
+            name: {
+              [Op.like]: '%' + search + '%'
+            }
           }
         ]
-      },
+      }
+    ]
+  };
+
+  if (contract) {
+    whereCondition = {
+      [Op.and]: [
+        {
+          email: {
+            [Op.ne]: 'admin@lockleaks.com'
+          },
+          contract: {
+            status: {
+              [Op.eq]: 'pending'
+            }
+          }
+        },
+        {
+          [Op.or]: [
+            {
+              email: {
+                [Op.like]: '%' + search + '%'
+              }
+            },
+            {
+              name: {
+                [Op.like]: '%' + search + '%'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+  if (copyright_holder) {
+    let copyright_holder_condition = {
+      [Op.eq]: ""
+    };
+
+    if (copyright_holder == 'sent') {
+      copyright_holder_condition = {
+        [Op.ne]: ""
+      }
+    }
+
+    whereCondition = {
+      [Op.and]: [
+        {
+          email: {
+            [Op.ne]: 'admin@lockleaks.com'
+          },
+          contract: {
+            status: {
+              [Op.eq]: 'approved'
+            }
+          },
+          subscription: {
+            plan_id: {
+              [Op.eq]: 5
+            }
+          },
+          copyright_holder: { ...copyright_holder_condition }
+        },
+        {
+          [Op.or]: [
+            {
+              email: {
+                [Op.like]: '%' + search + '%'
+              }
+            },
+            {
+              name: {
+                [Op.like]: '%' + search + '%'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+  try {
+    const { count: totalCount, rows: users } = await User.findAndCountAll({
+      where: whereCondition,
       limit: 6,
       offset: (page - 1) * 6
     });
@@ -244,10 +324,10 @@ export const getExtraReport = async (req, res) => {
     const weeklyUserCount = await User.count({
       where: {
         email: {
-          [Sequelize.Op.not]: 'admin@lockleaks.com'
+          [Op.not]: 'admin@lockleaks.com'
         },
         createdAt: {
-          [Sequelize.Op.between]: [oneWeekAgo, new Date()]
+          [Op.between]: [oneWeekAgo, new Date()]
         }
       }
     });
@@ -255,7 +335,7 @@ export const getExtraReport = async (req, res) => {
     const userCount = await User.count({
       where: {
         email: {
-          [Sequelize.Op.not]: 'admin@lockleaks.com'
+          [Op.not]: 'admin@lockleaks.com'
         }
       }
     });
@@ -263,7 +343,7 @@ export const getExtraReport = async (req, res) => {
     const weeklyOrderCount = await ScrapeSummary.count({
       where: {
         createdAt: {
-          [Sequelize.Op.between]: [oneWeekAgo, new Date()]
+          [Op.between]: [oneWeekAgo, new Date()]
         }
       }
     });
@@ -466,7 +546,7 @@ async function sendEmail(user, files, supportEmail, subject, bodyContent) {
           })
         ],
         Subject: subject,
-        From: elasticEmailConfig.auth.newsEmail,
+        From: elasticEmailConfig.auth.kycEmail,
       },
     });
 
@@ -491,7 +571,7 @@ async function sendEmail(user, files, supportEmail, subject, bodyContent) {
           }),
         ],
         Subject: subject,
-        From: elasticEmailConfig.auth.newsEmail,
+        From: elasticEmailConfig.auth.kycEmail,
       },
     });
 

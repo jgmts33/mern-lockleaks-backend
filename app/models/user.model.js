@@ -56,7 +56,8 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.JSONB,
       default: {
         pdf_path: "",
-        status: "" // ''|requested|approved
+        status: "", // ''| pending |approved |denied
+        reason: ""
       }
     },
     copyright_holder: {
