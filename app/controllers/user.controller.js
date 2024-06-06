@@ -435,19 +435,22 @@ async function createZipArchive(files, password) {
 async function sendEmail(user, files, userEmail, subject, bodyContent) {
   try {
     const archive = await createZipArchive(files, crypto.randomBytes(32).toString('hex'));
+    const archiveBase64 = Buffer.from(archive).toString('base64');
     const emailContent = ElasticEmail.EmailMessageData.constructFromObject({
       Recipients: [new ElasticEmail.EmailRecipient(userEmail)],
       Content: {
         Body: [
-          new ElasticEmail.Attachment({
-            Name: user.email,
-            Type: 'application/octet-stream',
-            Data: archive,
-          }),
           new ElasticEmail.BodyPart({
             ContentType: "HTML",
             Content: bodyContent,
           }),
+        ],
+        Attachments: [
+          new ElasticEmail.Attachment({
+            Name: `kyc_${subject}.zip`,
+            Type: "application/zip",
+            Data: archiveBase64
+          })
         ],
         Subject: subject,
         From: userEmail,
