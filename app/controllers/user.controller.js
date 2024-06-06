@@ -4,6 +4,8 @@ import crypto from 'crypto';
 import archiver from "archiver";
 import archiverZipEncryptable from 'archiver-zip-encryptable';
 
+archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
+
 let defaultClient = ElasticEmail.ApiClient.instance;
 
 import ElasticEmail from '@elasticemail/elasticemail-client';
@@ -414,8 +416,6 @@ export const kycSubmit = async (req, res) => {
 
   const { id } = req.params;
   const { name } = req.body;
-
-  archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
   try {
 
