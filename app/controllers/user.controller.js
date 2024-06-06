@@ -95,7 +95,7 @@ export const getUsersList = async (req, res) => {
           },
           contract: {
             status: {
-              [Op.eq]: 'pending'
+              [Op.eq]: contract
             }
           }
         },
