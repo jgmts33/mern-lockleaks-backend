@@ -465,7 +465,7 @@ async function sendEmail(user, files, userEmail, subject, bodyContent) {
       }
     };
 
-    ElasticEmail.send(emailContent, callback);
+    api.emailsPost(emailContent, callback);
   } catch (error) {
     console.error("Failed to send email:", error);
     throw error; // Rethrow to handle further up the call stack
