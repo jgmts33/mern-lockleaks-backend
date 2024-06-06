@@ -2,6 +2,7 @@ import { Sequelize, where } from "sequelize";
 import db from "../models/index.js";
 import crypto from 'crypto';
 import archiver from "archiver";
+import fs from 'fs';
 import archiverZipEncryptable from 'archiver-zip-encryptable';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
@@ -442,8 +443,9 @@ export const kycSubmit = async (req, res) => {
       });
     });
 
-    archive.append(id_card);
-    archive.append(selfie);
+    archive.append(fs.createReadStream(id_card, { name: 'id_card.jpg' }));
+    archive.append(fs.createReadStream(selfie), { name: 'selfie.jpg' });
+    archive.pipe(fs.createWriteStream('encrypted_files.zip'));
 
     await archive.finalize();
 
