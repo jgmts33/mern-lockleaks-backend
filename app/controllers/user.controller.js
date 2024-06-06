@@ -422,20 +422,6 @@ async function createZipArchive(files, password) {
 
     archive.on('error', (err) => reject(err));
 
-    archive.on('finish', () => {
-      console.log('Archiving finished');
-      // Get the output stream from the archiver instance
-      const outputStream = archive.pipe(fs.createWriteStream('./output.zip'));
-      
-      // Convert the output stream to a Buffer
-      outputStream.on('finish', () => {
-        
-        const buffer = outputStream._getPipeData();
-        console.log('Archive Buffer:', buffer.length); // Log the size of the Buffer for verification
-        // Use the buffer as needed
-      });
-    });
-
     Object.entries(files).forEach(([name, file]) => {
       console.log("file:", file);
       archive.append(file.data, { name: `${name}.png` });
