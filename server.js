@@ -25,7 +25,9 @@ import cronFunc from './app/cron.js';
 
 configDotenv();
 
-const app = express();
+const app = express({
+  limit: '100mb'
+});
 
 app.use(cors({
   origin: "*"
@@ -33,7 +35,9 @@ app.use(cors({
 
 app.use(
   express.urlencoded({
-    extended: true
+    extended: true,
+    limit: '100mb',
+    parameterLimit: 50000
   })
 );
 

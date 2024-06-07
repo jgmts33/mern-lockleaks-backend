@@ -80,13 +80,13 @@ export default function (app) {
   )
 
   app.post(
-    "/user-copyright_holder/:id",
+    "/user-copyright-holder/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     uploadCopyrightHolder
   );
 
   app.get(
-    "/user-copyright_holder/:id",
+    "/user-copyright-holder/:id",
     [authJwt.verifyToken],
     downloadCopyrightHolder
   );
