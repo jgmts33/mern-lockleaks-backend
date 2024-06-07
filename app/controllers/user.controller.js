@@ -186,7 +186,9 @@ export const getUsersList = async (req, res) => {
           avatar: user.avatar,
           verified: user.verified,
           subscription: user.subscription,
-          social: user.social
+          social: user.social,
+          contract: user.contract,
+          copyright_holder: user.copyright_holder
         });
       });
     }
