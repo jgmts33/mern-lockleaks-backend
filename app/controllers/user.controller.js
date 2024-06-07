@@ -786,7 +786,7 @@ export const downloadCopyrightHolder = async (req, res) => {
 
   try {
 
-    const filePath = path.join(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
+    const filePath = path.join(__dirname, `uploads/copyright_holder/copyright_holder_${id}.pdf`);
 
     res.sendFile(filePath);
 
