@@ -746,7 +746,7 @@ export const uploadCopyrightHolder = async (req, res) => {
 
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("No files were uploaded.");
+      return res.status(400).send({message: "No files were uploaded."});
     }
 
     const file = req.files.file;
