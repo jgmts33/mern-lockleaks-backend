@@ -1,9 +1,10 @@
-import { Sequelize, Op } from "sequelize";
+import { Op } from "sequelize";
 import db from "../models/index.js";
 import crypto from 'crypto';
 import archiver from "archiver";
 import archiverZipEncryptable from 'archiver-zip-encryptable';
 import { io } from '../../server.js';
+import path from 'path';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
@@ -745,8 +746,17 @@ export const uploadCopyrightHolder = async (req, res) => {
   const { id } = req.params;
 
   try {
+
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User not Found!"
+      })
+    }
+
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send({message: "No files were uploaded."});
+      return res.status(400).send({ message: "No files were uploaded." });
     }
 
     const file = req.files.file;
@@ -755,8 +765,8 @@ export const uploadCopyrightHolder = async (req, res) => {
 
     await file.mv(filePath);
 
-    await DmcaImages.create({
-      name: `copyright_holder_${id}.pdf`
+    await user.update({
+      copyright_holder: `copyright_holder_${id}.pdf`
     });
 
     res.send({
