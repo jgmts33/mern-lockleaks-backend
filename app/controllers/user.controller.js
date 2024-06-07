@@ -739,3 +739,50 @@ export const handleKYCSubmission = async (req, res) => {
   }
 
 }
+
+export const uploadCopyrightHolder = async (req, res) => {
+
+  const { id } = req.params;
+
+  try {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send("No files were uploaded.");
+    }
+
+    const file = req.files.file;
+
+    const filePath = path.join(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
+
+    await file.mv(filePath);
+
+    await DmcaImages.create({
+      name: `copyright_holder_${id}.pdf`
+    });
+
+    res.send({
+      message: "File uploaded successfully!"
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({
+      message: err.message
+    });
+  }
+}
+
+export const downloadCopyrightHolder = async (req, res) => {
+
+  const { id } = req.params;
+
+  try {
+
+    const filePath = path.join(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
+
+    res.download(filePath);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+}

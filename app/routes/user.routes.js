@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder } from '../controllers/user.controller.js';
 // import multer from 'multer';
 
 // const upload = multer();
@@ -78,4 +78,16 @@ export default function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     handleKYCSubmission
   )
+
+  app.post(
+    "/user-copyright_holder/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    uploadCopyrightHolder
+  );
+
+  app.get(
+    "/user-copyright_holder/:id",
+    [authJwt.verifyToken],
+    downloadCopyrightHolder
+  );
 };
