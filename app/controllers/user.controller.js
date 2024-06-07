@@ -621,7 +621,7 @@ export const kycSubmit = async (req, res) => {
 
     io.emit(`new_kyc_submitted`, user);
 
-    res.status(200).send({ message: "Data Submitted Successfully!" });
+    return res.status(200).send({ message: "Data Submitted Successfully!" });
 
   } catch (err) {
     res.status(500).send({
@@ -728,7 +728,7 @@ export const handleKYCSubmission = async (req, res) => {
 
     io.emit(`kyc_decided_${id}`, user.contract);
 
-    res.status(200).send({
+    return res.status(200).send({
       message: "Contract Status updated Successfully!"
     })
 
