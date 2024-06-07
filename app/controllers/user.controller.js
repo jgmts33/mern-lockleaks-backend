@@ -605,7 +605,7 @@ export const kycSubmit = async (req, res) => {
     const user = await User.findByPk(id); // Assuming 'id' is sent in the request body
 
     if (!user) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "User not Found!"
       })
     }
@@ -645,7 +645,7 @@ export const handleKYCSubmission = async (req, res) => {
     }
 
     if (!user) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "User not Found!"
       })
     }
