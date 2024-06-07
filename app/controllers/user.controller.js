@@ -661,7 +661,7 @@ export const handleKYCSubmission = async (req, res) => {
 
       emailBodyContent = {
         title: "KYC Verification Declined",
-        content: `<h2>Dear ${user.name}<h2>,
+        content: `<h2>Dear ${user.name}</h2>
         <br />
         <p>We regret to inform you that your KYC verification has been declined. Unfortunately, we cannot proceed with your account verification due to the following reason:</p>
         <br />
@@ -687,7 +687,7 @@ export const handleKYCSubmission = async (req, res) => {
 
       emailBodyContent = {
         title: "KYC Verification Successful",
-        content: `<h2>Dear ${user.name}<h2>,
+        content: `<h2>Dear ${user.name}</h2>
         <br />
         <p>We are pleased to inform you that your KYC verification has been successfully completed. You now have full access to our services.</p>
         <br />
