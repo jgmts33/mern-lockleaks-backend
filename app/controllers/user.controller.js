@@ -769,6 +769,8 @@ export const uploadCopyrightHolder = async (req, res) => {
       copyright_holder: `copyright_holder_${id}.pdf`
     });
 
+    io.emit(`copyright_holder_uploaded_${id}`, `copyright_holder_${id}.pdf`);
+
     res.send({
       message: "File uploaded successfully!"
     });
