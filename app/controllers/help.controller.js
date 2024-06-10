@@ -144,14 +144,16 @@ export const reactHelpArticle = async (req, res) => {
       return res.status(404).send('Article not found');
     }
     if (react == 'like') {
+      const likes = article.likes || [];
       await article.update({
-        likes: [...article.likes, user_id]
+        likes: [...likes, user_id]
       })
     }
 
     else {
+      const dislikes = article.dislikes || [];
       await article.update({
-        dislikes: [...article.likes, user_id]
+        dislikes: [...dislikes, user_id]
       })
     }
 
