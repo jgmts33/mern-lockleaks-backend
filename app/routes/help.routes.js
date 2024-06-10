@@ -1,4 +1,4 @@
-import { addNewArticle, deleteArticle, getArticle, getArticles, addNewCategory, deleteCategory, getCategories, updateArticle, updateCategory } from '../controllers/help.controller.js';
+import { addNewArticle, deleteArticle, getArticle, getArticles, addNewCategory, deleteCategory, getCategories, updateArticle, updateCategory, reactHelpArticle } from '../controllers/help.controller.js';
 import authJwt from "../middleware/authjwt.js";
 
 export default function (app) {
@@ -31,6 +31,12 @@ export default function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     updateArticle
   );
+  app.post(
+    "/help/articles/:id",
+    [authJwt.verifyToken],
+    reactHelpArticle
+  );
+
   app.delete(
     "/help/articles/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
