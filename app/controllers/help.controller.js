@@ -94,6 +94,8 @@ export const addNewArticle = async (req, res) => {
       title: newArticle.title,
       content: newArticle.content,
       categoryId: newArticle.categoryId,
+      likes: article.likes,
+      dislikes: article.dislikes
     });
 
   } catch (err) {
@@ -121,9 +123,48 @@ export const updateArticle = async (req, res) => {
       title: article.title,
       content: article.content,
       categoryId: article.categoryId,
+      likes: article.likes,
+      dislikes: article.dislikes
     });
   }
   catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+}
+
+export const reactHelpArticle = async (req, res) => {
+  const { id } = req.params;
+  const { user_id, react } = req.body;
+  try {
+    const article = await HelpArticles.findByPk(id);
+
+    if (!article) {
+      return res.status(404).send('Article not found');
+    }
+    if (react == 'like') {
+      await article.update({
+        likes: [...article.likes, user_id]
+      })
+    }
+
+    else {
+      await article.update({
+        dislikes: [...article.likes, user_id]
+      })
+    }
+
+    res.status(200).send({
+      id: article.id,
+      title: article.title,
+      content: article.content,
+      categoryId: article.categoryId,
+      likes: article.likes,
+      dislikes: article.dislikes
+    });
+
+  } catch (err) {
     res.status(500).send({
       message: err.message,
     });

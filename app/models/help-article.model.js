@@ -8,6 +8,14 @@ export default function (sequelize, Sequelize) {
     },
     categoryId: {
       type: Sequelize.INTEGER
+    },
+    likes: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      default: []
+    },
+    dislikes: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      default: []
     }
   });
 
