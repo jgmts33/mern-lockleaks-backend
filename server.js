@@ -22,6 +22,7 @@ import paymentLinksRoutes from './app/routes/payment-links.routes.js';
 import newsRoutes from './app/routes/news.routes.js';
 import pingModelsRoutes from './app/routes/ping-models.routes.js';
 import cronFunc from './app/cron.js';
+import socialUsernamesModel from './app/models/social-usernames.model.js';
 
 configDotenv();
 
@@ -93,6 +94,7 @@ authRoutes(app);
 scrapeRoutes(app);
 keywordsRoutes(app);
 usernamesRoutes(app);
+socialUsernamesModel(app);
 dmcaRoutes(app);
 blogRoutes(app);
 userRoutes(app);
