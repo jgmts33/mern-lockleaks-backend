@@ -223,7 +223,7 @@ export const getArticle = async (req, res) => {
   const { id } = req.params;
   try {
     const article = await HelpArticles.findByPk(id, {
-      attributes: ['id', 'title', 'content', 'categoryId']
+      attributes: ['id', 'title', 'content', 'categoryId', 'likes', 'dislikes']
     });
 
     if (!article) {
