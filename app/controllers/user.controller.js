@@ -227,8 +227,8 @@ export const updateUserInfo = async (req, res) => {
     const sameEmailUser = await User.findOne({
       where: {
         email,
-        [Sequelize.Op.ne]: {
-          id: Number(id)
+        id : {
+          [Sequelize.Op.ne]: id
         }
       }
     });
