@@ -207,8 +207,6 @@ export const getSimilarBlogs = async (req, res) => {
     _tags = tags;
   }
 
-  console.log("----------------------------------", _tags, tags);
-
   try {
     const randomBlogs = await Blog.findAll({
       where: {

@@ -22,7 +22,7 @@ const { user: User, refreshToken: RefreshToken, subscriptionOptions: Subscriptio
 
 export const signup = async (req, res) => {
 
-  const { email, password } = req.body;
+  const { email, password, ip } = req.body;
   User.create({
     email: email,
     password: bcrypt.hashSync(password, 8),
@@ -34,7 +34,8 @@ export const signup = async (req, res) => {
       plan_id: null,
       status: ''
     },
-    social: ""
+    social: "",
+    ip
   })
     .then(async user => {
 
@@ -236,7 +237,7 @@ export const signin = async (req, res) => {
           },
           ban: user.ban,
           contract: user.contract,
-          copyright_holder: user.copyright_holder
+          copyright_holder: user.copyright_holder,
         });
       });
     })
@@ -484,7 +485,7 @@ export const googleAuthenticateUser = async (req, res) => {
   });
 
 
-  const { code } = req.body;
+  const { code, ip } = req.body;
 
   const tokens = await googleClient.getToken(code);
   const decodedProfileInfo = jwt.decode(tokens.tokens.id_token);
@@ -503,7 +504,8 @@ export const googleAuthenticateUser = async (req, res) => {
         payment_method: null,
         expire_date: null
       },
-      social: "google"
+      social: "google",
+      ip
     });
 
     io.emit(`admin:dashboardInfo`, 'scan-finished');
@@ -552,7 +554,7 @@ export const googleAuthenticateUser = async (req, res) => {
 }
 
 export const facebookAuthenticateUser = async (req, res) => {
-  const { code } = req.body;
+  const { code, ip } = req.body;
 
   const { data } = await axios({
     url: 'https://graph.facebook.com/v4.0/oauth/access_token',
@@ -591,7 +593,8 @@ export const facebookAuthenticateUser = async (req, res) => {
           payment_method: null,
           expire_date: null
         },
-        social: "facebook"
+        social: "facebook",
+        ip
       });
 
       io.emit(`admin:dashboardInfo`, 'scan-finished');
@@ -641,7 +644,7 @@ export const facebookAuthenticateUser = async (req, res) => {
 }
 
 export const twitterAuthenticateUser = async (req, res) => {
-  const { code } = req.body;
+  const { code, ip } = req.body;
 
   const authClient = new auth.OAuth2User({
     client_id: process.env.TWITTER_CLIENT_ID,
@@ -678,7 +681,8 @@ export const twitterAuthenticateUser = async (req, res) => {
         payment_method: null,
         expire_date: null
       },
-      social: "twitter"
+      social: "twitter",
+      ip
     });
 
     io.emit(`admin:dashboardInfo`, 'scan-finished');

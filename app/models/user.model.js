@@ -61,6 +61,10 @@ export default function (sequelize, Sequelize) {
     copyright_holder: {
       type: Sequelize.STRING,
       default: ""
+    },
+    ip: {
+      type: Sequelize.STRING,
+      default: ""
     }
   });
 
