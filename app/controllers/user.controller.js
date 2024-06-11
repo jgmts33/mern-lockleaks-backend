@@ -52,7 +52,7 @@ export const getUserInfo = (req, res) => {
           social: user.social,
           contract: user.contract,
           copyright_holder: user.copyright_holder,
-          ip
+          ip: user.ip
         });
       });
     })
