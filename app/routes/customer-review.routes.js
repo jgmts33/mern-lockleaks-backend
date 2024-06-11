@@ -21,26 +21,26 @@ export default function (app) {
 
   app.get(
     "/customer-reviews/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getCustomerReview
   )
 
   app.post(
     "/customer-reviews/new",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     createCustomerView
   )
 
   app.patch(
     "/customer-reviews/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     updateCustomerView
   )
   
 
   app.delete(
     "/customer-reviews/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     deleteCustomerReview
   )
 };

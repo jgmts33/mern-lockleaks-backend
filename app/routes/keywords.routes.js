@@ -13,37 +13,37 @@ export default function (app) {
 
   app.get(
     "/keywords/basic",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getBasicKeywords
   );
 
   app.get(
     "/keywords/custom",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getCustomKeywords
   );
 
   app.post(
     "/keywords",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     addNewKeyword
   );
 
   app.patch(
     "/keywords/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     editCustomKeywords
   );
 
   app.delete(
     "/keywords/basic/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     deleteBasicKeyword
   );
 
   app.delete(
     "/keywords/custom/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     deleteCustomKeyword
   );
 

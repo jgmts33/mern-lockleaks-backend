@@ -21,7 +21,7 @@ export default function (app) {
 
   app.get(
     "/blogs/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getBlog
   )
 
@@ -32,13 +32,13 @@ export default function (app) {
 
   app.post(
     "/blogs",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     createBlog
   )
 
   app.patch(
     "/blogs/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     updateBlog
   )
 
@@ -50,7 +50,7 @@ export default function (app) {
 
   app.delete(
     "/blogs/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     deleteBlog
   )
 };

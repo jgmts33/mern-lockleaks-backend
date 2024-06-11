@@ -13,7 +13,7 @@ export default function (app) {
 
   app.get(
     "/social-media-profiles",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getSocialMediaSubmitions
   );
 
@@ -25,7 +25,7 @@ export default function (app) {
 
   app.get(
     "/social-media-profiles/download",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     downloadZipFile
   )
 

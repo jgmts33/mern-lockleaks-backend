@@ -16,7 +16,7 @@ export default function (app) {
 
   app.get(
     "/tickets",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getTickets
   );
 

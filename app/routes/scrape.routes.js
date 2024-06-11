@@ -19,7 +19,7 @@ export default function (app) {
 
   app.get(
     "/scraped-data",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getScrapedDataList
   )
 
@@ -37,7 +37,7 @@ export default function (app) {
 
   app.get(
     "/accept-order",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     acceptOrder
   )
 };

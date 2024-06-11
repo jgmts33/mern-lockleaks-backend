@@ -16,7 +16,7 @@ export default function (app) {
 
   app.post(
     "/payment",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     createPaymentLink
   );
 

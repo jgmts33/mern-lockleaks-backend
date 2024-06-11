@@ -23,12 +23,12 @@ export default function (app) {
 
   app.post(
     "/help/articles",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     addNewArticle
   );
   app.patch(
     "/help/articles/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     updateArticle
   );
   app.post(
@@ -39,17 +39,17 @@ export default function (app) {
 
   app.delete(
     "/help/articles/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     deleteArticle
   );
   app.post(
     "/help/categories",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     addNewCategory
   );
   app.patch(
     "/help/categories/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     updateCategory
   );
   app.delete(
