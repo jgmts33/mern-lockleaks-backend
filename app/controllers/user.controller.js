@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import db from "../models/index.js";
 import crypto from 'crypto';
 import archiver from "archiver";
@@ -226,7 +226,10 @@ export const updateUserInfo = async (req, res) => {
 
     const sameEmailUser = await User.findOne({
       where: {
-        email
+        email,
+        [Sequelize.Op.ne]: {
+          id: id
+        }
       }
     });
 
