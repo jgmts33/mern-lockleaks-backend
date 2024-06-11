@@ -5,6 +5,7 @@ import archiver from "archiver";
 import archiverZipEncryptable from 'archiver-zip-encryptable';
 import { io } from '../../server.js';
 import path from 'path';
+import bcrypt from 'bcryptjs';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
