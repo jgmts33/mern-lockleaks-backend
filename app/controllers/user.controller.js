@@ -798,3 +798,47 @@ export const downloadCopyrightHolder = async (req, res) => {
     });
   }
 }
+
+export const updateToModerator = async (req, res) => {
+
+  const { id } = req.params;
+  const { action } = req.body;
+
+  try {
+
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User not Found!"
+      })
+    }
+
+    if (action) {
+
+      // await user.update({
+      //   roles: ['moderator']
+      // });
+
+      await user.setRoles([2]);
+    } else {
+      if (action) {
+
+        // await user.update({
+        //   roles: ['user']
+        // });
+
+        await user.setRoles([1]);
+      }
+    }
+
+    res.send({
+      message: "File uploaded successfully!"
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({
+      message: err.message
+    });
+  }
+}

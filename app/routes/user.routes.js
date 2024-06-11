@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator } from '../controllers/user.controller.js';
 // import multer from 'multer';
 
 // const upload = multer();
@@ -59,6 +59,12 @@ export default function (app) {
     "/user-visible/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateUserVisible
+  )
+
+  app.patch(
+    "/user-to-moderator/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    updateToModerator
   )
 
   app.delete(
