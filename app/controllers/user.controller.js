@@ -228,7 +228,7 @@ export const updateUserInfo = async (req, res) => {
       where: {
         email,
         [Sequelize.Op.ne]: {
-          id: id
+          id: Number(id)
         }
       }
     });
