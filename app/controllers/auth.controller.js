@@ -335,11 +335,13 @@ export const verifyEmail = async (req, res) => {
       user.update({ verified: true });
 
       let refreshToken = await RefreshToken.createToken(user);
+      
+      const roles = await user.getRoles();
 
       return res.status(200).send({
         id: user.id,
         email: user.email,
-        roles: user.role,
+        roles: roles.map((role) => role.name),
         name: user.name,
         avatar: user.avatar,
         verified: user.verified,
