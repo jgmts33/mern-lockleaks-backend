@@ -393,6 +393,12 @@ export const updatePaymentStatus = async (req, res) => {
       }
     });
 
+    if (!subscriptionOption) {
+      return res.status(404).send({
+        message: "Subscription Option Not Found!"
+      });
+    }
+
     let expire_date = new Date();
     if (plan == 'trial') expire_date.setDate(expire_date.getDate() + 3);
     else expire_date.setDate(expire_date.getDate() + 30 * period);
