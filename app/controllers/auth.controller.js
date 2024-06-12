@@ -318,20 +318,22 @@ export const verifyEmail = async (req, res) => {
 
     const user = await User.findByPk(decoded.id);
 
-    let subscription = user.subscription;
-
-    if (user.subscription.plan_id) {
-      const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
-      subscription = {
-        payment_method: user.subscription.payment_method,
-        expire_date: user.subscription.expire_date,
-        plan_id: user.subscription.plan_id,
-        status: user.subscription.status,
-        features: subscriptionFeatures
-      }
-    }
-
+    
     if (user) {
+      
+      let subscription = user.subscription;
+      
+      if (user.subscription.plan_id) {
+        const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+        subscription = {
+          payment_method: user.subscription.payment_method,
+          expire_date: user.subscription.expire_date,
+          plan_id: user.subscription.plan_id,
+          status: user.subscription.status,
+          features: subscriptionFeatures
+        }
+      }
+
       user.update({ verified: true });
 
       let refreshToken = await RefreshToken.createToken(user);
