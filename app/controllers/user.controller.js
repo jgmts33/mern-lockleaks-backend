@@ -228,7 +228,7 @@ export const updateUserInfo = async (req, res) => {
     const sameEmailUser = await User.findOne({
       where: {
         email,
-        id : {
+        id: {
           [Sequelize.Op.ne]: id
         }
       }
@@ -401,7 +401,7 @@ export const updatePaymentStatus = async (req, res) => {
 
     let expire_date = new Date();
     if (plan == 'trial') expire_date.setDate(expire_date.getDate() + 3);
-    else expire_date.setDate(expire_date.getDate() + 30 * period);
+    else expire_date.setMonth(new Date().getMonth() + period)
 
     if (!user) {
       return res.status(404).send({
