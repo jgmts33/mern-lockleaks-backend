@@ -6,6 +6,10 @@ export default function (sequelize, Sequelize) {
     status: {
       type: Sequelize.STRING
     },
+    count: {
+      type: Sequelize.INTEGER,
+      default: 0
+    },
     user_id: {
       type: Sequelize.INTEGER
     }

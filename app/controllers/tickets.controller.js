@@ -170,3 +170,30 @@ export const sendMessage = async (req, res) => {
     });
   }
 }
+
+export const addHelpCounts = async (req, res) => {
+  const { count } = req.body;
+  const { id } = req.params;
+
+  try {
+
+    const ticket = await Tickets.findByPk(id);
+
+    await ticket.update({
+      count: ticket.count + count
+    });
+
+    io.emit(`update_ticket_count`, { id, count });
+
+    res.status(200).send({
+      message: "Ticket Count updated Successfully!"
+    })
+
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+
+}
