@@ -803,9 +803,9 @@ export const downloadCopyrightHolder = async (req, res) => {
 
   try {
 
-    const fileBuffer = await promises.readFile(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
+    const filePath = path.join(`/root/lockleaks-backend/uploads/copyright_holder/copyright_holder_${id}.pdf`);
 
-    res.status(200).sendFile(fileBuffer);
+    res.status(200).sendFile(filePath);
 
   } catch (err) {
     res.status(500).send({
