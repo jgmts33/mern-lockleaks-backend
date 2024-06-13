@@ -805,7 +805,7 @@ export const downloadCopyrightHolder = async (req, res) => {
 
     const fileBuffer = await promises.readFile(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
 
-    res.send(fileBuffer);
+    res.status(200).sendFile(fileBuffer);
 
   } catch (err) {
     res.status(500).send({
