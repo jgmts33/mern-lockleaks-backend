@@ -2,6 +2,18 @@ import { Sequelize } from "sequelize";
 import db from "./models/index.js";
 import axios from "axios";
 import { io } from "../server.js";
+import { promises } from 'fs';
+
+import ElasticEmail from '@elasticemail/elasticemail-client';
+import elasticEmailConfig from './config/elasticEmail.config..js';
+import { downloadDataReport } from "./utils/data-report-to-pdf.js";
+
+let defaultClient = ElasticEmail.ApiClient.instance;
+
+let apikey = defaultClient.authentications['apikey'];
+apikey.apiKey = elasticEmailConfig.auth.apiKey
+
+let api = new ElasticEmail.EmailsApi()
 
 const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets } = db;
 
@@ -54,7 +66,132 @@ export default async () => {
     console.error('Error in setting the scraped data as expired after 30 days:', error);
   }
 
-  // Setting the Trial plan as expired after 3 days.
+  // Send Data Analytics/Report per month.
+
+  try {
+
+    const users = await User.findAll({
+      where: {
+        subscription: {
+          [
+            Sequelize.Op.and]: [
+              { status: { [Sequelize.Op.ne]: 'expired' } },
+              {
+                from: {
+                  [
+                    Sequelize.Op.between]: [
+                      (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
+                      (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
+                    ]
+                }
+              }
+            ]
+        }
+      }
+    }) || [];
+
+    for (const user of users) {
+
+      const scrapeDataList = await ScrapeSummary.findAll({
+        where: {
+          user_id: user.id,
+          status: { [Sequelize.Op.ne]: 'expired' },
+          createdAt: {
+            [Sequelize.Op.lt]: (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+          }
+        }
+      });
+
+      let dataReportInfo = {
+        name: user.name,
+        key_metrics: 0,
+        ai_bots: 0,
+        adult_tubes: 0,
+        social_media: 0,
+        personal_agent: 0,
+        file_hosted: 0
+      }
+
+      for (const scrapeData of scrapeDataList) {
+        dataReportInfo.key_metrics += (
+          scrapeData.total_google_links +
+          scrapeData.total_google_images +
+          scrapeData.total_google_videos +
+          scrapeData.total_bing_links +
+          scrapeData.total_bing_images +
+          scrapeData.total_bing_videos
+        )
+
+        dataReportInfo.adult_tubes += (
+          scrapeData.matches_count +
+          scrapeData.no_matches_count +
+          scrapeData.no_report_count +
+          scrapeData.report_count
+        )
+
+        dataReportInfo.file_hosted += scrapeData.good_count;
+
+        // @TODO: should complete this with Social Media , Personal Agent , AI Bots
+      }
+
+      await downloadDataReport(dataReportInfo);
+
+      const pdfBuffer = await promises.readFile('./data-report.pdf')
+      const pdfBase64 = pdfBuffer.toString('base64');
+
+      const emailBodyContent = {
+        title: `Monthly Data Report - Lock Leaks`,
+        content: `<h4>Dear ${user.name}</h4>
+        <br />
+        <p>Attached is your monthly data report in PDF format. This detailed report provides comprehensive insights into your content's performance, including analysis of trends, interactions, and other relevant data.</p>
+        <br />
+        <p>Please find the report attached for a full overview of the analytics and potential future strategies.</p>
+        <br />
+        <p>Thank you for choosing our service..</p>
+        <br />
+        <p>Best regards,</p>
+        <p>Lock Leaks</p>
+        <a href="https://lockleaks.com">lockleaks.com</a>
+        `
+      }
+
+      const fileEmailContent = ElasticEmail.EmailMessageData.constructFromObject({
+        Recipients: [new ElasticEmail.EmailRecipient(user.email)],
+        Content: {
+          Body: [
+            ElasticEmail.BodyPart.constructFromObject({
+              ContentType: "HTML",
+              Content: emailBodyContent.content,
+            }),
+          ],
+          Attachments: [
+            ElasticEmail.MessageAttachment.constructFromObject({
+              Name: `${subject}.pdf`,
+              BinaryContent: pdfBase64, // This should be replaced with the actual file content or a stream
+              ContentType: "application/pdf"
+            })
+          ],
+          Subject: emailBodyContent.title,
+          From: elasticEmailConfig.auth.authEmail,
+        },
+      });
+
+      const fileCallback = (error, data, response) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Data Submitted Successfully!");
+        }
+      };
+
+      api.emailsPost(fileEmailContent, fileCallback);
+    }
+
+  } catch (error) {
+    console.error('Error in setting the subscription status as expired:', error);
+  }
+
+  // Setting the Subscription as expired.
 
   try {
 
@@ -78,7 +215,7 @@ export default async () => {
           }
         });
 
-        console.log(`Trial Expired for the user:${user.id}`)
+        console.log(`Subscription Expired for the user:${user.id}`);
 
         io.emit(`payment_status_${user.id}`, 'expired');
 
@@ -88,7 +225,7 @@ export default async () => {
     }
 
   } catch (error) {
-    console.error('Error in setting the Trial plan as expired after 3 days.:', error);
+    console.error('Error in setting the subscription status as expired:', error);
   }
 
   // Delete the Tickets and Messages after 30 days.

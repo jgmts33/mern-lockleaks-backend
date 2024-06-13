@@ -198,7 +198,9 @@ export const updatePaymentLink = async (req, res) => {
     await user.update({
       subscription: {
         payment_method: payment_method,
+        from: new Date(),
         expire_date,
+        period,
         plan_id: 4 /* Star Plan */,
         status: 'active' // 'active'| 'expired'
       }

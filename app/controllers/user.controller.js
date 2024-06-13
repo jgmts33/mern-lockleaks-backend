@@ -6,11 +6,13 @@ import archiverZipEncryptable from 'archiver-zip-encryptable';
 import { io } from '../../server.js';
 import path from 'path';
 import bcrypt from 'bcryptjs';
+import { promises } from 'fs';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
+import { downloadDataReport } from "../utils/data-report-to-pdf.js";
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -412,7 +414,9 @@ export const updatePaymentStatus = async (req, res) => {
     await user.update({
       subscription: {
         payment_method: payment_method,
+        from: new Date(),
         expire_date,
+        period,
         plan_id: subscriptionOption.id,
         status: 'active' // 'active'| 'expired'
       }
@@ -799,9 +803,9 @@ export const downloadCopyrightHolder = async (req, res) => {
 
   try {
 
-    const filePath = path.join(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
+    const fileBuffer = await promises.readFile(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
 
-    res.download(filePath);
+    res.send(fileBuffer);
 
   } catch (err) {
     res.status(500).send({
@@ -852,4 +856,18 @@ export const updateToModerator = async (req, res) => {
       message: err.message
     });
   }
+}
+
+export const handleDownloadDataReport = async (req, res) => {
+  downloadDataReport({
+    name: "Dennis Lee",
+    key_metrics: 12,
+    ai_bots: 12,
+    adult_tubes: 16,
+    social_media: 20,
+    personal_agent: 24,
+    file_hosted: 32
+  });
+
+  res.status(200).send("Downloaded Successfully!");
 }
