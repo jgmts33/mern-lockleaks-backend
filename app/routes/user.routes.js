@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator, handleDownloadDataReport } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator, getDataReportList, getDataAnalyticsList } from '../controllers/user.controller.js';
 // import multer from 'multer';
 
 // const upload = multer();
@@ -97,8 +97,20 @@ export default function (app) {
     downloadCopyrightHolder
   );
 
+  // app.get(
+  //   "/download-data-report",
+  //   handleDownloadDataReport
+  // )
+  
   app.get(
-    "/download-data-report",
-    handleDownloadDataReport
+    "/data-report",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getDataReportList
+  )
+
+  app.get(
+    "/data-analytics",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getDataAnalyticsList
   )
 };

@@ -65,6 +65,14 @@ export default function (sequelize, Sequelize) {
     ip: {
       type: Sequelize.STRING,
       default: ""
+    },
+    data_report: {
+      type: Sequelize.STRING,
+      default: ""
+    },
+    data_analytics: {
+      type: Sequelize.STRING,
+      default: ""
     }
   });
 

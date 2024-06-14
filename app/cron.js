@@ -147,8 +147,8 @@ export default async () => {
       }
 
       await downloadDataReport(dataReportInfo);
-
-      const reportPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/data-report_${dataReportInfo.user_id}.pdf`);
+      const reportPdfName = `data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataReportInfo.user_id}.pdf.pdf`;
+      const reportPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/${reportPdfName}`);
       const reportPdfBase64 = reportPdfBuffer.toString('base64');
 
       let attachments = [
@@ -161,9 +161,14 @@ export default async () => {
 
       if (user.subscription.plan_id == 4) {
         await downloadDataAnalytics(dataAnalyticsInfo);
-
-        const analyticsPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/data-analytics_${dataAnalyticsInfo.user_id}.pdf`);
+        const analyticsPdfName = `data-analytics_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataAnalyticsInfo.user_id}.pdf.pdf`;
+        const analyticsPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/${analyticsPdfName}`);
         const analyticsPdfBase64 = analyticsPdfBuffer.toString('base64');
+
+        await user.update({
+          data_report: reportPdfName,
+          data_analytics: analyticsPdfName
+        });
 
         attachments.push(
           ElasticEmail.MessageAttachment.constructFromObject({
@@ -173,6 +178,10 @@ export default async () => {
           })
         )
 
+      } else {
+        await user.update({
+          data_report: reportPdfName
+        });
       }
 
 
@@ -207,11 +216,11 @@ export default async () => {
         },
       });
 
-      const fileCallback = (error, data, response) => {
+      const fileCallback = async (error, data, response) => {
         if (error) {
           console.error(error);
         } else {
-          console.log("Data Submitted Successfully!");
+          console.log("Email Sent Successfully!");
         }
       };
 

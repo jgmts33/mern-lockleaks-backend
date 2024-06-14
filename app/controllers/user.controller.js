@@ -879,15 +879,78 @@ export const updateToModerator = async (req, res) => {
 }
 
 export const handleDownloadDataReport = async (req, res) => {
+
+  const user = await User.fineByPk(12)
+
   downloadDataAnalytics({
-    name: "Dennis Lee",
+    name: user.name,
     hosting_revenue: 12,
     subscription_profits: 12,
     advetisement_revenue: 16,
     intermediary_forums_revenue: 20,
     active_websites: 24,
-    user_id: 5,
+    user_id: user.id,
   });
 
   res.status(200).send("Downloaded Successfully!");
+}
+
+export const getDataReportList = async (req, res) => {
+
+  try {
+    const users = await User.findAll({
+      where: {
+        data_report: {
+          [Sequelize.Op.ne]: ""
+        }
+      },
+      attributes: ['id', 'email', 'name', 'data_report']
+    });
+
+    res.status(200).send(users);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+
+}
+
+export const getDataAnalyticsList = async (req, res) => {
+
+  try {
+    const users = await User.findAll({
+      where: {
+        data_analytics: {
+          [Sequelize.Op.ne]: ""
+        }
+      },
+      attributes: ['id', 'email', 'name', 'data_analytics']
+    });
+
+    res.status(200).send(users);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+
+}
+
+export const downloadReportOrAnalyticsPDF = async (req, res) => {
+  const { file } = req.query;
+
+  try {
+
+    const filePath = path.join(`/root/lockleaks-backend/pdfs/${file}`);
+
+    res.status(200).sendFile(filePath);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
 }
