@@ -180,20 +180,16 @@ export const getUsersList = async (req, res) => {
 
     const activeCount = await User.count({
       where: {
-        sbuscription: {
-          plan_id: {
-            [Sequelize.Op.ne]: null
-          }
+        'sbuscription.status': {
+          [Sequelize.Op.eq]: 'active'
         }
       }
     });
 
     const inActiveCount = await User.count({
       where: {
-        sbuscription: {
-          plan_id: {
-            [Sequelize.Op.eq]: null
-          }
+        'sbuscription.status': {
+          [Sequelize.Op.ne]: 'active'
         }
       }
     });
