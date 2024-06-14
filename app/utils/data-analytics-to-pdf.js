@@ -25,7 +25,7 @@ export const downloadDataAnalytics = async (info) => {
     doc.text(`-Total Subscription Profits: ${info?.subscription_profits}`, 14, 87);
     doc.text(`-Total Advertisement Revenue: ${info?.advetisement_revenue}`, 14, 93);
     doc.text(`-Total Intermediary Forums & Revenue: ${info?.intermediary_forums_revenue}`, 14, 99);
-    doc.text(`-Total Acchive Websites: ${info?.active_websites}`, 14, 105);
+    doc.text(`-Total Archive Websites: ${info?.active_websites}`, 14, 105);
     doc.setFontSize(15);
     doc.text('3. Our Commitment to Data Analytics', 10, 114)
     doc.setFontSize(12);

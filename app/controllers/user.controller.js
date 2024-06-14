@@ -178,6 +178,26 @@ export const getUsersList = async (req, res) => {
       offset: (page - 1) * 6
     });
 
+    const activeCount = await User.count({
+      where: {
+        sbuscription: {
+          plan_id: {
+            [Sequelize.Op.ne]: null
+          }
+        }
+      }
+    });
+
+    const inActiveCount = await User.count({
+      where: {
+        sbuscription: {
+          plan_id: {
+            [Sequelize.Op.eq]: null
+          }
+        }
+      }
+    });
+
     const responseData = [];
 
     for (let user of users) {
@@ -202,7 +222,9 @@ export const getUsersList = async (req, res) => {
     res.status(200).send({
       data: responseData,
       totalCount: totalCount,
-      totalPage: Math.ceil(totalCount / 6)
+      totalPage: Math.ceil(totalCount / 6),
+      activeCount,
+      inActiveCount
     });
 
   }
