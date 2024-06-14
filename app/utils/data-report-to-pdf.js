@@ -97,6 +97,6 @@ export const downloadDataReport = async (info) => {
     doc.text(`In conclusion, our suite of services, complemented by cutting-edge technology and meticulous manual efforts, significantly reduces the risk`, 10, 202);
     doc.text(`of copyright infringements, fortifying the online security and reputation of our clients.`, 10, 208);
     
-    doc.save(`root/lockleaks-backend/pdfs/data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${info.user_id}.pdf`);
+    doc.save(`~/lockleaks-backend/pdfs/data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${info.user_id}.pdf`);
     
 }
