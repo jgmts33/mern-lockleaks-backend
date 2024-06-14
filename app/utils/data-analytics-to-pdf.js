@@ -1,6 +1,8 @@
 import { jsPDF } from 'jspdf';
 import moment from 'moment';
 import { promises } from 'fs';
+import os from 'os';
+const homeDirectory = os.homedir();
 
 export const downloadDataAnalytics = async (info) => {
     const doc = new jsPDF({
@@ -99,6 +101,6 @@ export const downloadDataAnalytics = async (info) => {
     doc.text(`and diversity of ways in which illegal content is distributed and monetized on the internet. Understanding these aspects is crucial for developing`, 10, 262);
     doc.text(`effective strategies to protect copyright and combat illegal content distribution. By continuously analyzing and monitoring these practices, we can`, 10, 268);
     doc.text(`contribute to promoting a safer and more ethical online environment for both creators and users.`, 10, 274);
-    doc.save(`~/lockleaks-backend/pdfs/data-analytics_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${info.user_id}.pdf`);
+    doc.save(`${homeDirectory}/lockleaks-backend/pdfs/data-analytics_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${info.user_id}.pdf`);
     // doc.save(`data-analytics_${info.user_id}.pdf`);
 }
