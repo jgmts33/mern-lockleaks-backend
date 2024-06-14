@@ -13,6 +13,7 @@ archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from '../config/elasticEmail.config..js';
 import { downloadDataReport } from "../utils/data-report-to-pdf.js";
+import { downloadDataAnalytics } from "../utils/data-analytics-to-pdf.js";
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -859,14 +860,14 @@ export const updateToModerator = async (req, res) => {
 }
 
 export const handleDownloadDataReport = async (req, res) => {
-  downloadDataReport({
+  downloadDataAnalytics({
     name: "Dennis Lee",
-    key_metrics: 12,
-    ai_bots: 12,
-    adult_tubes: 16,
-    social_media: 20,
-    personal_agent: 24,
-    file_hosted: 32
+    hosting_revenue: 12,
+    subscription_profits: 12,
+    advetisement_revenue: 16,
+    intermediary_forums_revenue: 20,
+    active_websites: 24,
+    user_id: 5,
   });
 
   res.status(200).send("Downloaded Successfully!");

@@ -2,13 +2,13 @@ import { jsPDF } from 'jspdf';
 import moment from 'moment';
 import { promises } from 'fs';
 
-export const downloadDataReport = async (info) => {
+export const downloadDataAnalytics = async (info) => {
     const doc = new jsPDF({
         format: 'a3'
     });
 
     doc.setFontSize(18);
-    doc.text('Monthly Analysis Report - Lock Leaks', 102, 12);
+    doc.text('Monthly Analytics Report - Lock Leaks', 102, 12);
     doc.setFontSize(15);
     doc.text(`${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD MMM, YYYY")} ~ ${moment(new Date()).format("DD MMM, YYYY")}`, 116, 18);
     doc.text(`Dear ${info.name}`, 10, 30);
@@ -21,42 +21,39 @@ export const downloadDataReport = async (info) => {
     doc.setFontSize(15);
     doc.text('2. Key Metrics', 10, 75);
     doc.setFontSize(12);
-    doc.text('Search Engine', 10, 81);
-    doc.text(`Total Removed Results: ${info?.key_metrics}`, 10, 87);
+    doc.text(`-Total Hosting Revenue: ${info?.hosting_revenue}`, 14, 81);
+    doc.text(`-Total Subscription Profits: ${info?.subscription_profits}`, 14, 87);
+    doc.text(`-Total Advertisement Revenue: ${info?.advetisement_revenue}`, 14, 93);
+    doc.text(`-Total Intermediary Forums & Revenue: ${info?.intermediary_forums_revenue}`, 14, 99);
+    doc.text(`-Total Acchive Websites: ${info?.active_websites}`, 14, 105);
     doc.setFontSize(15);
-    doc.text('AI Bots', 10, 96);
+    doc.text('3. Our Commitment to Data Analytics', 10, 114)
     doc.setFontSize(12);
-    doc.text(`Total Removed Results: ${info?.ai_bots}`, 10, 102);
+    doc.text("At Lock Leaks, we are committed to providing comprehensive data analytics services to ensure your satisfaction and success. Here's how we", 10, 120);
+    doc.text("fulfill our commitment:", 10, 126);
+    doc.text("-Quality Data Analysis: We continuously update and enhance our data analysis techniques to provide you with accurate and insightful", 14, 132);
+    doc.text("information", 16, 138);
+    doc.text("-Dedicated Support: Our team of experts is available around the clock to assist you with any questions or concerns you may have regarding", 14, 144);
+    doc.text("your data analytics.", 16, 150);
+    doc.text("-Data Security: We prioritize the security and privacy of your data, implementing robust measures to safeguard it from unauthorized access", 14, 156);
+    doc.text("or misuse.", 16, 162);
+    doc.text("For further insights and a detailed explanation of the analytics presented in this report, please visit the Data Analytics section in the", 10, 168);
+    doc.text("Lock Leaks Panel on our website.", 10, 174);
     doc.setFontSize(15);
-    doc.text('Adult Tubes', 10, 111);
+    doc.text("4. Contact Information", 10, 183);
     doc.setFontSize(12);
-    doc.text(`Total Removed Results: ${info?.adult_tubes}`, 10, 117);
-    doc.setFontSize(15);
-    doc.text('Social Media', 10, 126);
+    doc.text("If you require any assistance or have inquiries regarding your data analytics, please don't hesitate to reach out to our dedicated Customer", 10, 189);
+    doc.text("Support team: support@lockleaks.com", 10, 195);
     doc.setFontSize(12);
-    doc.text(`Total Removed Results: ${info?.social_media}`, 10, 132);
-    doc.setFontSize(15);
-    doc.text('Personal Agent', 10, 141);
-    doc.setFontSize(12);
-    doc.text(`Total Removed Results: ${info?.personal_agent}`, 10, 147);
-    doc.setFontSize(15);
-    doc.text('File Hosted', 10, 156);
-    doc.setFontSize(12);
-    doc.text(`Total Removed Results: ${info?.file_hosted}`, 10, 162);
-    doc.setFontSize(15);
-    doc.text('3. Contact Infomation', 10, 171);
-    doc.setFontSize(12);
-    doc.text(`If you have any questions or need further assistance, please do not hesitate to contact us: support@lockleaks.com`, 10, 177);
-    
     const logoBuffer = await promises.readFile('./assets/logo.png');
     const stampBuffer = await promises.readFile('./assets/stamp.png');
-    doc.addImage(logoBuffer, "PNG", 4, 176, 120, 30);
-    doc.addImage(stampBuffer, "PNG", 10, 206, 30, 30);
+    doc.addImage(logoBuffer, "PNG", 4, 192, 120, 30);
+    doc.addImage(stampBuffer, "PNG", 10, 218, 30, 30);
     doc.setFont("helvetica", "italic");
-    doc.text(`AD BOOST S.R.L.`, 10, 246);
-    doc.text(`Romania, Bacau, Strada Letea 32, Bloc A, Ap. 116, 600343`, 10, 252);
-    doc.text(`Register Code (CUI): 48091747`, 10, 258);
-    doc.text(`VAT: RO48091747`, 10, 264);
+    doc.text(`AD BOOST S.R.L.`, 10, 258);
+    doc.text(`Romania, Bacau, Strada Letea 32, Bloc A, Ap. 116, 600343`, 10, 264);
+    doc.text(`Register Code (CUI): 48091747`, 10, 270);
+    doc.text(`VAT: RO48091747`, 10, 276);
 
     doc.addPage('a3', "p");
     doc.setFont("helvetica", "normal");
@@ -97,5 +94,6 @@ export const downloadDataReport = async (info) => {
     doc.text(`In conclusion, our suite of services, complemented by cutting-edge technology and meticulous manual efforts, significantly reduces the risk`, 10, 202);
     doc.text(`of copyright infringements, fortifying the online security and reputation of our clients.`, 10, 208);
     
-    doc.save(`root/lockleaks-backend/pdfs/data-report_${info.user_id}.pdf`);
+    doc.save(`root/lockleaks-backend/pdfs/data-analytics_${info.user_id}.pdf`);
+    // doc.save(`data-analytics_${info.user_id}.pdf`);
 }

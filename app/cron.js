@@ -7,6 +7,7 @@ import { promises } from 'fs';
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from './config/elasticEmail.config..js';
 import { downloadDataReport } from "./utils/data-report-to-pdf.js";
+import { downloadDataAnalytics } from "./utils/data-analytics-to-pdf.js";
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -109,7 +110,18 @@ export default async () => {
         adult_tubes: 0,
         social_media: 0,
         personal_agent: 0,
-        file_hosted: 0
+        file_hosted: 0,
+        user_id: user.id
+      }
+
+      let dataAnalyticsInfo = {
+        name: user.name,
+        hosting_revenue: 0,
+        subscription_profits: 0,
+        advetisement_revenue: 0,
+        intermediary_forums_revenue: 0,
+        active_websites: 0,
+        user_id: user.id,
       }
 
       for (const scrapeData of scrapeDataList) {
@@ -136,11 +148,36 @@ export default async () => {
 
       await downloadDataReport(dataReportInfo);
 
-      const pdfBuffer = await promises.readFile('./data-report.pdf')
-      const pdfBase64 = pdfBuffer.toString('base64');
+      const reportPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/data-report_${dataReportInfo.user_id}.pdf`);
+      const reportPdfBase64 = reportPdfBuffer.toString('base64');
+
+      let attachments = [
+        ElasticEmail.MessageAttachment.constructFromObject({
+          Name: `Data Report.pdf`,
+          BinaryContent: reportPdfBase64, // This should be replaced with the actual file content or a stream
+          ContentType: "application/pdf"
+        })
+      ]
+
+      if (user.subscription.plan_id == 4) {
+        await downloadDataAnalytics(dataAnalyticsInfo);
+
+        const analyticsPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/data-analytics_${dataAnalyticsInfo.user_id}.pdf`);
+        const analyticsPdfBase64 = analyticsPdfBuffer.toString('base64');
+
+        attachments.push(
+          ElasticEmail.MessageAttachment.constructFromObject({
+            Name: `Data Analytics.pdf`,
+            BinaryContent: analyticsPdfBase64, // This should be replaced with the actual file content or a stream
+            ContentType: "application/pdf"
+          })
+        )
+
+      }
+
 
       const emailBodyContent = {
-        title: `Monthly Data Report - Lock Leaks`,
+        title: `Monthly Data Analytics Report - Lock Leaks`,
         content: `<h4>Dear ${user.name}</h4>
         <br />
         <p>Attached is your monthly data report in PDF format. This detailed report provides comprehensive insights into your content's performance, including analysis of trends, interactions, and other relevant data.</p>
@@ -164,13 +201,7 @@ export default async () => {
               Content: emailBodyContent.content,
             }),
           ],
-          Attachments: [
-            ElasticEmail.MessageAttachment.constructFromObject({
-              Name: `${subject}.pdf`,
-              BinaryContent: pdfBase64, // This should be replaced with the actual file content or a stream
-              ContentType: "application/pdf"
-            })
-          ],
+          Attachments: attachments,
           Subject: emailBodyContent.title,
           From: elasticEmailConfig.auth.authEmail,
         },
