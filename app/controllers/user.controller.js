@@ -174,6 +174,7 @@ export const getUsersList = async (req, res) => {
   try {
     const { count: totalCount, rows: users } = await User.findAndCountAll({
       where: whereCondition,
+      order: [['createdAt', 'DESC']],
       limit: 6,
       offset: (page - 1) * 6
     });
