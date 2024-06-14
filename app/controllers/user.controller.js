@@ -882,13 +882,24 @@ export const handleDownloadDataReport = async (req, res) => {
 
   const user = await User.findByPk('12');
 
-  downloadDataAnalytics({
+  // downloadDataAnalytics({
+  //   name: user.name,
+  //   hosting_revenue: 12,
+  //   subscription_profits: 12,
+  //   advetisement_revenue: 16,
+  //   intermediary_forums_revenue: 20,
+  //   active_websites: 24,
+  //   user_id: user.id,
+  // });
+
+  downloadDataReport({
     name: user.name,
-    hosting_revenue: 12,
-    subscription_profits: 12,
-    advetisement_revenue: 16,
-    intermediary_forums_revenue: 20,
-    active_websites: 24,
+    key_metrics: 12,
+    ai_bots: 12,
+    adult_tubes: 16,
+    social_media: 20,
+    personal_agent: 24,
+    file_hosted: 24,
     user_id: user.id,
   });
 
