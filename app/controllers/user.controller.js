@@ -880,7 +880,7 @@ export const updateToModerator = async (req, res) => {
 
 export const handleDownloadDataReport = async (req, res) => {
 
-  const user = await User.findByPk(12)
+  const user = await User.findByPk('12');
 
   downloadDataAnalytics({
     name: user.name,
