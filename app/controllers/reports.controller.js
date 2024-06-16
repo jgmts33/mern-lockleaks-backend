@@ -6,12 +6,14 @@ const { reports: Reports } = db;
 export const addNewReport = async (req, res) => {
   const {
     website,
+    method,
     links
   } = req.body;
 
   try {
     const newRow = await Reports.create({
       website,
+      method,
       links
     });
 
@@ -28,6 +30,7 @@ export const updateReport = async (req, res) => {
   const { id } = req.params;
   const {
     website,
+    method,
     links,
     success
   } = req.body;
@@ -38,6 +41,7 @@ export const updateReport = async (req, res) => {
 
     await row.update({
       website,
+      method,
       links,
       success
     });
@@ -85,6 +89,11 @@ export const getReports = async (req, res) => {
         [Sequelize.Op.or]: [
           {
             website: {
+              [Sequelize.Op.like]: '%' + search + '%'
+            }
+          },
+          {
+            method: {
               [Sequelize.Op.like]: '%' + search + '%'
             }
           },

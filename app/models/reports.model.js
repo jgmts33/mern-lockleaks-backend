@@ -2,7 +2,11 @@ export default function (sequelize, Sequelize) {
   const Reports = sequelize.define("reports", {
     website: {
       type: Sequelize.STRING,
-      default: []
+      default: ''
+    },
+    method: {
+      type: Sequelize.TEXT,
+      defaultValue: ''
     },
     links: {
       type: Sequelize.ARRAY(Sequelize.STRING),
