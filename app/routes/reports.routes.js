@@ -12,25 +12,25 @@ export default function (app) {
   });
 
   app.get(
-    "/reports",
+    "/report",
     [authJwt.verifyToken, authJwt.isAdmin],
     getReports
   );
 
   app.post(
-    "/reports",
+    "/report",
     [authJwt.verifyToken, authJwt.isAdmin],
     addNewReport
   );
 
   app.patch(
-    "/reports/:id",
+    "/report/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateReport
   );
 
   app.delete(
-    "/reports/:id",
+    "/report/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     deleteReport
   );
