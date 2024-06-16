@@ -1,7 +1,7 @@
 export default function (sequelize, Sequelize) {
-  const PingModels = sequelize.define("ping_models", {
+  const Reports = sequelize.define("reports", {
     website: {
-      type: Sequelize.ARRAY(Sequelize.STRING),
+      type: Sequelize.STRING,
       default: []
     },
     links: {
@@ -14,5 +14,5 @@ export default function (sequelize, Sequelize) {
     },
   });
 
-  return PingModels;
+  return Reports;
 }

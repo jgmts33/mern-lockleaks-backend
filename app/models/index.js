@@ -27,6 +27,7 @@ import newsModel from "./news.model.js";
 import subscribedUsersModel from "./subscribed-users.model.js";
 import pingModelsModel from "./ping-models.model.js";
 import socialUsernamesModel from "./social-usernames.model.js";
+import reportsModel from "./reports.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -73,6 +74,7 @@ db.news = newsModel(sequelize, Sequelize);
 db.subscribedUsers = subscribedUsersModel(sequelize, Sequelize);
 db.pingModels = pingModelsModel(sequelize, Sequelize);
 db.socialUsernames = socialUsernamesModel(sequelize, Sequelize);
+db.reports = reportsModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

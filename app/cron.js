@@ -73,21 +73,18 @@ export default async () => {
 
     const users = await User.findAll({
       where: {
-        subscription: {
-          [
-            Sequelize.Op.and]: [
-              { status: { [Sequelize.Op.ne]: 'expired' } },
-              {
-                from: {
-                  [
-                    Sequelize.Op.between]: [
-                      (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
-                      (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
-                    ]
-                }
-              }
-            ]
-        }
+        [Sequelize.Op.and]: [
+          { 'subscription.status': { [Sequelize.Op.ne]: 'expired' } },
+          {
+            'subscription.from': {
+              [
+                Sequelize.Op.between]: [
+                  (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
+                  (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
+                ]
+            }
+          }
+        ]
       }
     }) || [];
 
