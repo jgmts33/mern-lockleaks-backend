@@ -62,10 +62,10 @@ export const signup = async (req, res) => {
           Body: [
             ElasticEmail.BodyPart.constructFromObject({
               ContentType: "HTML",
-              Content: `<div>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="https://lockleaks.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
+              Content: `<div>Hi<br/><br/> Thanks for getting started with Lock Leaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="https://lockleaks.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
             })
           ],
-          Subject: "Email Verification | LockLeaks",
+          Subject: "Email Verification | Lock Leaks",
           From: elasticEmailConfig.auth.authEmail,
         }
       });
@@ -334,7 +334,9 @@ export const verifyEmail = async (req, res) => {
         }
       }
 
-      user.update({ verified: true });
+      await user.update({ verified: true });
+
+      io.emit( `verify_email_${user.id}`, true);
 
       let refreshToken = await RefreshToken.createToken(user);
       
