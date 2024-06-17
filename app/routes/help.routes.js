@@ -1,4 +1,4 @@
-import { addNewArticle, deleteArticle, getArticle, getArticles, addNewCategory, deleteCategory, getCategories, updateArticle, updateCategory, reactHelpArticle } from '../controllers/help.controller.js';
+import { addNewArticle, deleteArticle, getArticle, getArticles, addNewCategory, deleteCategory, getCategories, updateArticle, updateCategory, reactHelpArticle, searchArticles } from '../controllers/help.controller.js';
 import authJwt from "../middleware/authjwt.js";
 
 export default function (app) {
@@ -15,6 +15,11 @@ export default function (app) {
     "/help/articles",
     getArticles
   );
+
+  app.get(
+    "/help/search-articles",
+    searchArticles
+  )
 
   app.get(
     "/help/articles/:id",

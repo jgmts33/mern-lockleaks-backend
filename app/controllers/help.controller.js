@@ -1,3 +1,4 @@
+import { Sequelize } from "sequelize";
 import db from "../models/index.js";
 
 const { helpCategories: HelpCategories, helpArticles: HelpArticles } = db;
@@ -213,6 +214,29 @@ export const getArticles = async (req, res) => {
 
       res.status(200).send(articles);
     }
+  }
+  catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+}
+
+
+export const searchArticles = async (req, res) => {
+  const { search } = req.query;
+  try {
+
+    const articles = await HelpArticles.findAll({
+      where: {
+        title: {
+          [Sequelize.Op.like]: '%' + search + '%'
+        }
+      },
+      attributes: ['id', 'title', 'categoryId']
+    });
+
+    res.status(200).send(articles);
   }
   catch (err) {
     res.status(500).send({
