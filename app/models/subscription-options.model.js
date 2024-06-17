@@ -28,11 +28,7 @@ export default function (sequelize, Sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    ai_face_images: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    ai_face_profiles: {
+    ai_face: {
       type: Sequelize.INTEGER,
       allowNull: false
     },
