@@ -22,6 +22,10 @@ export default function (sequelize, Sequelize) {
     },
     amount: {
       type: Sequelize.INTEGER
+    },
+    period: {
+      type: Sequelize.INTEGER,
+      default: 0
     }
   });
 
