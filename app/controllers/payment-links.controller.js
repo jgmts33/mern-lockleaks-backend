@@ -104,7 +104,7 @@ export const createPaymentLink = async (req, res) => {
 export const createFanPaymentLink = async (req, res) => {
 
   const { id } = req.params;
-  const { usernames, amount } = req.body;
+  const { usernames, amount , period } = req.body;
 
   try {
 
@@ -133,6 +133,7 @@ export const createFanPaymentLink = async (req, res) => {
       user_id: user.id,
       usernames,
       expire_date,
+      period,
       status: 'active',
       amount
     });
@@ -200,7 +201,7 @@ export const updatePaymentLink = async (req, res) => {
         payment_method: payment_method,
         from: new Date(),
         expire_date,
-        period,
+        period: paymentLink.period ? paymentLink.period : user.subscription.period || null,
         plan_id: 4 /* Star Plan */,
         status: 'active' // 'active'| 'expired'
       }
