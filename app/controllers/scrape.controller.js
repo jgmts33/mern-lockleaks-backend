@@ -114,9 +114,10 @@ export const scrapeData = async (req, res) => {
       folder_name: currentDate
     });
 
+    console.log("data:", data);
+    
     const scrapeSummaryCreationRes = await ScrapeSummary.create({ ...data });
 
-    console.log("data:", data);
     console.log("scrapeSummaryCreationRes:", scrapeSummaryCreationRes);
 
     io.emit(`admin:dashboardInfo`, 'scan-finished');
