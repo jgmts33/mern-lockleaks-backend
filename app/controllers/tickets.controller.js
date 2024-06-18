@@ -9,7 +9,7 @@ export const getTickets = async (req, res) => {
   try {
 
     const tickets = await Tickets.findAll({
-      order: [['createdAt', 'DESC']]
+      order: [['updatedAt', 'DESC']]
     });
 
     res.status(200).send(tickets);
@@ -31,7 +31,7 @@ export const getTicketsByUser = async (req, res) => {
       where: {
         user_id: id
       },
-      order: [['createdAt', 'DESC']]
+      order: [['updatedAt', 'DESC']]
     });
 
     res.status(200).send(tickets);
