@@ -23,13 +23,17 @@ export const scan = async (req, res) => {
     const formData = new FormData();
 
     formData.append('photo', file);
-    formData.append('out', `${currentDate}_ai_face_${id}`)
+    formData.append('out', `${currentDate}_ai_face_${id}`);
+
+    console.log('formData:', formData);
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, formData, {
       headers: {
         ...formData.getHeaders()
       },
     });
+
+    console.log("scanRes:", scanRes);
 
     const result = await AIBotsSummaries.create({
       file: `${currentDate}_ai_face_${id}`,
