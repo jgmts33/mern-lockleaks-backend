@@ -85,6 +85,8 @@ export const scrapeData = async (req, res) => {
         all: queries.length
       });
 
+      console.log(scrapeRes.data);
+
       data = {
         scrape_date: currentDate,
         total_google_links: data.total_google_links + scrapeRes.data.google_link_count,
@@ -113,8 +115,6 @@ export const scrapeData = async (req, res) => {
     await axios.post(`${process.env.BOT_API_ENDPOINT}/zip`, {
       folder_name: currentDate
     });
-
-    console.log("data:", data);
 
     const scrapeSummaryCreationRes = await ScrapeSummary.create({ ...data });
 
