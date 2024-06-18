@@ -442,6 +442,8 @@ export const updatePaymentStatus = async (req, res) => {
       }
     });
 
+    io.emit(`payment_status_updated_${user.id}`, 'active');
+
     res.status(200).send({
       message: `Payment was successed as ${plan}/${payment_method}`
     });
