@@ -24,6 +24,7 @@ import pingModelsRoutes from './app/routes/ping-models.routes.js';
 import cronFunc from './app/cron.js';
 import socialUsernamesRoutes from './app/routes/social-usernames.routes.js';
 import reportsRoutes from './app/routes/reports.routes.js';
+import socialScanRoutes from './app/routes/social-scan.routes.js';
 
 configDotenv();
 
@@ -110,6 +111,7 @@ paymentLinksRoutes(app);
 newsRoutes(app);
 pingModelsRoutes(app);
 reportsRoutes(app);
+socialScanRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
