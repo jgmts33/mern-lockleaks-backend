@@ -183,7 +183,10 @@ export const addHelpCounts = async (req, res) => {
       count: ticket.count + count
     });
 
-    io.emit(`update_ticket_count`, { id, ticket: ticket.count });
+    io.emit(`update_ticket_count`, { 
+      user_id: ticket.user_id,
+      ticket: ticket.count
+    });
 
     res.status(200).send({
       message: "Ticket Count updated Successfully!"
