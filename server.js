@@ -25,6 +25,7 @@ import cronFunc from './app/cron.js';
 import socialUsernamesRoutes from './app/routes/social-usernames.routes.js';
 import reportsRoutes from './app/routes/reports.routes.js';
 import socialScanRoutes from './app/routes/social-scan.routes.js';
+import aiFaceScanRoutes from './app/routes/ai-face-scan.routes.js';
 
 configDotenv();
 
@@ -112,6 +113,7 @@ newsRoutes(app);
 pingModelsRoutes(app);
 reportsRoutes(app);
 socialScanRoutes(app);
+aiFaceScanRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
