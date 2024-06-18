@@ -1,3 +1,4 @@
+import { Sequelize } from "sequelize";
 import db from "../models/index.js";
 
 const { proxiesBots: ProxiesBots } = db;
@@ -111,11 +112,44 @@ export const deleteProxiesBot = async (req, res) => {
 
 export const getProxiesBots = async (req, res) => {
 
+  const { page, search } = req.query;
+
   try {
 
-    const proxiesBots = await ProxiesBots.findAll();
+    let whereCondition = {};
+    if (search) {
+      whereCondition = {
+        [Sequelize.Op.or]: [
+          {
+            model_name: {
+              [Sequelize.Op.overlap]: [search]
+            }
+          },
+          {
+            platform: {
+              [Sequelize.Op.overlap]: [search]
+            }
+          },
+          {
+            social_media: {
+              [Sequelize.Op.overlap]: [search]
+            }
+          }
+        ]
+      }
+    }
+    
+    const { count: totalCount, rows: proxiesBots } = await ProxiesBots.findAndCountAll({
+      where: whereCondition,
+      limit: 6,
+      offset: (page - 1) * 6
+    });
 
-    res.status(200).send(proxiesBots);
+    res.status(200).send({
+      data: proxiesBots,
+      totalCount: totalCount,
+      totalPages: Math.ceil(totalCount / 6)
+    });
 
   } catch (err) {
     res.status(500).send({
