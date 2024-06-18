@@ -6,7 +6,7 @@ const { aiBotsSummaries: AIBotsSummaries } = db;
 
 export const scan = async (req, res) => {
   const { id } = req.params;
-  
+
   try {
 
     const file = req.files['photo'];
@@ -21,11 +21,15 @@ export const scan = async (req, res) => {
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
     const formData = new FormData();
-    
+
     formData.append('photo', file);
     formData.append('out', `${currentDate}_ai_face_${id}`)
 
-    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, formData);
+    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
     const result = await AIBotsSummaries.create({
       file: `${currentDate}_ai_face_${id}`,
