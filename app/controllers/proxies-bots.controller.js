@@ -122,23 +122,23 @@ export const getProxiesBots = async (req, res) => {
         [Sequelize.Op.or]: [
           {
             vps_source: {
-              [Sequelize.Op.overlap]: [search]
+              [Sequelize.Op.like]: '%' + search + '%'
             }
           },
           {
             ip_address: {
-              [Sequelize.Op.overlap]: [search]
+              [Sequelize.Op.like]: '%' + search + '%'
             }
           },
           {
             proxy_source: {
-              [Sequelize.Op.overlap]: [search]
+              [Sequelize.Op.like]: '%' + search + '%'
             }
           }
         ]
       }
     }
-    
+
     const { count: totalCount, rows: proxiesBots } = await ProxiesBots.findAndCountAll({
       where: whereCondition,
       limit: 6,
