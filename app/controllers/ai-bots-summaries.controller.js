@@ -5,10 +5,12 @@ import { io } from "../../server.js";
 const { aiBotsSummaries: AIBotsSummaries } = db;
 
 export const scan = async (req, res) => {
-  const file = req.files['photo'];
   const { id } = req.params;
-
+  
   try {
+
+    const file = req.files['photo'];
+    
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
       month: '2-digit',
