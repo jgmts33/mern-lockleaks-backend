@@ -76,7 +76,7 @@ export const scrapeData = async (req, res) => {
       requestData.query = query;
       index++;
       console.log("query:", query, " userindex:", id, " index:", index);
-      const res = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/scrape`, {
+      const scrapeRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/scrape`, {
         ...requestData
       });
 
@@ -87,20 +87,20 @@ export const scrapeData = async (req, res) => {
 
       data = {
         scrape_date: currentDate,
-        total_google_links: data.total_google_links + res.data.google_link_count,
-        total_google_images: data.total_google_images + res.data.google_image_count,
-        total_google_videos: data.total_google_videos + res.data.google_video_count,
-        total_bing_links: data.total_bing_links + res.data.bing_link_count,
-        total_bing_images: data.total_bing_images + res.data.bing_image_count,
-        total_bing_videos: data.total_bing_videos + res.data.bing_video_count,
-        good_count: data.good_count + res.data.good_count,
-        other_count: data.other_count + res.data.other_count,
-        bad_count: data.bad_count + res.data.bad_count,
-        new_count: data.new_count + res.data.new_count,
-        report_count: data.report_count + res.data.report_count,
-        no_report_count: data.no_report_count + res.data.no_report_count,
-        matches_count: data.matches_count + res.data.matches_count,
-        no_matches_count: data.no_matches_count + res.data.no_matches_count,
+        total_google_links: data.total_google_links + scrapeRes.data.google_link_count,
+        total_google_images: data.total_google_images + scrapeRes.data.google_image_count,
+        total_google_videos: data.total_google_videos + scrapeRes.data.google_video_count,
+        total_bing_links: data.total_bing_links + scrapeRes.data.bing_link_count,
+        total_bing_images: data.total_bing_images + scrapeRes.data.bing_image_count,
+        total_bing_videos: data.total_bing_videos + scrapeRes.data.bing_video_count,
+        good_count: data.good_count + scrapeRes.data.good_count,
+        other_count: data.other_count + scrapeRes.data.other_count,
+        bad_count: data.bad_count + scrapeRes.data.bad_count,
+        new_count: data.new_count + scrapeRes.data.new_count,
+        report_count: data.report_count + scrapeRes.data.report_count,
+        no_report_count: data.no_report_count + scrapeRes.data.no_report_count,
+        matches_count: data.matches_count + scrapeRes.data.matches_count,
+        no_matches_count: data.no_matches_count + scrapeRes.data.no_matches_count,
         status: "available",
         downloaded: false,
         only_google: requestData.no_bing,
@@ -115,7 +115,7 @@ export const scrapeData = async (req, res) => {
     });
 
     console.log("data:", data);
-    
+
     const scrapeSummaryCreationRes = await ScrapeSummary.create({ ...data });
 
     console.log("scrapeSummaryCreationRes:", scrapeSummaryCreationRes);
