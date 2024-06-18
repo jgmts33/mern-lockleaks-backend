@@ -10,7 +10,7 @@ export const scan = async (req, res) => {
   try {
 
     const file = req.files['photo'];
-    
+
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -23,12 +23,12 @@ export const scan = async (req, res) => {
     const formData = new FormData();
     
     formData.append('photo', file);
-    formData.append('out', `${currentDate}_${username}_${id}`)
+    formData.append('out', `${currentDate}_ai_face_${id}`)
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, formData);
 
     const result = await AIBotsSummaries.create({
-      file: `${currentDate}_${username}_${id}`,
+      file: `${currentDate}_ai_face_${id}`,
       result: scanRes.data.total_results,
       user_id: id
     });
