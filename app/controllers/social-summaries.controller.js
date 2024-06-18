@@ -20,7 +20,7 @@ export const scan = async (req, res) => {
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
     let requestData = {
-      keyword: username,
+      keywords: username,
       limit: 1,
       out: `${currentDate}_${username}_${id}`
     }
