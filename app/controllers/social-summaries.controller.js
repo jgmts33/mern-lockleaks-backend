@@ -27,7 +27,7 @@ export const scan = async (req, res) => {
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/social`, requestData);
 
-    await SocialSummaries.create({
+    const result = await SocialSummaries.create({
       file: `${currentDate}_${username}_${id}.zip`,
       result: scanRes.data.total_results,
       user_id: id
@@ -35,9 +35,7 @@ export const scan = async (req, res) => {
 
     io.emit(`social-scan-finished`, scanRes.data.total_results);
 
-    res.status(200).send({
-      message: "Scraped Successfully!"
-    });
+    res.status(200).send(result);
 
   } catch (err) {
     res.status(500).send({
