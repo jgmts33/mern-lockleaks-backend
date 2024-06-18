@@ -1,7 +1,7 @@
 import axios from "axios";
 import db from "../models/index.js";
 import { io } from "../../server.js";
-
+import FormData from 'form-data';
 const { aiBotsSummaries: AIBotsSummaries } = db;
 
 export const scan = async (req, res) => {
@@ -27,7 +27,7 @@ export const scan = async (req, res) => {
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        ...formData.getHeaders()
       },
     });
 
