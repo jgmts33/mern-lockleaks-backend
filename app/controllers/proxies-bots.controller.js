@@ -121,17 +121,17 @@ export const getProxiesBots = async (req, res) => {
       whereCondition = {
         [Sequelize.Op.or]: [
           {
-            model_name: {
+            vps_source: {
               [Sequelize.Op.overlap]: [search]
             }
           },
           {
-            platform: {
+            ip_address: {
               [Sequelize.Op.overlap]: [search]
             }
           },
           {
-            social_media: {
+            proxy_source: {
               [Sequelize.Op.overlap]: [search]
             }
           }
