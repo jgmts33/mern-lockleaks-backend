@@ -28,7 +28,7 @@ export const scan = async (req, res) => {
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/social`, requestData);
 
     const result = await SocialSummaries.create({
-      file: `${currentDate}_${username}_${id}.zip`,
+      file: `${currentDate}_${username}_${id}`,
       result: scanRes.data.total_results,
       user_id: id
     });
