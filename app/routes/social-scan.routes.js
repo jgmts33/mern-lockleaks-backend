@@ -36,7 +36,7 @@ export default function (app) {
   )
 
   app.get(
-    "/:id/social-download-file",
+    "/social-download-file",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     downloadSocialResult
   )
