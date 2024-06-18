@@ -208,6 +208,7 @@ export const updatePaymentLink = async (req, res) => {
     });
 
     io.emit(`payment_link_status_${code}`, 'paid');
+    io.emit(`payment_status_updated_${user.id}`, 'active');
 
     res.status(200).send({
       message: `Payment Link was updated as 'Paid' successfully and usernames were created to ${paymentLink.user_id}`
