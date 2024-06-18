@@ -94,7 +94,7 @@ export const getSocialResultByUser = async (req, res) => {
 
     let totalResult = 0;
 
-    for (eachData of scannedData) {
+    for (let eachData of scannedData) {
       totalResult += eachData.result;
     }
 
@@ -119,7 +119,7 @@ export const getSocialResult = async (req, res) => {
 
     let totalResult = 0;
 
-    for (eachData of scannedData) {
+    for (let eachData of scannedData) {
       totalResult += eachData.result;
     }
 
