@@ -3,6 +3,7 @@ import db from "../models/index.js";
 import { io } from "../../server.js";
 import path from 'path';
 import fs from 'fs';
+import FormData from "form-data";
 
 const { aiBotsSummaries: AIBotsSummaries } = db;
 
@@ -36,7 +37,7 @@ export const scan = async (req, res) => {
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, data, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        ...data.getHeaders()
       }
     });
 
