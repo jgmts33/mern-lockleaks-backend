@@ -25,7 +25,7 @@ export const scan = async (req, res) => {
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
-    const photoFilePath = path.join(`./uploads/${currentDate}_${photo.name}`);
+    const photoFilePath = path.join(`./uploads/${currentDate}_ai_face_photo.png`);
 
     await photo.mv(photoFilePath);
 
