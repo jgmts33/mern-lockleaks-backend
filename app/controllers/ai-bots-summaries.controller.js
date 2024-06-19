@@ -29,7 +29,11 @@ export const scan = async (req, res) => {
 
     console.log('data:', data);
 
-    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, data);
+    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
 
     console.log("scanRes:", scanRes);
 
