@@ -1,6 +1,8 @@
 import axios from "axios";
 import db from "../models/index.js";
 import { io } from "../../server.js";
+import path from 'path';
+import fs from 'fs';
 
 const { aiBotsSummaries: AIBotsSummaries } = db;
 
@@ -11,7 +13,7 @@ export const scan = async (req, res) => {
 
     console.log(req.files['photo'])
 
-    const file = req.files['photo'];
+    const photo = req.files['photo'];
 
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
@@ -22,17 +24,17 @@ export const scan = async (req, res) => {
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
-    let data = new FormData();
+    const photoFilePath = path.join(`./uploads/${currentDate}_${file.name}`);
 
-    data.append('photo', file);
+    await photo.mv(photoFilePath);
+
+    let data = new FormData();
     data.append('out', `${currentDate}_ai_face_${id}`);
+    data.append('photo', fs.createReadStream(photoFilePath));
 
     console.log('data:', data);
 
-    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, {
-      photo: file.data,
-      out:  `${currentDate}_ai_face_${id}`
-    }, {
+    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, data, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
