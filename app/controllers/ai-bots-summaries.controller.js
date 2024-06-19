@@ -30,7 +30,7 @@ export const scan = async (req, res) => {
     console.log('data:', data);
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, {
-      photo: file,
+      photo: file.data,
       out:  `${currentDate}_ai_face_${id}`
     }, {
       headers: {
