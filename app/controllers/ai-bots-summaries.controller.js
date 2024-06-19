@@ -22,16 +22,16 @@ export const scan = async (req, res) => {
       second: '2-digit',
     }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
 
-    const formData = new FormData();
+    let data = new FormData();
 
-    formData.append('photo', file);
-    formData.append('out', `${currentDate}_ai_face_${id}`);
+    data.append('photo', file);
+    data.append('out', `${currentDate}_ai_face_${id}`);
 
-    console.log('formData:', formData);
+    console.log('data:', data);
 
-    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, formData, {
+    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, data, {
       headers: {
-        ...formData.getHeaders()
+        ...data.getHeaders()
       },
     });
 
