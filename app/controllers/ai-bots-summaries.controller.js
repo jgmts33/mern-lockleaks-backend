@@ -51,6 +51,8 @@ export const scan = async (req, res) => {
 
     io.emit(`ai-face-scan-finished`, scanRes.data.total_results);
 
+    io.emit(`admin:aiFaceScanFinished`, result);
+
     res.status(200).send(result);
 
   } catch (err) {

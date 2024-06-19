@@ -35,6 +35,8 @@ export const scan = async (req, res) => {
 
     io.emit(`social-scan-finished`, scanRes.data.total_results);
 
+    io.emit(`admin:socialScanFinished`, result);
+
     res.status(200).send(result);
 
   } catch (err) {
