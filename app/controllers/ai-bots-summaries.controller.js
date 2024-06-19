@@ -29,7 +29,10 @@ export const scan = async (req, res) => {
 
     console.log('data:', data);
 
-    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, data, {
+    const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, {
+      photo: file,
+      out:  `${currentDate}_ai_face_${id}`
+    }, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
