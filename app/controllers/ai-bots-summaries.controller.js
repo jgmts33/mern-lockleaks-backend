@@ -9,6 +9,8 @@ export const scan = async (req, res) => {
 
   try {
 
+    console.log(req.files['photo'])
+
     const file = req.files['photo'];
 
     const currentDate = new Date().toLocaleString('en-GB', {
