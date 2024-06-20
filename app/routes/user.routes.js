@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getExtraReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator, getDataReportList, getDataAnalyticsList, downloadReportOrAnalyticsPDF, handleDownloadDataReport, getModeratorsOrAdmin } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getOrdersReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator, getDataReportList, getDataAnalyticsList, downloadReportOrAnalyticsPDF, handleDownloadDataReport, getModeratorsOrAdmin, getUsersReport } from '../controllers/user.controller.js';
 // import multer from 'multer';
 
 // const upload = multer();
@@ -27,9 +27,15 @@ export default function (app) {
   );
 
   app.get(
-    "/extra-report",
+    "/users-report",
     [authJwt.verifyToken, authJwt.isAdmin],
-    getExtraReport
+    getUsersReport
+  )
+
+  app.get(
+    "/orders-report",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    getOrdersReport
   )
 
   app.patch(
@@ -101,7 +107,7 @@ export default function (app) {
     "/download-data-report",
     handleDownloadDataReport
   )
-  
+
   app.get(
     "/data-report",
     [authJwt.verifyToken, authJwt.isAdmin],

@@ -38,8 +38,6 @@ export const signup = async (req, res) => {
     ip
   })
     .then(async user => {
-
-      io.emit(`admin:dashboardInfo`, 'scan-finished');
       // TODO : check the email is veried or
 
       const token = jwt.sign(
@@ -94,7 +92,7 @@ export const signup = async (req, res) => {
 
           user.setRoles([1]).then(() => {
 
-            res.status(200).send({
+            const returnData = {
               id: user.id,
               email: user.email,
               roles: ['user'],
@@ -115,7 +113,11 @@ export const signup = async (req, res) => {
               ban: user.ban,
               contract: user.contract,
               copyright_holder: user.copyright_holder
-            });
+            }
+
+            res.status(200).send(returnData);
+
+            io.emit(`new-user-registered`, returnData);
 
           });
 
@@ -334,11 +336,11 @@ export const verifyEmail = async (req, res) => {
 
     const user = await User.findByPk(decoded.id);
 
-    
+
     if (user) {
-      
+
       let subscription = user.subscription;
-      
+
       if (user.subscription.plan_id) {
         const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
         subscription = {
@@ -352,10 +354,10 @@ export const verifyEmail = async (req, res) => {
 
       await user.update({ verified: true });
 
-      io.emit( `verify_email_${user.id}`, true);
+      io.emit(`verify_email_${user.id}`, true);
 
       let refreshToken = await RefreshToken.createToken(user);
-      
+
       const roles = await user.getRoles();
 
       return res.status(200).send({
@@ -484,142 +486,50 @@ export const resetPassword = async (req, res) => {
 
 export const googleAuthenticateUser = async (req, res) => {
 
-  console.log("process.env.GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+  try {
+    const googleClient = new OAuth2Client({
+      clientId: `${process.env.GOOGLE_CLIENT_ID}`,
+      clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+      redirectUri: 'https://copyrightfixer.com/auth/google'
+      // redirectUri: 'http://localhost:3000/auth/google',
 
-  const googleClient = new OAuth2Client({
-    clientId: `${process.env.GOOGLE_CLIENT_ID}`,
-    clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-    redirectUri: 'https://copyrightfixer.com/auth/google'
-    // redirectUri: 'http://localhost:3000/auth/google',
-
-  });
-
-  googleClient.generateAuthUrl({
-    access_type: 'offline', // Needed to receive a refresh token
-    scope: [
-      'https://www.googleapis.com/auth/userinfo.email',
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/plus.me'
-    ],
-    prompt: 'select_account',
-    include_granted_scopes: true,
-    enable_granular_consent: true
-  });
-
-
-  const { code, ip } = req.body;
-
-  const tokens = await googleClient.getToken(code);
-  const decodedProfileInfo = jwt.decode(tokens.tokens.id_token);
-
-  let user = await User.findOne({ where: { email: decodedProfileInfo?.email } });
-
-  console.log("decodedProfileInfo:", decodedProfileInfo);
-  if (!user) {
-    user = await User.create({
-      email: decodedProfileInfo?.email,
-      avatar: decodedProfileInfo?.picture,
-      name: decodedProfileInfo?.name,
-      verified: true,
-      roles: ['user'],
-      subscription: {
-        payment_method: null,
-        expire_date: null
-      },
-      social: "google",
-      ip
     });
 
-    io.emit(`admin:dashboardInfo`, 'scan-finished');
-
-    await user.setRoles([1]);
-  }
-
-  let refreshToken = await RefreshToken.createToken(user);
-
-  let subscription = user.subscription;
-
-  if (user.subscription.plan_id) {
-    const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
-    subscription = {
-      payment_method: user.subscription.payment_method,
-      expire_date: user.subscription.expire_date,
-      plan_id: user.subscription.plan_id,
-      status: user.subscription.status,
-      features: subscriptionFeatures
-    }
-  }
-
-  res.status(200).send({
-    id: user.id,
-    email: user.email,
-    roles: ['user'],
-    name: user.name,
-    avatar: user.avatar,
-    verified: user.verified,
-    subscription: subscription,
-    social: user.social,
-    tokens: {
-      access: {
-        token: tokens.tokens.id_token,
-        expires: tokens.tokens.expiry_date
-      },
-      refresh: {
-        token: refreshToken.token,
-        expires: refreshToken.expires
-      }
-    },
-    ban: user.ban,
-    contract: user.contract,
-    copyright_holder: user.copyright_holder
-  });
-}
-
-export const facebookAuthenticateUser = async (req, res) => {
-  const { code, ip } = req.body;
-
-  const { data } = await axios({
-    url: 'https://graph.facebook.com/v4.0/oauth/access_token',
-    method: 'get',
-    params: {
-      client_id: process.env.FACEBOOK_APP_ID,
-      client_secret: process.env.FACEBOOK_APP_SECRET,
-      redirect_uri: 'https://copyrightfixer.com/auth/facebook',
-      code
-    }
-  });
-
-  const accessToken = data?.access_token || '';
-  const expires = data?.expiry_date || new Date(Number(new Date()) + config.jwtExpiration * 1000);
-
-  if (accessToken) {
-    const { userData } = await axios({
-      url: 'https://graph.facebook.com/me',
-      method: 'get',
-      params: {
-        fields: ['id', 'email', 'first_name', 'last_name', 'picture'].join(','),
-        access_token: accessToken
-      }
+    googleClient.generateAuthUrl({
+      access_type: 'offline', // Needed to receive a refresh token
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/plus.me'
+      ],
+      prompt: 'select_account',
+      include_granted_scopes: true,
+      enable_granular_consent: true
     });
 
-    let user = await User.findOne({ where: { email: userData?.email } });
 
+    const { code, ip } = req.body;
+
+    const tokens = await googleClient.getToken(code);
+    const decodedProfileInfo = jwt.decode(tokens.tokens.id_token);
+
+    let user = await User.findOne({ where: { email: decodedProfileInfo?.email } });
+
+    console.log("decodedProfileInfo:", decodedProfileInfo);
     if (!user) {
       user = await User.create({
-        email: userData?.email,
-        avatar: userData?.picture,
-        name: `${userData?.first_name} ${userData?.last_name}`,
+        email: decodedProfileInfo?.email,
+        avatar: decodedProfileInfo?.picture,
+        name: decodedProfileInfo?.name,
         verified: true,
         roles: ['user'],
         subscription: {
           payment_method: null,
           expire_date: null
         },
-        social: "facebook",
+        social: "google",
         ip
       });
-
-      io.emit(`admin:dashboardInfo`, 'scan-finished');
 
       await user.setRoles([1]);
     }
@@ -639,7 +549,7 @@ export const facebookAuthenticateUser = async (req, res) => {
       }
     }
 
-    res.status(200).send({
+    const returnData = {
       id: user.id,
       email: user.email,
       roles: ['user'],
@@ -647,10 +557,11 @@ export const facebookAuthenticateUser = async (req, res) => {
       avatar: user.avatar,
       verified: user.verified,
       subscription: subscription,
+      social: user.social,
       tokens: {
         access: {
-          token: accessToken,
-          expires: expires
+          token: tokens.tokens.id_token,
+          expires: tokens.tokens.expiry_date
         },
         refresh: {
           token: refreshToken.token,
@@ -660,95 +571,213 @@ export const facebookAuthenticateUser = async (req, res) => {
       ban: user.ban,
       contract: user.contract,
       copyright_holder: user.copyright_holder
+    };
+
+    res.status(200).send(returnData);
+
+    io.emit('new-user-registered', returnData);
+
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message
+    })
+  }
+
+}
+
+export const facebookAuthenticateUser = async (req, res) => {
+
+  try {
+    const { code, ip } = req.body;
+
+    const { data } = await axios({
+      url: 'https://graph.facebook.com/v4.0/oauth/access_token',
+      method: 'get',
+      params: {
+        client_id: process.env.FACEBOOK_APP_ID,
+        client_secret: process.env.FACEBOOK_APP_SECRET,
+        redirect_uri: 'https://copyrightfixer.com/auth/facebook',
+        code
+      }
     });
 
+    const accessToken = data?.access_token || '';
+    const expires = data?.expiry_date || new Date(Number(new Date()) + config.jwtExpiration * 1000);
+
+    if (accessToken) {
+      const { userData } = await axios({
+        url: 'https://graph.facebook.com/me',
+        method: 'get',
+        params: {
+          fields: ['id', 'email', 'first_name', 'last_name', 'picture'].join(','),
+          access_token: accessToken
+        }
+      });
+
+      let user = await User.findOne({ where: { email: userData?.email } });
+
+      if (!user) {
+        user = await User.create({
+          email: userData?.email,
+          avatar: userData?.picture,
+          name: `${userData?.first_name} ${userData?.last_name}`,
+          verified: true,
+          roles: ['user'],
+          subscription: {
+            payment_method: null,
+            expire_date: null
+          },
+          social: "facebook",
+          ip
+        });
+
+        await user.setRoles([1]);
+      }
+
+      let refreshToken = await RefreshToken.createToken(user);
+
+      let subscription = user.subscription;
+
+      if (user.subscription.plan_id) {
+        const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+        subscription = {
+          payment_method: user.subscription.payment_method,
+          expire_date: user.subscription.expire_date,
+          plan_id: user.subscription.plan_id,
+          status: user.subscription.status,
+          features: subscriptionFeatures
+        }
+      }
+
+      const returnData = {
+        id: user.id,
+        email: user.email,
+        roles: ['user'],
+        name: user.name,
+        avatar: user.avatar,
+        verified: user.verified,
+        subscription: subscription,
+        tokens: {
+          access: {
+            token: accessToken,
+            expires: expires
+          },
+          refresh: {
+            token: refreshToken.token,
+            expires: refreshToken.expires
+          }
+        },
+        ban: user.ban,
+        contract: user.contract,
+        copyright_holder: user.copyright_holder
+      }
+
+      res.status(200).send(returnData);
+
+      io.emit('new-user-registered', returnData);
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message
+    })
   }
+
 }
 
 export const twitterAuthenticateUser = async (req, res) => {
-  const { code, ip } = req.body;
 
-  const authClient = new auth.OAuth2User({
-    client_id: process.env.TWITTER_CLIENT_ID,
-    client_secret: process.env.TWITTER_CLIENT_SECRET,
-    callback: 'https://copyrightfixer.com/auth/twitter',
-    scopes: ["users.read", "tweet.read", "follows.read", "follows.write"],
-  })
-  const client = new Client(authClient)
+  try {
+    const { code, ip } = req.body;
 
-  authClient.generateAuthURL({
-    state: "twitter-state",
-    code_challenge: "challenge",
-    code_challenge_method: "plain",
-    prompt: 'consent',
-    incluse_granted_scopes: true,
-    enable_granular_consent: true
-  })
-  const accessToken = await authClient.requestAccessToken(code);
+    const authClient = new auth.OAuth2User({
+      client_id: process.env.TWITTER_CLIENT_ID,
+      client_secret: process.env.TWITTER_CLIENT_SECRET,
+      callback: 'https://copyrightfixer.com/auth/twitter',
+      scopes: ["users.read", "tweet.read", "follows.read", "follows.write"],
+    })
+    const client = new Client(authClient)
 
-  const { data: twitterUser } = await client.users.findMyUser()
+    authClient.generateAuthURL({
+      state: "twitter-state",
+      code_challenge: "challenge",
+      code_challenge_method: "plain",
+      prompt: 'consent',
+      incluse_granted_scopes: true,
+      enable_granular_consent: true
+    })
+    const accessToken = await authClient.requestAccessToken(code);
 
-  console.log("twitterUser:", twitterUser);
+    const { data: twitterUser } = await client.users.findMyUser()
 
-  let user = await User.findOne({ where: { email: twitterUser?.id } });
+    console.log("twitterUser:", twitterUser);
 
-  if (!user) {
-    user = await User.create({
-      email: twitterUser?.id,
-      avatar: twitterUser?.profile_image_url,
-      name: `${twitterUser.name}`,
-      verified: true,
-      roles: ['user'],
-      subscription: {
-        payment_method: null,
-        expire_date: null
-      },
-      social: "twitter",
-      ip
-    });
+    let user = await User.findOne({ where: { email: twitterUser?.id } });
 
-    io.emit(`admin:dashboardInfo`, 'scan-finished');
+    if (!user) {
+      user = await User.create({
+        email: twitterUser?.id,
+        avatar: twitterUser?.profile_image_url,
+        name: `${twitterUser.name}`,
+        verified: true,
+        roles: ['user'],
+        subscription: {
+          payment_method: null,
+          expire_date: null
+        },
+        social: "twitter",
+        ip
+      });
 
-    await user.setRoles([1]);
-  }
-
-  let refreshToken = await RefreshToken.createToken(user);
-
-  let subscription = user.subscription;
-
-  if (user.subscription.plan_id) {
-    const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
-    subscription = {
-      payment_method: user.subscription.payment_method,
-      expire_date: user.subscription.expire_date,
-      plan_id: user.subscription.plan_id,
-      status: user.subscription.status,
-      features: subscriptionFeatures
+      await user.setRoles([1]);
     }
-  }
 
-  res.status(200).send({
-    id: user.id,
-    email: user.email,
-    roles: ['user'],
-    name: user.name,
-    avatar: user.avatar,
-    verified: user.verified,
-    subscription: subscription,
-    social: user.social,
-    tokens: {
-      access: {
-        token: accessToken,
-        expires: new Date(Number(new Date()) + config.jwtExpiration * 1000)
-      },
-      refresh: {
-        token: refreshToken.token,
-        expires: refreshToken.expires
+    let refreshToken = await RefreshToken.createToken(user);
+
+    let subscription = user.subscription;
+
+    if (user.subscription.plan_id) {
+      const subscriptionFeatures = await SubscriptionOptions.findByPk(user.subscription.plan_id);
+      subscription = {
+        payment_method: user.subscription.payment_method,
+        expire_date: user.subscription.expire_date,
+        plan_id: user.subscription.plan_id,
+        status: user.subscription.status,
+        features: subscriptionFeatures
       }
-    },
-    ban: user.ban,
-    contract: user.contract,
-    copyright_holder: user.copyright_holder
-  });
+    }
+
+    const returnData = {
+      id: user.id,
+      email: user.email,
+      roles: ['user'],
+      name: user.name,
+      avatar: user.avatar,
+      verified: user.verified,
+      subscription: subscription,
+      social: user.social,
+      tokens: {
+        access: {
+          token: accessToken,
+          expires: new Date(Number(new Date()) + config.jwtExpiration * 1000)
+        },
+        refresh: {
+          token: refreshToken.token,
+          expires: refreshToken.expires
+        }
+      },
+      ban: user.ban,
+      contract: user.contract,
+      copyright_holder: user.copyright_holder
+    }
+
+    res.status(200).send(returnData);
+
+    io.emit('new-user-registered', returnData);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message
+    })
+  }
 
 }

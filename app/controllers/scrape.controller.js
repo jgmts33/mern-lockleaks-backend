@@ -164,7 +164,13 @@ export const scrapeData = async (req, res) => {
       });
     }
 
-    io.emit(`admin:dashboardInfo`, 'scan-finished');
+    if (only == 'google') {
+      io.emit(`scanner-finished`, 'bing');
+    } else if (only == 'bing') {
+      io.emit(`scanner-finished`, 'bing');
+    } else {
+      io.emit(`scanner-finished`, '');
+    }
 
     res.status(200).send({
       message: "Scraped Successfully!"
@@ -271,7 +277,11 @@ export const getScrapedDataListByUser = async (req, res) => {
     if (lastOne) findCondition.limit = 1;
 
     if (only == 'google') findCondition.where.only_google = true;
-    if (only == 'bing') findCondition.where.only_bing = true;
+    else if (only == 'bing') findCondition.where.only_bing = true;
+    else {
+      findCondition.where.only_google = false;
+      findCondition.where.only_bing = false;
+    }
 
     const scrapedData = await ScrapeSummary.findAll(findCondition);
 

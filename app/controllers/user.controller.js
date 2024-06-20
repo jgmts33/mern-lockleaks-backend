@@ -22,7 +22,7 @@ apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
-const { user: User, scrapeSummary: ScrapeSummary, subscriptionOptions: SubscriptionOptions, role: Role } = db;
+const { user: User, scrapeSummary: ScrapeSummary, socialSummaries: SocialSummaries, socialMediaProfiles: SocialMediaProfiles, aiBotsSummaries: AIBotsSummaries, subscriptionOptions: SubscriptionOptions, role: Role } = db;
 
 export const getUserInfo = (req, res) => {
   const { id } = req.params;
@@ -348,50 +348,81 @@ export const updateUserRole = async (req, res) => {
 
 }
 
-
-export const getExtraReport = async (req, res) => {
+export const getUsersReport = async (req, res) => {
 
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   try {
+
     const weeklyUserCount = await User.count({
       where: {
-        email: {
-          [Op.not]: 'admin@lockleaks.com'
-        },
         createdAt: {
           [Op.between]: [oneWeekAgo, new Date()]
         }
       }
     });
 
-    const userCount = await User.count({
-      where: {
-        email: {
-          [Op.not]: 'admin@lockleaks.com'
-        }
-      }
-    });
-
-    const weeklyOrderCount = await ScrapeSummary.count({
-      where: {
-        createdAt: {
-          [Op.between]: [oneWeekAgo, new Date()]
-        }
-      }
-    });
-
-    const orderCount = await ScrapeSummary.count();
+    const userCount = await User.count();
 
     res.status(200).send({
-      user: {
-        total: userCount,
-        weekly: weeklyUserCount
-      },
-      order: {
-        total: orderCount,
-        weekly: weeklyOrderCount
+      total: userCount,
+      weekly: weeklyUserCount
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: err.message
+    })
+  }
+
+}
+
+
+export const getOrdersReport = async (req, res) => {
+
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  try {
+
+    const weeklyScannerOrderCount = await ScrapeSummary.count({
+      where: {
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
       }
+    });
+    const weeklySocialScannerOrderCount = await SocialSummaries.count({
+      where: {
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
+      }
+    });
+    const weeklySocialProfilesOrderCount = await SocialMediaProfiles.count({
+      where: {
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
+      }
+    });
+    const weeklyAIBotsOrderCount = await AIBotsSummaries.count({
+      where: {
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
+      }
+    });
+
+    const scannerOrderCount = await ScrapeSummary.count();
+    const socialScannerOrderCount = await SocialSummaries.count();
+    const socialProfilesOrderCount = await SocialMediaProfiles.count();
+    const aiBotsOrderCount = await AIBotsSummaries.count();
+
+    // R&R Rot
+
+    res.status(200).send({
+      total: scannerOrderCount + socialScannerOrderCount + socialProfilesOrderCount + aiBotsOrderCount ,
+      weekly: weeklyScannerOrderCount + weeklySocialScannerOrderCount + weeklySocialProfilesOrderCount + weeklyAIBotsOrderCount
     });
   } catch (err) {
     console.log(err);
