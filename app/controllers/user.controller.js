@@ -970,11 +970,11 @@ export const downloadReportOrAnalyticsPDF = async (req, res) => {
 
 export const getModeratorsOrAdmin = async (req, res) => {
   const moderatorsOrAdmins = await User.findAll({
-    where: {
-      roleId: {
-        [Op.in]: [2, 3]
-      }
-    },
+    // where: {
+    //   roleId: {
+    //     [Op.in]: [2, 3]
+    //   }
+    // },
     include: [{
       model: Role,
       as: 'roles',
