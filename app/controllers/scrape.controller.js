@@ -73,7 +73,7 @@ export const scrapeData = async (req, res) => {
 
     if (only == 'google') requestData.no_bing = true;
     if (only == 'bing') requestData.no_google = true;
-    let index = 0 ;
+    let index = 0;
     for (const query of queries) {
       requestData.query = query;
       index++;
@@ -141,33 +141,38 @@ export const downloadSrapedData = async (req, res) => {
 
   const { id } = req.params;
   const { folder_name, admin } = req.query;
-
-  const scrapedData = await ScrapeSummary.findOne({
-    where: {
-      user_id: id,
-      scrape_date: folder_name
-    }
-  });
-
-  if (scrapedData) {
-    const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
-      folder_name: folder_name
-    }, {
-      responseType: "stream"
+  try {
+    const scrapedData = await ScrapeSummary.findOne({
+      where: {
+        user_id: id,
+        scrape_date: folder_name
+      }
     });
-    if (admin) scrapedData.update({
-      accepted: true
-    })
 
-    else scrapedData.update({
-      downloaded: true
-    })
+    if (scrapedData) {
+      const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
+        folder_name: folder_name
+      }, {
+        responseType: "stream"
+      });
+      if (admin) scrapedData.update({
+        accepted: true
+      })
 
-    response.data.pipe(res);
-  }
-  else {
-    res.status(404).send({
-      message: "Scraped Data not Found!"
+      else scrapedData.update({
+        downloaded: true
+      })
+
+      response.data.pipe(res);
+    }
+    else {
+      res.status(404).send({
+        message: "Scraped Data not Found!"
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
     });
   }
 }
@@ -176,28 +181,34 @@ export const acceptOrder = async (req, res) => {
 
   const { folder_name } = req.query;
 
-  const scrapedData = await ScrapeSummary.findOne({
-    where: {
-      scrape_date: folder_name
-    }
-  });
-
-  if (scrapedData) {
-    const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
-      folder_name: folder_name
-    }, {
-      responseType: "stream"
+  try {
+    const scrapedData = await ScrapeSummary.findOne({
+      where: {
+        scrape_date: folder_name
+      }
     });
 
-    scrapedData.update({
-      accepted: true
-    })
+    if (scrapedData) {
+      const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
+        folder_name: folder_name
+      }, {
+        responseType: "stream"
+      });
 
-    response.data.pipe(res);
-  }
-  else {
-    res.status(404).send({
-      message: "Scraped Data not Found!"
+      scrapedData.update({
+        accepted: true
+      })
+
+      response.data.pipe(res);
+    }
+    else {
+      res.status(404).send({
+        message: "Scraped Data not Found!"
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
     });
   }
 }
@@ -207,52 +218,64 @@ export const getScrapedDataListByUser = async (req, res) => {
   const { only, lastOne } = req.query;
   const { id } = req.params;
 
-  let findCondition = {
-    where: {
-      user_id: id
-    },
-    order: [['createdAt', 'DESC']]
-  };
-  
-  if (lastOne) findCondition.limit = 1;
+  try {
+    let findCondition = {
+      where: {
+        user_id: id
+      },
+      order: [['createdAt', 'DESC']]
+    };
 
-  if (only == 'google') findCondition.where.only_google = true;
-  if (only == 'bing') findCondition.where.only_bing = true;
+    if (lastOne) findCondition.limit = 1;
 
-  const scrapedData = await ScrapeSummary.findAll(findCondition);
+    if (only == 'google') findCondition.where.only_google = true;
+    if (only == 'bing') findCondition.where.only_bing = true;
 
-  res.status(200).send(scrapedData);
+    const scrapedData = await ScrapeSummary.findAll(findCondition);
+
+    res.status(200).send(scrapedData);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
 }
 
 export const getScrapedDataList = async (req, res) => {
 
   const { only } = req.query;
 
-  let scrapedData;
+  try {
+    let scrapedData;
 
-  switch (only) {
-    case 'google':
-      scrapedData = await ScrapeSummary.findAll({
-        where: {
-          only_google: true
-        },
-        order: [['createdAt', 'DESC']]
-      });
-      break;
-    case 'bing':
-      scrapedData = await ScrapeSummary.findAll({
-        where: {
-          only_bing: true
-        },
-        order: [['createdAt', 'DESC']]
-      });
-      break;
-    default:
-      scrapedData = await ScrapeSummary.findAll({
-        order: [['createdAt', 'DESC']]
-      });
-      break;
+    switch (only) {
+      case 'google':
+        scrapedData = await ScrapeSummary.findAll({
+          where: {
+            only_google: true
+          },
+          order: [['createdAt', 'DESC']]
+        });
+        break;
+      case 'bing':
+        scrapedData = await ScrapeSummary.findAll({
+          where: {
+            only_bing: true
+          },
+          order: [['createdAt', 'DESC']]
+        });
+        break;
+      default:
+        scrapedData = await ScrapeSummary.findAll({
+          order: [['createdAt', 'DESC']]
+        });
+        break;
+    }
+
+    res.status(200).send(scrapedData);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
   }
-
-  res.status(200).send(scrapedData);
 }
