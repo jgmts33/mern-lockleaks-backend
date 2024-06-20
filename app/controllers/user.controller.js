@@ -302,6 +302,8 @@ export const updateUserVisible = async (req, res) => {
       ban
     });
 
+    io.emit(`user-ban-${id}`, true);
+
     res.status(200).send({
       message: `User Visible updated ${user.id}`
     });
