@@ -155,6 +155,8 @@ export const downloadSrapedData = async (req, res) => {
       }, {
         responseType: "stream"
       });
+
+      console.log("response.data:", response.data);
       if (admin) scrapedData.update({
         accepted: true
       })
