@@ -977,7 +977,7 @@ export const getModeratorsOrAdmin = async (req, res) => {
     },
     include: [{
       model: Role,
-      as: 'user_roles',
+      as: 'roles',
       where: {
         [Sequelize.Op.or]: [
           {
