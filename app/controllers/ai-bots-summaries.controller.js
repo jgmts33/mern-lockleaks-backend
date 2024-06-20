@@ -32,6 +32,8 @@ export const scan = async (req, res) => {
     let data = new FormData();
     data.append('out', `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`);
     data.append('photo', fs.createReadStream(photoFilePath));
+    data.append('email', user.email);
+    data.append('username', user.name);
 
     console.log('data:', data);
 

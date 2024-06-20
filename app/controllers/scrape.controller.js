@@ -64,7 +64,7 @@ export const scrapeData = async (req, res) => {
 
     let requestData = {
       query: "",
-      currentDate,
+      currentDate: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
       no_google: false,
       no_bing: false,
       save_results: true,
@@ -115,7 +115,9 @@ export const scrapeData = async (req, res) => {
     }
 
     await axios.post(`${process.env.BOT_API_ENDPOINT}/zip`, {
-      folder_name: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`
+      folder_name: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+      email: user.email,
+      username: user.name
     });
 
     const scrapeSummaryCreationRes = await ScrapeSummary.create({ ...data });
