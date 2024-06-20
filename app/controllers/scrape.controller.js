@@ -150,7 +150,7 @@ export const scrapeData = async (req, res) => {
       }]
     })
 
-    for (each of moderatorsOrAdmins) {
+    for (let each of moderatorsOrAdmins) {
       await Notifications.create({
         content: only ? 'New Order Google & Bing' : 'New Order Scanner',
         user_id: each.id
