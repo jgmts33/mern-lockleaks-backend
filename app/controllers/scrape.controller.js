@@ -136,7 +136,7 @@ export const scrapeData = async (req, res) => {
       },
       include: [{
         model: Role,
-        as: 'roles',
+        as: 'user_roles',
         where: {
           [Sequelize.Op.or]: [
             {
