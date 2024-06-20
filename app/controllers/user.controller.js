@@ -22,7 +22,7 @@ apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
-const { user: User, scrapeSummary: ScrapeSummary, subscriptionOptions: SubscriptionOptions } = db;
+const { user: User, scrapeSummary: ScrapeSummary, subscriptionOptions: SubscriptionOptions, role: Role } = db;
 
 export const getUserInfo = (req, res) => {
   const { id } = req.params;
