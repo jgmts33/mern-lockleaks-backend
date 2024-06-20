@@ -223,14 +223,14 @@ export const downloadZipFile = async (req, res) => {
     });
 
     // Define the path to the ZIP file
-    const zipFilePath = path.join(__dirname, '../../', 'data', `social.${submition.user_id}.${file_name}.zip`); // Adjust the path as necessary
+    const zipFilePath = path.join(__dirname, '../../', 'data', `${file_name}.zip`); // Adjust the path as necessary
 
     await submition.update({
       accepted: true
     })
 
     // Serve the ZIP file for download
-    res.download(zipFilePath, `social-${submition.user_id}-${file_name}.zip`); // Suggesting a filename to the browser
+    res.download(zipFilePath, `${file_name}.zip`); // Suggesting a filename to the browser
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while serving the ZIP file.' });
