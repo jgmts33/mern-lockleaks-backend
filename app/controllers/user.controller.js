@@ -851,7 +851,7 @@ export const updateToModerator = async (req, res) => {
       })
     }
 
-    if (action) {
+    if (action == true) {
 
       // await user.update({
       //   roles: ['moderator']
@@ -859,7 +859,7 @@ export const updateToModerator = async (req, res) => {
 
       await user.setRoles([2]);
     } else {
-      if (action) {
+      if (action == false) {
 
         // await user.update({
         //   roles: ['user']
