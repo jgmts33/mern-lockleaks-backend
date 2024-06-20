@@ -129,14 +129,9 @@ export const scrapeData = async (req, res) => {
     });
 
     const moderatorsOrAdmins = await User.findAll({
-      where: {
-        roleId: {
-          [Sequelize.Op.in]: [2, 3]
-        }
-      },
       include: [{
         model: Role,
-        as: 'user_roles',
+        as: 'roles',
         where: {
           [Sequelize.Op.or]: [
             {
