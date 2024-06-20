@@ -2,8 +2,9 @@ import axios from "axios";
 import db from "../models/index.js";
 import { extractDomain } from "../utils/index.js";
 import { io } from "../../server.js";
+import { Sequelize } from "sequelize";
 
-const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywords: BasicKeywords, user: User } = db;
+const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywords: BasicKeywords, user: User, notifications: Notifications, role: Role } = db;
 
 export const scrapeData = async (req, res) => {
   const { usernames, only } = req.body;
@@ -120,9 +121,41 @@ export const scrapeData = async (req, res) => {
       username: user.name
     });
 
-    const scrapeSummaryCreationRes = await ScrapeSummary.create({ ...data });
+    await ScrapeSummary.create({ ...data });
 
-    console.log("scrapeSummaryCreationRes:", scrapeSummaryCreationRes);
+    await Notifications.create({
+      content: 'Search Engines Scan finished!',
+      user_id: id
+    });
+
+    const moderatorsOrAdmins = await User.findAll({
+      where: {
+        roleId: {
+          [Op.in]: [2, 3]
+        }
+      },
+      include: [{
+        model: Role,
+        as: 'roles',
+        where: {
+          [Sequelize.Op.or]: [
+            {
+              name: 'admin'
+            },
+            {
+              name: 'moderator'
+            }
+          ]
+        }
+      }]
+    })
+
+    for (each of moderatorsOrAdmins) {
+      await Notifications.create({
+        content: only ? 'New Order Google & Bing' : 'New Order Scanner',
+        user_id: each.id
+      });
+    }
 
     io.emit(`admin:dashboardInfo`, 'scan-finished');
 
