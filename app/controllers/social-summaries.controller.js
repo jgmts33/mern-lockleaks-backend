@@ -25,7 +25,7 @@ export const scan = async (req, res) => {
     let requestData = {
       keywords: username,
       limit: 1,
-      out: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+      out: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
       email: user.email,
       username: user.name
     }
@@ -33,7 +33,7 @@ export const scan = async (req, res) => {
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/social`, requestData);
 
     const result = await SocialSummaries.create({
-      file: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+      file: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
       result: scanRes.data.total_results,
       user_id: id
     });

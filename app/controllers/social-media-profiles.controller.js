@@ -124,7 +124,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
     await fs.promises.writeFile(txtFilePath, content);
 
     // Create a ZIP file
-    const archiveName = `sm_submit_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}.zip`;
+    const archiveName = `sm_submit_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}.zip`;
     const archivePath = path.join(__dirname, '../../', 'data', archiveName);
     const output = fs.createWriteStream(archivePath);
     const archive = archiver('zip', {
@@ -149,7 +149,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
 
     // Save data to the database
     const row = await SocialMediaProfiles.create({
-      name: `sm_submit_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+      name: `sm_submit_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
       count: links.length,
       user_id: id,
       accepted: false

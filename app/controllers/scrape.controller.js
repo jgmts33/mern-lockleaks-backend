@@ -64,7 +64,7 @@ export const scrapeData = async (req, res) => {
 
     let requestData = {
       query: "",
-      currentDate: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+      currentDate: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
       no_google: false,
       no_bing: false,
       save_results: true,
@@ -90,7 +90,7 @@ export const scrapeData = async (req, res) => {
       console.log(scrapeRes.data);
 
       data = {
-        scrape_date: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+        scrape_date: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
         total_google_links: data.total_google_links + scrapeRes.data.google_link_count,
         total_google_images: data.total_google_images + scrapeRes.data.google_image_count,
         total_google_videos: data.total_google_videos + scrapeRes.data.google_video_count,
@@ -115,7 +115,7 @@ export const scrapeData = async (req, res) => {
     }
 
     await axios.post(`${process.env.BOT_API_ENDPOINT}/zip`, {
-      folder_name: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+      folder_name: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
       email: user.email,
       username: user.name
     });

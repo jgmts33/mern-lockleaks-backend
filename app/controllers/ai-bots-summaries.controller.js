@@ -30,7 +30,7 @@ export const scan = async (req, res) => {
     await photo.mv(photoFilePath);
 
     let data = new FormData();
-    data.append('out', `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`);
+    data.append('out', `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`);
     data.append('photo', fs.createReadStream(photoFilePath));
     data.append('email', user.email);
     data.append('username', user.name);
@@ -46,7 +46,7 @@ export const scan = async (req, res) => {
     console.log("scanRes:", scanRes);
 
     const result = await AIBotsSummaries.create({
-      file: `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
+      file: `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
       result: scanRes.data.total_results,
       user_id: id
     });
