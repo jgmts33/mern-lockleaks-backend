@@ -131,7 +131,7 @@ export const scrapeData = async (req, res) => {
     const moderatorsOrAdmins = await User.findAll({
       where: {
         roleId: {
-          [Op.in]: [2, 3]
+          [Sequelize.Op.in]: [2, 3]
         }
       },
       include: [{
