@@ -38,9 +38,7 @@ export const scan = async (req, res) => {
       user_id: id
     });
 
-    io.emit(`social-scan-finished`, scanRes.data.total_results);
-
-    io.emit(`admin:socialScanFinished`, result);
+    io.emit(`social-scan-finished`, result);
 
     res.status(200).send(result);
 

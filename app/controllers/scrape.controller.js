@@ -165,11 +165,14 @@ export const scrapeData = async (req, res) => {
     }
 
     if (only == 'google') {
-      io.emit(`scanner-finished`, 'bing');
+      io.emit(`scanner-finished`, 'google');
+      io.emit(`scanner-finished-${id}`, 'google');
     } else if (only == 'bing') {
       io.emit(`scanner-finished`, 'bing');
+      io.emit(`scanner-finished-${id}`, 'bing');
     } else {
       io.emit(`scanner-finished`, '');
+      io.emit(`scanner-finished-${id}`, '');
     }
 
     res.status(200).send({
