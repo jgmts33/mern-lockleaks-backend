@@ -83,10 +83,22 @@ export const scrapeData = async (req, res) => {
         ...requestData
       });
 
-      io.emit(`${id}:scrape`, {
-        current: index,
-        all: queries.length
-      });
+      if (only == 'google') {
+        io.emit(`${id}:scrape-google`, {
+          current: index,
+          all: queries.length
+        });
+      } else if (only == 'bing') {
+        io.emit(`${id}:scrape-bing`, {
+          current: index,
+          all: queries.length
+        });
+      } else {
+        io.emit(`${id}:scrape`, {
+          current: index,
+          all: queries.length
+        });
+      }
 
       console.log(scrapeRes.data);
 
