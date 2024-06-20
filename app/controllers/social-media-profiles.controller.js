@@ -9,7 +9,7 @@ import { io } from "../../server.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const { socialMediaProfiles: SocialMediaProfiles } = db;
+const { socialMediaProfiles: SocialMediaProfiles, user: User } = db;
 
 export const storeSocialMediaProfiles = async (req, res) => {
 
@@ -18,6 +18,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
     const { id } = req.params;
     const { links } = req.body;
 
+    const user = await User.findByPk(id);
     // Generate current date string
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
@@ -26,7 +27,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-    }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
+    }).replace(/[/,:]/g, '.').replace(/\s/g, '.');
 
     // Mapping of common domains to their canonical names
     const domainMapping = [
@@ -123,7 +124,7 @@ export const storeSocialMediaProfiles = async (req, res) => {
     await fs.promises.writeFile(txtFilePath, content);
 
     // Create a ZIP file
-    const archiveName = `social.${id}.${currentDate}.zip`;
+    const archiveName = `sm_submit_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}.zip`;
     const archivePath = path.join(__dirname, '../../', 'data', archiveName);
     const output = fs.createWriteStream(archivePath);
     const archive = archiver('zip', {
@@ -147,14 +148,14 @@ export const storeSocialMediaProfiles = async (req, res) => {
     });
 
     // Save data to the database
-    await SocialMediaProfiles.create({
-      name: currentDate,
+    const row = await SocialMediaProfiles.create({
+      name: `sm_submit_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
       count: links.length,
       user_id: id,
       accepted: false
     });
 
-    io.emit(`admin:socialMediaSubmition`, 'uploaded');
+    io.emit(`social-profile-submission`, row);
 
     res.status(200).send({ message: 'Data saved successfully.' });
   } catch (error) {

@@ -3,13 +3,15 @@ import db from "../models/index.js";
 import { extractDomain } from "../utils/index.js";
 import { io } from "../../server.js";
 
-const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywords: BasicKeywords } = db;
+const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywords: BasicKeywords, user: User } = db;
 
 export const scrapeData = async (req, res) => {
   const { usernames, only } = req.body;
   const { id } = req.params;
 
   try {
+
+    const user = await User.findByPk(id);
 
     let queries = [], data = {
       scrate_date: "",
@@ -58,7 +60,7 @@ export const scrapeData = async (req, res) => {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-    }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
+    }).replace(/[/,:]/g, '.').replace(/\s/g, '.');
 
     let requestData = {
       query: "",
@@ -88,7 +90,7 @@ export const scrapeData = async (req, res) => {
       console.log(scrapeRes.data);
 
       data = {
-        scrape_date: currentDate,
+        scrape_date: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
         total_google_links: data.total_google_links + scrapeRes.data.google_link_count,
         total_google_images: data.total_google_images + scrapeRes.data.google_image_count,
         total_google_videos: data.total_google_videos + scrapeRes.data.google_video_count,
@@ -113,7 +115,7 @@ export const scrapeData = async (req, res) => {
     }
 
     await axios.post(`${process.env.BOT_API_ENDPOINT}/zip`, {
-      folder_name: currentDate
+      folder_name: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`
     });
 
     const scrapeSummaryCreationRes = await ScrapeSummary.create({ ...data });

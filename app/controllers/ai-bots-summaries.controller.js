@@ -5,14 +5,14 @@ import path from 'path';
 import fs from 'fs';
 import FormData from "form-data";
 
-const { aiBotsSummaries: AIBotsSummaries } = db;
+const { aiBotsSummaries: AIBotsSummaries, user : User } = db;
 
 export const scan = async (req, res) => {
   const { id } = req.params;
 
   try {
 
-    console.log(req.files['photo'])
+    const user = await User.findByPk(id);
 
     const photo = req.files['photo'];
 
@@ -23,14 +23,14 @@ export const scan = async (req, res) => {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-    }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
+    }).replace(/[/,:]/g, '.').replace(/\s/g, '.');
 
     const photoFilePath = path.join(`./uploads/${currentDate}_ai_face_photo.png`);
 
     await photo.mv(photoFilePath);
 
     let data = new FormData();
-    data.append('out', `${currentDate}_ai_face_${id}`);
+    data.append('out', `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`);
     data.append('photo', fs.createReadStream(photoFilePath));
 
     console.log('data:', data);
@@ -44,7 +44,7 @@ export const scan = async (req, res) => {
     console.log("scanRes:", scanRes);
 
     const result = await AIBotsSummaries.create({
-      file: `${currentDate}_ai_face_${id}`,
+      file: `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
       result: scanRes.data.total_results,
       user_id: id
     });

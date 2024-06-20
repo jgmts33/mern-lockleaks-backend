@@ -96,7 +96,7 @@ export const createBlog = async (req, res) => {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-    }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
+    }).replace(/[/,:]/g, '.').replace(/\s/g, '.');
 
     const bannerFilePath = path.join(`./uploads/${banner.name.slice(0, -4)}_${currentDate}.png`);
     const avatarFilePath = path.join(`./uploads/${avatar.name.slice(0, -4)}_${currentDate}.png`);

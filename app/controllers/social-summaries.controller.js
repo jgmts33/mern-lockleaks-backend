@@ -3,13 +3,16 @@ import db from "../models/index.js";
 import { extractDomain } from "../utils/index.js";
 import { io } from "../../server.js";
 
-const { socialSummaries: SocialSummaries } = db;
+const { socialSummaries: SocialSummaries, user: User } = db;
 
 export const scan = async (req, res) => {
   const { username } = req.body;
   const { id } = req.params;
 
   try {
+
+    const user = await User.findByPk(id);
+
     const currentDate = new Date().toLocaleString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -17,18 +20,18 @@ export const scan = async (req, res) => {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-    }).replace(/[/,:]/g, '-').replace(/\s/g, '_');
+    }).replace(/[/,:]/g, '.').replace(/\s/g, '.');
 
     let requestData = {
       keywords: username,
       limit: 1,
-      out: `${currentDate}_${username}_${id}`
+      out: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`
     }
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/social`, requestData);
 
     const result = await SocialSummaries.create({
-      file: `${currentDate}_${username}_${id}`,
+      file: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").lowercase()}`,
       result: scanRes.data.total_results,
       user_id: id
     });
