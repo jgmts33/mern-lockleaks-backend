@@ -16,6 +16,15 @@ export const scan = async (req, res) => {
 
     const user = await User.findByPk(id);
 
+    const currentDate = new Date().toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    }).replace(/[/,:]/g, '.').replace(/\s/g, '.');
+
     let data = new FormData();
     data.append('out', `rr_user_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`);
     data.append('name', username);
