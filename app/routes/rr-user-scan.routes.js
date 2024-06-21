@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { downloadRRUserResult, getRRUserResult, getRRUserResultByUser, getRRUserResultsList, scan } from "../controllers/rr-user-summaries.controller.js";
+import { downloadRRUserResult, getCurrentRRUserScannerStatus, getRRUserResult, getRRUserResultByUser, getRRUserResultsList, scan } from "../controllers/rr-user-summaries.controller.js";
 
 export default function (app) {
 
@@ -39,6 +39,12 @@ export default function (app) {
     "/rr-user-download-file",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     downloadRRUserResult
+  )
+
+  app.get(
+    "/:id/current-rr-user-scanner-status",
+    [authJwt.verifyToken],
+    getCurrentRRUserScannerStatus
   )
 
 };

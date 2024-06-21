@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { scrapeData, downloadSrapedData, getScrapedDataList, getScrapedDataListByUser , acceptOrder} from "../controllers/scrape.controller.js";
+import { scrapeData, downloadSrapedData, getScrapedDataList, getScrapedDataListByUser , acceptOrder, getCurrentScannerStatus} from "../controllers/scrape.controller.js";
 
 export default function (app) {
 
@@ -39,5 +39,11 @@ export default function (app) {
     "/accept-order",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     acceptOrder
+  )
+
+  app.get(
+    "/:id/current-scanner-status",
+    [authJwt.verifyToken],
+    getCurrentScannerStatus
   )
 };

@@ -36,7 +36,12 @@ export const scan = async (req, res) => {
     data.append('email', user.email);
     data.append('username', user.name);
 
-    console.log('data:', data);
+    const newAIBotsSummary = await AIBotsSummaries.create({
+      file: `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+      result: 0,
+      progress: 0.9,
+      user_id: id
+    });
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/ai-face`, data, {
       headers: {
@@ -46,10 +51,9 @@ export const scan = async (req, res) => {
 
     console.log("scanRes:", scanRes);
 
-    const result = await AIBotsSummaries.create({
-      file: `ai_face_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+    await newAIBotsSummary.update({
       result: scanRes.data.total_results,
-      user_id: id
+      progress: 0
     });
 
     io.emit(`ai-face-scan-finished`, result);
@@ -102,7 +106,8 @@ export const downloadAIFaceResult = async (req, res) => {
   try {
     const scannedData = await AIBotsSummaries.findOne({
       where: {
-        file
+        file,
+        process: 0
       }
     });
 
@@ -138,7 +143,8 @@ export const getAIFaceResultByUser = async (req, res) => {
   try {
     const scannedData = await AIBotsSummaries.findAll({
       where: {
-        user_id: id
+        user_id: id,
+        progress: 0
       },
       order: [['createdAt', 'DESC']]
     });
@@ -165,6 +171,9 @@ export const getAIFaceResult = async (req, res) => {
 
   try {
     const scannedData = await AIBotsSummaries.findAll({
+      where: {
+        progress: 0
+      },
       order: [['createdAt', 'DESC']]
     });
 
@@ -191,6 +200,9 @@ export const getAIFaceResultsList = async (req, res) => {
   try {
 
     const scannedData = await AIBotsSummaries.findAll({
+      where: {
+        process: 0
+      },
       order: [['createdAt', 'DESC']]
     });
 
@@ -201,4 +213,43 @@ export const getAIFaceResultsList = async (req, res) => {
       message: err.message,
     });
   }
+}
+
+export const getCurrentAIFaceScannerStatus = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+    // Calculate the sum of counts for records created today
+    const count = await AIBotsSummaries.count({
+      where: {
+        user_id: id,
+        createdAt: {
+          [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
+          [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
+        },
+      },
+    });
+
+    const inProgress = await AIBotsSummaries.findOne({
+      where: {
+        user_id: id,
+        progress: {
+          [Sequelize.Op.ne]: 0
+        }
+      },
+      order: [['createdAt', 'DESC']]
+    })
+
+    res.status(200).json({
+      count,
+      inProgress
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while calculating the total count.' });
+  }
+
 }

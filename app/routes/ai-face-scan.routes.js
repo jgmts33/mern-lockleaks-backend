@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { downloadAIFaceResult, getAIFaceResult, getAIFaceResultByUser, getAIFaceResultsList, scan } from "../controllers/ai-bots-summaries.controller.js";
+import { downloadAIFaceResult, getAIFaceResult, getAIFaceResultByUser, getAIFaceResultsList, getCurrentAIFaceScannerStatus, scan } from "../controllers/ai-bots-summaries.controller.js";
 
 export default function (app) {
 
@@ -39,6 +39,12 @@ export default function (app) {
     "/ai-face-download-file",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     downloadAIFaceResult
+  )
+
+  app.get(
+    "/:id/current-ai-face-scanner-status",
+    [authJwt.verifyToken],
+    getCurrentAIFaceScannerStatus
   )
 
 };

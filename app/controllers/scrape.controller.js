@@ -2,7 +2,7 @@ import axios from "axios";
 import db from "../models/index.js";
 import { extractDomain } from "../utils/index.js";
 import { io } from "../../server.js";
-import { Sequelize } from "sequelize";
+import { Sequelize, where } from "sequelize";
 
 const { scrapeSummary: ScrapeSummary, customKeywords: CustomKeywords, basicKeywords: BasicKeywords, user: User, notifications: Notifications, role: Role } = db;
 
@@ -75,6 +75,14 @@ export const scrapeData = async (req, res) => {
     if (only == 'google') requestData.no_bing = true;
     if (only == 'bing') requestData.no_google = true;
     let index = 0;
+
+    const newScapreSummary = await ScrapeSummary.create({
+      scrape_date: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+      user_id: id,
+      progress: 0.01 / 100
+    });
+
+
     for (const query of queries) {
       requestData.query = query;
       index++;
@@ -100,31 +108,27 @@ export const scrapeData = async (req, res) => {
         });
       }
 
-      console.log(scrapeRes.data);
+      await newScapreSummary.update({
+        total_google_links: newScapreSummary.total_google_links + scrapeRes.data.google_link_count,
+        total_google_images: newScapreSummary.total_google_images + scrapeRes.data.google_image_count,
+        total_google_videos: newScapreSummary.total_google_videos + scrapeRes.data.google_video_count,
+        total_bing_links: newScapreSummary.total_bing_links + scrapeRes.data.bing_link_count,
+        total_bing_images: newScapreSummary.total_bing_images + scrapeRes.data.bing_image_count,
+        total_bing_videos: newScapreSummary.total_bing_videos + scrapeRes.data.bing_video_count,
+        good_count: newScapreSummary.good_count + scrapeRes.data.good_count,
+        other_count: newScapreSummary.other_count + scrapeRes.data.other_count,
+        bad_count: newScapreSummary.bad_count + scrapeRes.data.bad_count,
+        new_count: newScapreSummary.new_count + scrapeRes.data.new_count,
+        report_count: newScapreSummary.report_count + scrapeRes.data.report_count,
+        no_report_count: newScapreSummary.no_report_count + scrapeRes.data.no_report_count,
+        matches_count: newScapreSummary.matches_count + scrapeRes.data.matches_count,
+        no_matches_count: newScapreSummary.no_matches_count + scrapeRes.data.no_matches_count,
+        progress: index / queries.length
+      })
 
-      data = {
-        scrape_date: `scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
-        total_google_links: data.total_google_links + scrapeRes.data.google_link_count,
-        total_google_images: data.total_google_images + scrapeRes.data.google_image_count,
-        total_google_videos: data.total_google_videos + scrapeRes.data.google_video_count,
-        total_bing_links: data.total_bing_links + scrapeRes.data.bing_link_count,
-        total_bing_images: data.total_bing_images + scrapeRes.data.bing_image_count,
-        total_bing_videos: data.total_bing_videos + scrapeRes.data.bing_video_count,
-        good_count: data.good_count + scrapeRes.data.good_count,
-        other_count: data.other_count + scrapeRes.data.other_count,
-        bad_count: data.bad_count + scrapeRes.data.bad_count,
-        new_count: data.new_count + scrapeRes.data.new_count,
-        report_count: data.report_count + scrapeRes.data.report_count,
-        no_report_count: data.no_report_count + scrapeRes.data.no_report_count,
-        matches_count: data.matches_count + scrapeRes.data.matches_count,
-        no_matches_count: data.no_matches_count + scrapeRes.data.no_matches_count,
-        status: "available",
-        downloaded: false,
-        only_google: requestData.no_bing,
-        only_bing: requestData.no_google,
-        accepted: false,
-        user_id: id
-      }
+      // only_google: requestData.no_bing,
+      //   only_bing: requestData.no_google,
+
     }
 
     await axios.post(`${process.env.BOT_API_ENDPOINT}/zip`, {
@@ -133,13 +137,18 @@ export const scrapeData = async (req, res) => {
       username: user.name
     });
 
-    await ScrapeSummary.create({ ...data });
+    await newScapreSummary.update({
+      only_google: requestData.no_bing,
+      only_bing: requestData.no_google,
+      status: "available",
+      progress: 0,
+    });
 
     const row = await Notifications.create({
       content: 'Search Engines Scan finished!',
       user_id: id
     });
-    
+
     io.emit(`notification_${id}`, row)
 
     const moderatorsOrAdmins = await User.findAll({
@@ -197,7 +206,8 @@ export const downloadSrapedData = async (req, res) => {
     const scrapedData = await ScrapeSummary.findOne({
       where: {
         user_id: id,
-        scrape_date: folder_name
+        scrape_date: folder_name,
+        progress: 0
       }
     });
 
@@ -238,7 +248,8 @@ export const acceptOrder = async (req, res) => {
   try {
     const scrapedData = await ScrapeSummary.findOne({
       where: {
-        scrape_date: folder_name
+        scrape_date: folder_name,
+        progress: 0
       }
     });
 
@@ -275,7 +286,8 @@ export const getScrapedDataListByUser = async (req, res) => {
   try {
     let findCondition = {
       where: {
-        user_id: id
+        user_id: id,
+        progress: 0
       },
       order: [['createdAt', 'DESC']]
     };
@@ -310,7 +322,8 @@ export const getScrapedDataList = async (req, res) => {
       case 'google':
         scrapedData = await ScrapeSummary.findAll({
           where: {
-            only_google: true
+            only_google: true,
+            progress: 0
           },
           order: [['createdAt', 'DESC']]
         });
@@ -318,13 +331,17 @@ export const getScrapedDataList = async (req, res) => {
       case 'bing':
         scrapedData = await ScrapeSummary.findAll({
           where: {
-            only_bing: true
+            only_bing: true,
+            progress: 0
           },
           order: [['createdAt', 'DESC']]
         });
         break;
       default:
         scrapedData = await ScrapeSummary.findAll({
+          where: {
+            progress: 0
+          },
           order: [['createdAt', 'DESC']]
         });
         break;
@@ -336,4 +353,54 @@ export const getScrapedDataList = async (req, res) => {
       message: err.message,
     });
   }
+}
+
+export const getCurrentScannerStatus = async (req, res) => {
+  const { id } = req.params;
+  const { only } = req.query;
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+    let whereCondition = {
+      user_id: id,
+      createdAt: {
+        [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
+        [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
+      },
+    };
+
+    if (only == 'google') whereCondition.only_google = true;
+    if (only == 'bing') whereCondition.only_bing = true;
+
+    // Calculate the sum of counts for records created today
+    const count = await ScrapeSummary.count({
+      where: whereCondition
+    });
+
+    let inProgressCondition = {
+      user_id: id,
+      progress: {
+        [Sequelize.Op.ne]: 0
+      }
+    }
+
+    if (only == 'google') inProgressCondition.only_google = true;
+    if (only == 'bing') inProgressCondition.only_bing = true;
+
+    const inProgress = await ScrapeSummary.findOne({
+      where: inProgressCondition,
+      order: [['createdAt', 'DESC']]
+    })
+
+    res.status(200).json({
+      count,
+      inProgress
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while calculating the total count.' });
+  }
+
 }

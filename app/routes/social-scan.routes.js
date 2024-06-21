@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { downloadSocialResult, getSocialResult, getSocialResultByUser, getSocialResultsList, scan } from "../controllers/social-summaries.controller.js";
+import { downloadSocialResult, getCurrentSocialScannerStatus, getSocialResult, getSocialResultByUser, getSocialResultsList, scan } from "../controllers/social-summaries.controller.js";
 
 export default function (app) {
 
@@ -39,6 +39,12 @@ export default function (app) {
     "/social-download-file",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     downloadSocialResult
+  )
+
+  app.get(
+    "/:id/current-social-scanner-status",
+    [authJwt.verifyToken],
+    getCurrentSocialScannerStatus
   )
 
 };

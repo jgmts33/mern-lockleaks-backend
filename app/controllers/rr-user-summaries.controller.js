@@ -31,7 +31,12 @@ export const scan = async (req, res) => {
     data.append('email', user.email);
     data.append('username', user.name);
 
-    console.log('data:', data);
+    const newRRUserSummary = await RRUserSummaries.create({
+      file: `rr_user_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+      result: 0,
+      user_id: id,
+      progress: 0.9
+    });
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/rr/username`, data, {
       headers: {
@@ -41,10 +46,9 @@ export const scan = async (req, res) => {
 
     console.log("scanRes:", scanRes);
 
-    const result = await RRUserSummaries.create({
-      file: `rr_user_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+    await newRRUserSummary.update({
       result: scanRes.data.total_results,
-      user_id: id
+      progress: 0
     });
 
     io.emit(`rr-user-scan-finished`, result);
@@ -97,7 +101,8 @@ export const downloadRRUserResult = async (req, res) => {
   try {
     const scannedData = await RRUserSummaries.findOne({
       where: {
-        file
+        file,
+        progress: 0
       }
     });
 
@@ -133,7 +138,8 @@ export const getRRUserResultByUser = async (req, res) => {
   try {
     const scannedData = await RRUserSummaries.findAll({
       where: {
-        user_id: id
+        user_id: id,
+        progress: 0
       },
       order: [['createdAt', 'DESC']]
     });
@@ -160,6 +166,9 @@ export const getRRUserResult = async (req, res) => {
 
   try {
     const scannedData = await RRUserSummaries.findAll({
+      where: {
+        progress: 0
+      },
       order: [['createdAt', 'DESC']]
     });
 
@@ -186,6 +195,9 @@ export const getRRUserResultsList = async (req, res) => {
   try {
 
     const scannedData = await RRUserSummaries.findAll({
+      where: {
+        progress: 0
+      },
       order: [['createdAt', 'DESC']]
     });
 
@@ -196,4 +208,43 @@ export const getRRUserResultsList = async (req, res) => {
       message: err.message,
     });
   }
+}
+
+export const getCurrentRRUserScannerStatus = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+    // Calculate the sum of counts for records created today
+    const count = await RRUserSummaries.count({
+      where: {
+        user_id: id,
+        createdAt: {
+          [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
+          [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
+        },
+      },
+    });
+
+    const inProgress = await RRUserSummaries.findOne({
+      where: {
+        user_id: id,
+        progress: {
+          [Sequelize.Op.ne]: 0
+        }
+      },
+      order: [['createdAt', 'DESC']]
+    })
+
+    res.status(200).json({
+      count,
+      inProgress
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while calculating the total count.' });
+  }
+
 }

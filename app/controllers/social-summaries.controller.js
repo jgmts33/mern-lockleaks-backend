@@ -31,12 +31,18 @@ export const scan = async (req, res) => {
       username: user.name
     }
 
+    const newASocialSummary = await SocialSummaries.create({
+      file: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+      result: 0,
+      progress: 0.9,
+      user_id: id
+    });
+
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/social`, requestData);
 
-    const result = await SocialSummaries.create({
-      file: `sm_scanner_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+    await newASocialSummary.update({
       result: scanRes.data.total_results,
-      user_id: id
+      progress: 0
     });
 
     io.emit(`social-scan-finished`, result);
@@ -89,7 +95,8 @@ export const downloadSocialResult = async (req, res) => {
   try {
     const scannedData = await SocialSummaries.findOne({
       where: {
-        file
+        file,
+        progress: 0
       }
     });
 
@@ -125,7 +132,8 @@ export const getSocialResultByUser = async (req, res) => {
   try {
     const scannedData = await SocialSummaries.findAll({
       where: {
-        user_id: id
+        user_id: id,
+        progress: 0
       },
       order: [['createdAt', 'DESC']]
     });
@@ -168,6 +176,9 @@ export const getSocialResult = async (req, res) => {
 
   try {
     const scannedData = await SocialSummaries.findAll({
+      where: {
+        progress: 0
+      },
       order: [['createdAt', 'DESC']]
     });
     const profilesData = await SocialMediaProfiles.findAll({
@@ -207,6 +218,9 @@ export const getSocialResultsList = async (req, res) => {
   try {
 
     const scannedData = await SocialSummaries.findAll({
+      where: {
+        progress: 0
+      },
       order: [['createdAt', 'DESC']]
     });
 
@@ -217,4 +231,43 @@ export const getSocialResultsList = async (req, res) => {
       message: err.message,
     });
   }
+}
+
+export const getCurrentSocialScannerStatus = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+    // Calculate the sum of counts for records created today
+    const count = await SocialSummaries.count({
+      where: {
+        user_id: id,
+        createdAt: {
+          [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
+          [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
+        },
+      },
+    });
+
+    const inProgress = await SocialSummaries.findOne({
+      where: {
+        user_id: id,
+        progress: {
+          [Sequelize.Op.ne]: 0
+        }
+      },
+      order: [['createdAt', 'DESC']]
+    })
+
+    res.status(200).json({
+      count,
+      inProgress
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while calculating the total count.' });
+  }
+
 }

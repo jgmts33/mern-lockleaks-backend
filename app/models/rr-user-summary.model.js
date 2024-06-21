@@ -17,6 +17,10 @@ export default function (sequelize, Sequelize) {
     expired: {
       type: Sequelize.BOOLEAN,
       default: false
+    },
+    progress: {
+      type: Sequelize.INTEGER,
+      default: 0
     }
   });
 

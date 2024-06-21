@@ -36,7 +36,12 @@ export const scan = async (req, res) => {
     data.append('email', user.email);
     data.append('username', user.name);
 
-    console.log('data:', data);
+    const newRRPhotoSummary = await RRPhotoSummaries.create({
+      file: `rr_photo_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+      result: 0,
+      user_id: id,
+      progress: 0.9
+    });
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/rr/photo`, data, {
       headers: {
@@ -44,12 +49,9 @@ export const scan = async (req, res) => {
       }
     });
 
-    console.log("scanRes:", scanRes);
-
-    const result = await RRPhotoSummaries.create({
-      file: `rr_photo_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
+    await newRRPhotoSummary.update({
       result: scanRes.data.total_results,
-      user_id: id
+      progress: 0
     });
 
     io.emit(`rr-photo-scan-finished`, result);
@@ -102,7 +104,8 @@ export const downloadRRPhotoResult = async (req, res) => {
   try {
     const scannedData = await RRPhotoSummaries.findOne({
       where: {
-        file
+        file,
+        progress: 0
       }
     });
 
@@ -138,7 +141,8 @@ export const getRRPhotoResultByUser = async (req, res) => {
   try {
     const scannedData = await RRPhotoSummaries.findAll({
       where: {
-        user_id: id
+        user_id: id,
+        progress: 0
       },
       order: [['createdAt', 'DESC']]
     });
@@ -165,6 +169,9 @@ export const getRRPhotoResult = async (req, res) => {
 
   try {
     const scannedData = await RRPhotoSummaries.findAll({
+      where: {
+        progress: 0
+      },
       order: [['createdAt', 'DESC']]
     });
 
@@ -191,6 +198,9 @@ export const getRRPhotoResultsList = async (req, res) => {
   try {
 
     const scannedData = await RRPhotoSummaries.findAll({
+      where: {
+        progress: 0
+      },
       order: [['createdAt', 'DESC']]
     });
 
@@ -201,4 +211,43 @@ export const getRRPhotoResultsList = async (req, res) => {
       message: err.message,
     });
   }
+}
+
+export const getCurrentRRPhotoScannerStatus = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+    // Calculate the sum of counts for records created today
+    const count = await RRPhotoSummaries.count({
+      where: {
+        user_id: id,
+        createdAt: {
+          [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
+          [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
+        },
+      },
+    });
+
+    const inProgress = await RRPhotoSummaries.findOne({
+      where: {
+        user_id: id,
+        progress: {
+          [Sequelize.Op.ne]: 0
+        }
+      },
+      order: [['createdAt', 'DESC']]
+    })
+
+    res.status(200).json({
+      count,
+      inProgress
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while calculating the total count.' });
+  }
+
 }

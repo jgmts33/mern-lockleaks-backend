@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { downloadRRPhotoResult, getRRPhotoResult, getRRPhotoResultByUser, getRRPhotoResultsList, scan } from "../controllers/rr-photo-summaries.controller.js";
+import { downloadRRPhotoResult, getCurrentRRPhotoScannerStatus, getRRPhotoResult, getRRPhotoResultByUser, getRRPhotoResultsList, scan } from "../controllers/rr-photo-summaries.controller.js";
 
 export default function (app) {
 
@@ -39,6 +39,12 @@ export default function (app) {
     "/rr-photo-download-file",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     downloadRRPhotoResult
+  )
+
+  app.get(
+    "/:id/current-rr-photo-scanner-status",
+    [authJwt.verifyToken],
+    getCurrentRRPhotoScannerStatus
   )
 
 };

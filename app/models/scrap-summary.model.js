@@ -1,7 +1,8 @@
 export default function (sequelize, Sequelize) {
   const ScrapeSummaries = sequelize.define("scrape_summaries", {
     scrape_date: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      default: ''
     },
     total_google_links: {
       type: Sequelize.INTEGER,
@@ -61,7 +62,7 @@ export default function (sequelize, Sequelize) {
     },
     status: {
       type: Sequelize.STRING,
-      default: "available"
+      default: ""
     },
     downloaded: {
       type: Sequelize.BOOLEAN,
@@ -81,6 +82,10 @@ export default function (sequelize, Sequelize) {
     },
     user_id: {
       type: Sequelize.INTEGER
+    },
+    progress: {
+      type: Sequelize.INTEGER,
+      default: 0
     }
   });
 

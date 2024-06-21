@@ -388,7 +388,6 @@ export const getUsersReport = async (req, res) => {
 
 }
 
-
 export const getOrdersReport = async (req, res) => {
 
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -397,6 +396,7 @@ export const getOrdersReport = async (req, res) => {
 
     const weeklyScannerOrderCount = await ScrapeSummary.count({
       where: {
+        progress: 0,
         createdAt: {
           [Op.between]: [oneWeekAgo, new Date()]
         }
@@ -404,6 +404,7 @@ export const getOrdersReport = async (req, res) => {
     });
     const weeklySocialScannerOrderCount = await SocialSummaries.count({
       where: {
+        progress: 0,
         createdAt: {
           [Op.between]: [oneWeekAgo, new Date()]
         }
@@ -418,6 +419,7 @@ export const getOrdersReport = async (req, res) => {
     });
     const weeklyAIBotsOrderCount = await AIBotsSummaries.count({
       where: {
+        progress: 0,
         createdAt: {
           [Op.between]: [oneWeekAgo, new Date()]
         }
@@ -425,6 +427,7 @@ export const getOrdersReport = async (req, res) => {
     });
     const weeklyRRPhotoOrderCount = await RRPhotoSummaries.count({
       where: {
+        progress: 0,
         createdAt: {
           [Op.between]: [oneWeekAgo, new Date()]
         }
@@ -432,18 +435,39 @@ export const getOrdersReport = async (req, res) => {
     });
     const weeklyRRUserOrderCount = await RRUserSummaries.count({
       where: {
+        progress: 0,
         createdAt: {
           [Op.between]: [oneWeekAgo, new Date()]
         }
       }
     });
 
-    const scannerOrderCount = await ScrapeSummary.count();
-    const socialScannerOrderCount = await SocialSummaries.count();
+    const scannerOrderCount = await ScrapeSummary.count({
+      where: {
+        progress: 0,
+      }
+    });
+    const socialScannerOrderCount = await SocialSummaries.count({
+      where: {
+        progress: 0,
+      }
+    });
     const socialProfilesOrderCount = await SocialMediaProfiles.count();
-    const aiBotsOrderCount = await AIBotsSummaries.count();
-    const rrPhotoOrderCount = await RRPhotoSummaries.count();
-    const rrUserOrderCount = await RRUserSummaries.count();
+    const aiBotsOrderCount = await AIBotsSummaries.count({
+      where: {
+        progress: 0,
+      }
+    });
+    const rrPhotoOrderCount = await RRPhotoSummaries.count({
+      where: {
+        progress: 0,
+      }
+    });
+    const rrUserOrderCount = await RRUserSummaries.count({
+      where: {
+        progress: 0,
+      }
+    });
 
     // R&R Rot
 
