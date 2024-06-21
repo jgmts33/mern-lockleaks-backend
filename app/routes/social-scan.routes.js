@@ -24,13 +24,13 @@ export default function (app) {
   )
 
   app.get(
-    "/:id/social-scan-result",
+    "/:id/social-result",
     [authJwt.verifyToken],
     getSocialResultByUser
   )
 
   app.get(
-    "/social-scan-result",
+    "/social-result",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     getSocialResult
   )

@@ -4,7 +4,7 @@ import { extractDomain } from "../utils/index.js";
 import { io } from "../../server.js";
 import { Sequelize } from "sequelize";
 
-const { socialSummaries: SocialSummaries, user: User, notifications: Notifications, role: Role } = db;
+const { socialSummaries: SocialSummaries, socialMediaProfiles: SocialMediaProfiles, user: User, notifications: Notifications, role: Role } = db;
 
 export const scan = async (req, res) => {
   const { username } = req.body;
@@ -125,20 +125,36 @@ export const getSocialResultByUser = async (req, res) => {
   try {
     const scannedData = await SocialSummaries.findAll({
       where: {
-        user_id: id
+        user_id : id
+      },
+      order: [['createdAt', 'DESC']]
+    });
+    const profilesData = await SocialMediaProfiles.findAll({
+      where: {
+        user_id : id
       },
       order: [['createdAt', 'DESC']]
     });
 
-    let totalResult = 0;
+    let totalResult = 0, lastRow;
 
     for (let eachData of scannedData) {
       totalResult += eachData.result;
     }
 
+    for (let eachData of profilesData) {
+      totalResult += eachData.result;
+    }
+
+    if ( scannedData[0].createdAt > profilesData[0].createdAt ) {
+      lastRow = scannedData[0]
+    } else {
+      lastRow = profilesData[0]
+    }
+
     res.status(200).send({
       totalResult,
-      lastResult: scannedData[0]?.result || 0
+      lastResult: lastRow.result || 0
     })
 
   } catch (err) {
@@ -154,16 +170,29 @@ export const getSocialResult = async (req, res) => {
     const scannedData = await SocialSummaries.findAll({
       order: [['createdAt', 'DESC']]
     });
+    const profilesData = await SocialMediaProfiles.findAll({
+      order: [['createdAt', 'DESC']]
+    });
 
-    let totalResult = 0;
+    let totalResult = 0, lastRow;
 
     for (let eachData of scannedData) {
       totalResult += eachData.result;
     }
 
+    for (let eachData of profilesData) {
+      totalResult += eachData.result;
+    }
+
+    if ( scannedData[0].createdAt > profilesData[0].createdAt ) {
+      lastRow = scannedData[0]
+    } else {
+      lastRow = profilesData[0]
+    }
+
     res.status(200).send({
       totalResult,
-      lastResult: scannedData[0]?.result || 0
+      lastResult: lastRow.result || 0
     })
 
   } catch (err) {
