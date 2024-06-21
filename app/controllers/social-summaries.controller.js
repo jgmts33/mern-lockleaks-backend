@@ -41,12 +41,12 @@ export const scan = async (req, res) => {
 
     io.emit(`social-scan-finished`, result);
 
-    await Notifications.create({
+    const row = await Notifications.create({
       content: 'Social Media Scan finished!',
       user_id: id
     });
 
-    io.emit(`notification_${id}`, 'Social Media Scan finished!')
+    io.emit(`notification_${id}`, row)
 
     const moderatorsOrAdmins = await User.findAll({
       include: [{
@@ -66,11 +66,11 @@ export const scan = async (req, res) => {
     })
 
     for (let each of moderatorsOrAdmins) {
-      await Notifications.create({
+      const newRow = await Notifications.create({
         content: 'New Order Social Media',
         user_id: each.id
       });
-      io.emit(`notification_${each.id}`, 'New Order Social Media')
+      io.emit(`notification_${each.id}`, newRow)
     }
 
     res.status(200).send(result);

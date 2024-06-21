@@ -54,12 +54,12 @@ export const scan = async (req, res) => {
 
     io.emit(`ai-face-scan-finished`, result);
 
-    await Notifications.create({
+    const row = await Notifications.create({
       content: 'AI Face Scan finished!',
       user_id: id
     });
 
-    io.emit(`notification_${id}`, 'AI Face Scan finished!')
+    io.emit(`notification_${id}`, row)
 
     const moderatorsOrAdmins = await User.findAll({
       include: [{
@@ -79,11 +79,11 @@ export const scan = async (req, res) => {
     })
 
     for (let each of moderatorsOrAdmins) {
-      await Notifications.create({
+      const newRow = await Notifications.create({
         content: 'New Order AI FACE',
         user_id: each.id
       });
-      io.emit(`notification_${each.id}`, 'New Order AI FACE')
+      io.emit(`notification_${each.id}`, newRow)
     }
 
     res.status(200).send(result);

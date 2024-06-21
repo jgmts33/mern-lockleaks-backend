@@ -175,12 +175,12 @@ export default async () => {
           })
         );
 
-        await Notifications.create({
+        const row = await Notifications.create({
           content: 'Data Analytics sent. Check your email.',
           user_id: user.id
         });
     
-        io.emit(`notification_${user.id}`, 'Data Analytics sent. Check your email.');
+        io.emit(`notification_${user.id}`, row);
 
       } else {
         await user.update({
@@ -230,12 +230,12 @@ export default async () => {
 
       api.emailsPost(fileEmailContent, fileCallback);
 
-      await Notifications.create({
+      const row = await Notifications.create({
         content: 'Data report sent. Check your email.',
         user_id: user.id
       });
   
-      io.emit(`notification_${user.id}`, 'Data report sent. Check your email.');
+      io.emit(`notification_${user.id}`, row);
     }
 
   } catch (error) {
@@ -352,12 +352,12 @@ LockLeaks Support Team \n`
         console.log(`Tciket closed after 7 days with not response:${ticket.id}`);
       }
 
-      await Notifications.create({
+      const row = await Notifications.create({
         content: 'Your ticket has been closed.',
         user_id: ticket.user_id
       });
 
-      io.emit(`notification_${ticket.user_id}`, 'Your ticket has been closed.')
+      io.emit(`notification_${ticket.user_id}`, row)
       io.emit(`ticket_closed_${ticket.user_id}`, ticket.id);
       io.emit(`ticket_closed_admin`, ticket.id);
 

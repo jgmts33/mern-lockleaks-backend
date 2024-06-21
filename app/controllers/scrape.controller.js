@@ -135,12 +135,12 @@ export const scrapeData = async (req, res) => {
 
     await ScrapeSummary.create({ ...data });
 
-    await Notifications.create({
+    const row = await Notifications.create({
       content: 'Search Engines Scan finished!',
       user_id: id
     });
     
-    io.emit(`notification_${id}`, 'Search Engines Scan finished!')
+    io.emit(`notification_${id}`, row)
 
     const moderatorsOrAdmins = await User.findAll({
       include: [{
@@ -160,11 +160,11 @@ export const scrapeData = async (req, res) => {
     })
 
     for (let each of moderatorsOrAdmins) {
-      await Notifications.create({
+      const newRow = await Notifications.create({
         content: only ? 'New Order Google & Bing' : 'New Order Scanner',
         user_id: each.id
       });
-      io.emit(`notification_${each.id}`, only ? 'New Order Google & Bing' : 'New Order Scanner')
+      io.emit(`notification_${each.id}`, newRow)
     }
 
     if (only == 'google') {

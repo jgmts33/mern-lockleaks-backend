@@ -91,11 +91,11 @@ export const createNewTicket = async (req, res) => {
     })
 
     for (let each of moderatorsOrAdmins) {
-      await Notifications.create({
+      const newRow = await Notifications.create({
         content: 'New KYC Submission!',
         user_id: each.id
       });
-      io.emit(`notification_${each.id}`, 'New KYC Submission!')
+      io.emit(`notification_${each.id}`, newRow)
     }
 
     await Messages.create({
@@ -180,12 +180,12 @@ export const sendMessage = async (req, res) => {
 
     io.emit(`new_message_${ticket_id}`, newMessage);
 
-    await Notifications.create({
+    const row = await Notifications.create({
       content: 'Agent responded. Check tickets.',
       user_id: sender_id
     });
 
-    io.emit(`notification_${sender_id}`, 'Agent responded. Check tickets.');
+    io.emit(`notification_${sender_id}`, row);
 
     const moderatorsOrAdmins = await User.findAll({
       include: [{
@@ -205,11 +205,11 @@ export const sendMessage = async (req, res) => {
     })
 
     for (let each of moderatorsOrAdmins) {
-      await Notifications.create({
+      const newRow = await Notifications.create({
         content: 'New Message in Ticket!',
         user_id: each.id
       });
-      io.emit(`notification_${each.id}`, 'New Message in Ticket!')
+      io.emit(`notification_${each.id}`, newRow)
     }
 
     res.status(200).send({
