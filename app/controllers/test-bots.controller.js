@@ -28,6 +28,8 @@ export const testBots = async (req, res) => {
             rr_user: ''
         }
 
+        const result = await TestBots.create(data);
+
         const currentDate = new Date().toLocaleString('en-GB', {
             day: '2-digit',
             month: '2-digit',
@@ -54,6 +56,13 @@ export const testBots = async (req, res) => {
             username: user.name
         });
 
+
+        result.update({
+            scanner:  `scanner_${currentDate}_test`
+        });
+
+        io.emit('test_scanner_finished', `scanner_${currentDate}_test`);
+
         // Social Media Scanner
 
         const socialScannerRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/social`, {
@@ -63,6 +72,12 @@ export const testBots = async (req, res) => {
             email: user.email,
             username: user.name
         })
+
+        await result.update({
+            sm_scanner:  `sm_scanner_${currentDate}_test`
+        })
+
+        io.emit('test_sm_scanner_finished', `sm_scanner_${currentDate}_test`);
 
         // AI Face Scanner
 
@@ -80,6 +95,12 @@ export const testBots = async (req, res) => {
             }
         });
 
+        await result.update({
+            ai_face:  `ai_face_${currentDate}_test`
+        })
+
+        io.emit('test_ai_face_finished', `ai_face_${currentDate}_test`);
+
         // R&R Photo Scanner
 
         const rr_photo_data = new FormData();
@@ -94,6 +115,13 @@ export const testBots = async (req, res) => {
             }
         });
 
+        await result.update({
+            rr_photo:  `rr_photo_${currentDate}_test`
+        })
+
+        io.emit('test_rr_photo_finished', `rr_photo_${currentDate}_test`);
+
+
         // R&R Username Scanner
 
         const rr_user_data = new FormData();
@@ -102,21 +130,17 @@ export const testBots = async (req, res) => {
         rr_user_data.append('email', user.email);
         rr_user_data.append('username', user.name);
 
-        const rrUserScannerRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/rr/user`, rr_photo_data, {
+        const rrUserScannerRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/rr/user`, rr_user_data, {
             headers: {
-                ...rr_photo_data.getHeaders()
+                ...rr_user_data.getHeaders()
             }
         });
 
-        data = {
-            scanner: scannerRes.status == 200 ? `scanner_${currentDate}_test` : ``,
-            social: socialScannerRes.status == 200 ? `sm_scanner_${currentDate}_test` : ``,
-            ai_face: aiFaceScannerRes.status == 200 ? `ai_face_${currentDate}_test` : ``,
-            rr_photo: rrPhotoScannerRes.status == 200 ? `rr_photo_${currentDate}_test` : ``,
-            rr_user: rrUserScannerRes.status == 200 ? `rr_user_${currentDate}_test` : ``
-        };
+        await result.update({
+            rr_user:  `rr_user_${currentDate}_test`
+        });
 
-        const result = await TestBots.create(data);
+        io.emit('test_rr_user_finished', `rr_user_${currentDate}_test`);
 
         res.status(200).send(result);
 
