@@ -3,6 +3,7 @@ import path from 'path';
 import FormData from "form-data";
 import db from "../models/index.js";
 import fs from 'fs';
+import { io } from "../../server.js";
 
 const { testBots: TestBots, user: User } = db;
 
@@ -158,7 +159,7 @@ export const downloadTestResult = async (req, res) => {
     const { folder_name } = req.query;
 
     try {
-        
+
         const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
             folder_name: folder_name
         }, {
