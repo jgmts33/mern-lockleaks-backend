@@ -125,36 +125,36 @@ export const getSocialResultByUser = async (req, res) => {
   try {
     const scannedData = await SocialSummaries.findAll({
       where: {
-        user_id : id
+        user_id: id
       },
       order: [['createdAt', 'DESC']]
     });
     const profilesData = await SocialMediaProfiles.findAll({
       where: {
-        user_id : id
+        user_id: id
       },
       order: [['createdAt', 'DESC']]
     });
 
-    let totalResult = 0, lastRow;
+    let totalResult = 0, lastResult = 0;
 
     for (let eachData of scannedData) {
       totalResult += eachData.result;
     }
 
     for (let eachData of profilesData) {
-      totalResult += eachData.result;
+      totalResult += eachData.count;
     }
 
-    if ( scannedData[0].createdAt > profilesData[0].createdAt ) {
-      lastRow = scannedData[0]
+    if (scannedData[0].createdAt > profilesData[0].createdAt) {
+      lastResult = scannedData[0].result
     } else {
-      lastRow = profilesData[0]
+      lastResult = profilesData[0].count
     }
 
     res.status(200).send({
       totalResult,
-      lastResult: lastRow.result || 0
+      lastResult: lastResult
     })
 
   } catch (err) {
@@ -174,25 +174,25 @@ export const getSocialResult = async (req, res) => {
       order: [['createdAt', 'DESC']]
     });
 
-    let totalResult = 0, lastRow;
+    let totalResult = 0, lastResult = 0;
 
     for (let eachData of scannedData) {
       totalResult += eachData.result;
     }
 
     for (let eachData of profilesData) {
-      totalResult += eachData.result;
+      totalResult += eachData.count;
     }
 
-    if ( scannedData[0].createdAt > profilesData[0].createdAt ) {
-      lastRow = scannedData[0]
+    if (scannedData[0].createdAt > profilesData[0].createdAt) {
+      lastResult = scannedData[0].result
     } else {
-      lastRow = profilesData[0]
+      lastResult = profilesData[0].count
     }
 
     res.status(200).send({
       totalResult,
-      lastResult: lastRow.result || 0
+      lastResult: lastResult
     })
 
   } catch (err) {
