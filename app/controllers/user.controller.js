@@ -367,6 +367,9 @@ export const getUsersReport = async (req, res) => {
 
     const weeklyUserCount = await User.count({
       where: {
+        email: {
+          [Sequelize.Op.ne] : 'admin@lockleaks.com'
+        },
         createdAt: {
           [Op.between]: [oneWeekAgo, new Date()]
         }
