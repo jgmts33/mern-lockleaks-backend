@@ -41,7 +41,7 @@ export const scan = async (req, res) => {
 
     console.log("scanRes:", scanRes);
 
-    const result = await AIBotsSummaries.create({
+    const result = await RRUserSummaries.create({
       file: `rr_user_${currentDate}_${user.name.replaceAll(" ", "_").toLowerCase()}`,
       result: scanRes.data.total_results,
       user_id: id
