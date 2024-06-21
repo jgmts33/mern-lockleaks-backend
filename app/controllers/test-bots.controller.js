@@ -3,11 +3,21 @@ import path from 'path';
 import FormData from "form-data";
 import db from "../models/index.js";
 
-const { testBots : TestBots } = db;
+const { testBots: TestBots, user: User } = db;
 
 export const testBots = async (req, res) => {
 
+    const { id } = req.params;
+
     try {
+
+        const user = User.findByPk(id);
+
+        if (!user) {
+            res.status(404).send({
+                message: "Not Found User!"
+            })
+        }
 
         let data = {
             scanner: '',
@@ -98,13 +108,13 @@ export const testBots = async (req, res) => {
         });
 
         data = {
-            scanner: scannerRes.status == 200 ? `scanner_${currentDate}_test` : `` ,
+            scanner: scannerRes.status == 200 ? `scanner_${currentDate}_test` : ``,
             social: socialScannerRes.status == 200 ? `sm_scanner_${currentDate}_test` : ``,
             ai_face: aiFaceScannerRes.status == 200 ? `ai_face_${currentDate}_test` : ``,
             rr_photo: rrPhotoScannerRes.status == 200 ? `rr_photo_${currentDate}_test` : ``,
             rr_user: rrUserScannerRes.status == 200 ? `rr_user_${currentDate}_test` : ``
         };
-        
+
         const result = await TestBots.create(data);
 
         res.status(200).send(result);

@@ -144,8 +144,8 @@ export default function (app) {
     clearNotifications
   )
 
-  app.post(
-    "/test-bots",
+  app.get(
+    "/:id/test-bots",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     testBots
   )
