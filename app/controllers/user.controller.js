@@ -22,7 +22,7 @@ apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
-const { user: User, scrapeSummary: ScrapeSummary, socialSummaries: SocialSummaries, socialMediaProfiles: SocialMediaProfiles, aiBotsSummaries: AIBotsSummaries, subscriptionOptions: SubscriptionOptions, role: Role } = db;
+const { user: User, scrapeSummary: ScrapeSummary, socialSummaries: SocialSummaries, socialMediaProfiles: SocialMediaProfiles, aiBotsSummaries: AIBotsSummaries, subscriptionOptions: SubscriptionOptions, role: Role, notifications: Notifications } = db;
 
 export const getUserInfo = (req, res) => {
   const { id } = req.params;
@@ -421,7 +421,7 @@ export const getOrdersReport = async (req, res) => {
     // R&R Rot
 
     res.status(200).send({
-      total: scannerOrderCount + socialScannerOrderCount + socialProfilesOrderCount + aiBotsOrderCount ,
+      total: scannerOrderCount + socialScannerOrderCount + socialProfilesOrderCount + aiBotsOrderCount,
       weekly: weeklyScannerOrderCount + weeklySocialScannerOrderCount + weeklySocialProfilesOrderCount + weeklyAIBotsOrderCount
     });
   } catch (err) {
@@ -1025,4 +1025,48 @@ export const getModeratorsOrAdmin = async (req, res) => {
   })
 
   res.status(200).send(moderatorsOrAdmins);
+}
+
+export const getNotifications = async (req, res) => {
+
+  const { id } = req.params;
+
+  try {
+    const rows = await Notifications.findAll({
+      where: {
+        user_id: id
+      }
+    });
+
+    res.status(200).send(rows);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+
+}
+
+export const clearNotifications = async (req, res) => {
+
+  const { id } = req.params;
+
+  try {
+    const rows = await Notifications.findAll({
+      where: {
+        user_id: id
+      }
+    });
+
+    for ( let row of rows ) {
+      await row.destroy();
+    }
+
+    res.status(200).send(rows);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+
 }
