@@ -16,7 +16,7 @@ apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
-const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets } = db;
+const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets, notifications: Notifications } = db;
 
 export default async () => {
 
@@ -173,7 +173,14 @@ export default async () => {
             BinaryContent: analyticsPdfBase64, // This should be replaced with the actual file content or a stream
             ContentType: "application/pdf"
           })
-        )
+        );
+
+        await Notifications.create({
+          content: 'Data Analytics sent. Check your email.',
+          user_id: user.id
+        });
+    
+        io.emit(`notification_${user.id}`, 'Data Analytics sent. Check your email.');
 
       } else {
         await user.update({
@@ -222,6 +229,13 @@ export default async () => {
       };
 
       api.emailsPost(fileEmailContent, fileCallback);
+
+      await Notifications.create({
+        content: 'Data report sent. Check your email.',
+        user_id: user.id
+      });
+  
+      io.emit(`notification_${user.id}`, 'Data report sent. Check your email.');
     }
 
   } catch (error) {
@@ -338,6 +352,12 @@ LockLeaks Support Team \n`
         console.log(`Tciket closed after 7 days with not response:${ticket.id}`);
       }
 
+      await Notifications.create({
+        content: 'Your ticket has been closed.',
+        user_id: ticket.user_id
+      });
+
+      io.emit(`notification_${ticket.user_id}`, 'Your ticket has been closed.')
       io.emit(`ticket_closed_${ticket.user_id}`, ticket.id);
       io.emit(`ticket_closed_admin`, ticket.id);
 

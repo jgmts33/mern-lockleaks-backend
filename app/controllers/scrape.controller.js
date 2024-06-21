@@ -139,6 +139,8 @@ export const scrapeData = async (req, res) => {
       content: 'Search Engines Scan finished!',
       user_id: id
     });
+    
+    io.emit(`notification_${id}`, 'Search Engines Scan finished!')
 
     const moderatorsOrAdmins = await User.findAll({
       include: [{
@@ -162,6 +164,7 @@ export const scrapeData = async (req, res) => {
         content: only ? 'New Order Google & Bing' : 'New Order Scanner',
         user_id: each.id
       });
+      io.emit(`notification_${each.id}`, only ? 'New Order Google & Bing' : 'New Order Scanner')
     }
 
     if (only == 'google') {

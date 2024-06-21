@@ -4,8 +4,9 @@ import { io } from "../../server.js";
 import path from 'path';
 import fs from 'fs';
 import FormData from "form-data";
+import { Sequelize } from "sequelize";
 
-const { aiBotsSummaries: AIBotsSummaries, user : User } = db;
+const { aiBotsSummaries: AIBotsSummaries, user: User, notifications: Notifications, role: Role } = db;
 
 export const scan = async (req, res) => {
   const { id } = req.params;
@@ -51,9 +52,39 @@ export const scan = async (req, res) => {
       user_id: id
     });
 
-    io.emit(`ai-face-scan-finished`, scanRes.data.total_results);
+    io.emit(`ai-face-scan-finished`, result);
 
-    io.emit(`admin:aiFaceScanFinished`, result);
+    await Notifications.create({
+      content: 'AI Face Scan finished!',
+      user_id: id
+    });
+
+    io.emit(`notification_${id}`, 'AI Face Scan finished!')
+
+    const moderatorsOrAdmins = await User.findAll({
+      include: [{
+        model: Role,
+        as: 'roles',
+        where: {
+          [Sequelize.Op.or]: [
+            {
+              name: 'admin'
+            },
+            {
+              name: 'moderator'
+            }
+          ]
+        }
+      }]
+    })
+
+    for (let each of moderatorsOrAdmins) {
+      await Notifications.create({
+        content: 'New Order AI FACE',
+        user_id: each.id
+      });
+      io.emit(`notification_${each.id}`, 'New Order AI FACE')
+    }
 
     res.status(200).send(result);
 

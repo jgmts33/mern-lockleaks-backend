@@ -2,8 +2,9 @@ import axios from "axios";
 import db from "../models/index.js";
 import { extractDomain } from "../utils/index.js";
 import { io } from "../../server.js";
+import { Sequelize } from "sequelize";
 
-const { socialSummaries: SocialSummaries, user: User } = db;
+const { socialSummaries: SocialSummaries, user: User, notifications: Notifications, role: Role } = db;
 
 export const scan = async (req, res) => {
   const { username } = req.body;
@@ -39,6 +40,38 @@ export const scan = async (req, res) => {
     });
 
     io.emit(`social-scan-finished`, result);
+
+    await Notifications.create({
+      content: 'Social Media Scan finished!',
+      user_id: id
+    });
+
+    io.emit(`notification_${id}`, 'Social Media Scan finished!')
+
+    const moderatorsOrAdmins = await User.findAll({
+      include: [{
+        model: Role,
+        as: 'roles',
+        where: {
+          [Sequelize.Op.or]: [
+            {
+              name: 'admin'
+            },
+            {
+              name: 'moderator'
+            }
+          ]
+        }
+      }]
+    })
+
+    for (let each of moderatorsOrAdmins) {
+      await Notifications.create({
+        content: 'New Order Social Media',
+        user_id: each.id
+      });
+      io.emit(`notification_${each.id}`, 'New Order Social Media')
+    }
 
     res.status(200).send(result);
 

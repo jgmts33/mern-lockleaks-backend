@@ -1,8 +1,9 @@
+import { Sequelize } from "sequelize";
 import { io } from "../../server.js";
 import db from "../models/index.js";
 import path from 'path';
 
-const { tickets: Tickets, messages: Messages } = db;
+const { tickets: Tickets, messages: Messages, notifications: Notifications, role: Role, user: User } = db;
 
 export const getTickets = async (req, res) => {
 
@@ -78,6 +79,24 @@ export const createNewTicket = async (req, res) => {
     });
 
     io.emit(`created_new_ticket`, ticket);
+
+    const moderatorsOrAdmins = await User.findAll({
+      include: [{
+        model: Role,
+        as: 'roles',
+        where: {
+          name: 'admin'
+        }
+      }]
+    })
+
+    for (let each of moderatorsOrAdmins) {
+      await Notifications.create({
+        content: 'New KYC Submission!',
+        user_id: each.id
+      });
+      io.emit(`notification_${each.id}`, 'New KYC Submission!')
+    }
 
     await Messages.create({
       sender_id: user_id,
@@ -160,6 +179,38 @@ export const sendMessage = async (req, res) => {
     });
 
     io.emit(`new_message_${ticket_id}`, newMessage);
+
+    await Notifications.create({
+      content: 'Agent responded. Check tickets.',
+      user_id: sender_id
+    });
+
+    io.emit(`notification_${sender_id}`, 'Agent responded. Check tickets.');
+
+    const moderatorsOrAdmins = await User.findAll({
+      include: [{
+        model: Role,
+        as: 'roles',
+        where: {
+          [Sequelize.Op.or]: [
+            {
+              name: 'admin'
+            },
+            {
+              name: 'moderator'
+            }
+          ]
+        }
+      }]
+    })
+
+    for (let each of moderatorsOrAdmins) {
+      await Notifications.create({
+        content: 'New Message in Ticket!',
+        user_id: each.id
+      });
+      io.emit(`notification_${each.id}`, 'New Message in Ticket!')
+    }
 
     res.status(200).send({
       message: "New Message sent Successfully!"
