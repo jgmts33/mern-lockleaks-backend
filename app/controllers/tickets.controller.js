@@ -196,7 +196,7 @@ export const sendMessage = async (req, res) => {
 
     io.emit(`new_message_${ticket_id}`, newMessage);
 
-    if (ticket.user_id != sender_id) {
+    if (ticket.user_id == sender_id) {
       const row = await Notifications.create({
         content: 'Agent responded. Check tickets.',
         user_id: sender_id
