@@ -1035,7 +1035,8 @@ export const getNotifications = async (req, res) => {
     const rows = await Notifications.findAll({
       where: {
         user_id: id
-      }
+      },
+      order: [['createdAt', 'DESC']],
     });
 
     res.status(200).send(rows);
