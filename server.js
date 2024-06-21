@@ -26,6 +26,8 @@ import socialUsernamesRoutes from './app/routes/social-usernames.routes.js';
 import reportsRoutes from './app/routes/reports.routes.js';
 import socialScanRoutes from './app/routes/social-scan.routes.js';
 import aiFaceScanRoutes from './app/routes/ai-face-scan.routes.js';
+import rrPhotoScanRoutes from './app/routes/rr-photo-scan.routes.js';
+import rrUserScanRoutes from './app/routes/rr-user-scan.routes.js';
 
 configDotenv();
 
@@ -114,6 +116,8 @@ pingModelsRoutes(app);
 reportsRoutes(app);
 socialScanRoutes(app);
 aiFaceScanRoutes(app);
+rrPhotoScanRoutes(app);
+rrUserScanRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 
