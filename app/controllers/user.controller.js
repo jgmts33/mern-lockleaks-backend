@@ -692,6 +692,24 @@ export const kycSubmit = async (req, res) => {
 
     io.emit(`new_kyc_submitted`, user);
 
+    const moderatorsOrAdmins = await User.findAll({
+      include: [{
+        model: Role,
+        as: 'roles',
+        where: {
+          name: 'admin'
+        }
+      }]
+    })
+
+    for (let each of moderatorsOrAdmins) {
+      const newRow = await Notifications.create({
+        content: 'New KYC Submission!',
+        user_id: each.id
+      });
+      io.emit(`notification_${each.id}`, newRow)
+    }
+
     return res.status(200).send({ message: "Data Submitted Successfully!" });
 
   } catch (err) {

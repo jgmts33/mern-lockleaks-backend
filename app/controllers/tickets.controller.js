@@ -85,14 +85,21 @@ export const createNewTicket = async (req, res) => {
         model: Role,
         as: 'roles',
         where: {
-          name: 'admin'
+          [Sequelize.Op.or]: [
+            {
+              name: 'admin'
+            },
+            {
+              name: 'moderator'
+            }
+          ]
         }
       }]
     })
 
     for (let each of moderatorsOrAdmins) {
       const newRow = await Notifications.create({
-        content: 'New KYC Submission!',
+        content: 'New Ticket Received!',
         user_id: each.id
       });
       io.emit(`notification_${each.id}`, newRow)
