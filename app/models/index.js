@@ -33,6 +33,7 @@ import aiBotsSummaryModel from "./ai-bots-summary.model.js";
 import notificationModel from "./notification.model.js";
 import rrPhotoSummaryModel from "./rr-photo-summary.model.js";
 import rrUserSummaryModel from "./rr-user-summary.model.js";
+import testBotsModel from "./test-bots.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -85,6 +86,7 @@ db.aiBotsSummaries = aiBotsSummaryModel(sequelize, Sequelize);
 db.rrPhotoSummaries = rrPhotoSummaryModel(sequelize, Sequelize);
 db.rrUserSummaries = rrUserSummaryModel(sequelize, Sequelize);
 db.notifications = notificationModel(sequelize, Sequelize);
+db.testBots = testBotsModel(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
