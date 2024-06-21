@@ -11,7 +11,7 @@ export const testBots = async (req, res) => {
 
     try {
 
-        const user = User.findByPk(id);
+        const user = await User.findByPk(id);
 
         if (!user) {
             res.status(404).send({
