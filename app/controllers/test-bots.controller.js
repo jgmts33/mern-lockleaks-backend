@@ -2,6 +2,7 @@ import axios from "axios";
 import path from 'path';
 import FormData from "form-data";
 import db from "../models/index.js";
+import fs from 'fs';
 
 const { testBots: TestBots, user: User } = db;
 
