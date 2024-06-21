@@ -22,7 +22,18 @@ apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
-const { user: User, scrapeSummary: ScrapeSummary, socialSummaries: SocialSummaries, socialMediaProfiles: SocialMediaProfiles, aiBotsSummaries: AIBotsSummaries, subscriptionOptions: SubscriptionOptions, role: Role, notifications: Notifications } = db;
+const {
+  user: User,
+  scrapeSummary: ScrapeSummary,
+  socialSummaries: SocialSummaries,
+  socialMediaProfiles: SocialMediaProfiles,
+  aiBotsSummaries: AIBotsSummaries,
+  subscriptionOptions: SubscriptionOptions,
+  role: Role,
+  notifications: Notifications,
+  rrPhotoSummaries: RRPhotoSummaries,
+  rrUserSummaries: RRUserSummaries
+} = db;
 
 export const getUserInfo = (req, res) => {
   const { id } = req.params;
@@ -412,17 +423,33 @@ export const getOrdersReport = async (req, res) => {
         }
       }
     });
+    const weeklyRRPhotoOrderCount = await RRPhotoSummaries.count({
+      where: {
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
+      }
+    });
+    const weeklyRRUserOrderCount = await RRUserSummaries.count({
+      where: {
+        createdAt: {
+          [Op.between]: [oneWeekAgo, new Date()]
+        }
+      }
+    });
 
     const scannerOrderCount = await ScrapeSummary.count();
     const socialScannerOrderCount = await SocialSummaries.count();
     const socialProfilesOrderCount = await SocialMediaProfiles.count();
     const aiBotsOrderCount = await AIBotsSummaries.count();
+    const rrPhotoOrderCount = await RRPhotoSummaries.count();
+    const rrUserOrderCount = await RRUserSummaries.count();
 
     // R&R Rot
 
     res.status(200).send({
-      total: scannerOrderCount + socialScannerOrderCount + socialProfilesOrderCount + aiBotsOrderCount,
-      weekly: weeklyScannerOrderCount + weeklySocialScannerOrderCount + weeklySocialProfilesOrderCount + weeklyAIBotsOrderCount
+      total: scannerOrderCount + socialScannerOrderCount + socialProfilesOrderCount + aiBotsOrderCount + rrPhotoOrderCount + rrUserOrderCount,
+      weekly: weeklyScannerOrderCount + weeklySocialScannerOrderCount + weeklySocialProfilesOrderCount + weeklyAIBotsOrderCount + weeklyRRPhotoOrderCount + weeklyRRUserOrderCount
     });
   } catch (err) {
     console.log(err);
@@ -1077,7 +1104,7 @@ export const clearNotifications = async (req, res) => {
       }
     });
 
-    for ( let row of rows ) {
+    for (let row of rows) {
       await row.destroy();
     }
 
