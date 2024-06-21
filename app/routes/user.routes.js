@@ -132,13 +132,13 @@ export default function (app) {
   // )
 
   app.get(
-    "/notification",
+    "/:id/notification",
     [authJwt.verifyToken],
     getNotifications
   )
 
   app.delete(
-    "/notification",
+    "/:id/notification",
     [authJwt.verifyToken],
     clearNotifications
   )
