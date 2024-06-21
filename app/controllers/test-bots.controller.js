@@ -58,7 +58,7 @@ export const testBots = async (req, res) => {
 
 
         result.update({
-            scanner:  `scanner_${currentDate}_test`
+            scanner: `scanner_${currentDate}_test`
         });
 
         io.emit('test_scanner_finished', `scanner_${currentDate}_test`);
@@ -74,7 +74,7 @@ export const testBots = async (req, res) => {
         })
 
         await result.update({
-            sm_scanner:  `sm_scanner_${currentDate}_test`
+            sm_scanner: `sm_scanner_${currentDate}_test`
         })
 
         io.emit('test_sm_scanner_finished', `sm_scanner_${currentDate}_test`);
@@ -96,7 +96,7 @@ export const testBots = async (req, res) => {
         });
 
         await result.update({
-            ai_face:  `ai_face_${currentDate}_test`
+            ai_face: `ai_face_${currentDate}_test`
         })
 
         io.emit('test_ai_face_finished', `ai_face_${currentDate}_test`);
@@ -116,7 +116,7 @@ export const testBots = async (req, res) => {
         });
 
         await result.update({
-            rr_photo:  `rr_photo_${currentDate}_test`
+            rr_photo: `rr_photo_${currentDate}_test`
         })
 
         io.emit('test_rr_photo_finished', `rr_photo_${currentDate}_test`);
@@ -137,7 +137,7 @@ export const testBots = async (req, res) => {
         });
 
         await result.update({
-            rr_user:  `rr_user_${currentDate}_test`
+            rr_user: `rr_user_${currentDate}_test`
         });
 
         io.emit('test_rr_user_finished', `rr_user_${currentDate}_test`);
@@ -151,5 +151,26 @@ export const testBots = async (req, res) => {
         })
     }
 
+}
+
+export const downloadTestResult = async (req, res) => {
+
+    const { folder_name } = req.query;
+
+    try {
+        
+        const response = await axios.post(`${process.env.BOT_API_ENDPOINT}/download`, {
+            folder_name: folder_name
+        }, {
+            responseType: "stream"
+        });
+
+        response.data.pipe(res);
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message
+        })
+    }
 
 }

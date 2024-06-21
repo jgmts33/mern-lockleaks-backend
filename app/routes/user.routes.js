@@ -1,6 +1,6 @@
 import authJwt from "../middleware/authjwt.js";
 import { getUsersList, getUserInfo, getOrdersReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator, getDataReportList, getDataAnalyticsList, downloadReportOrAnalyticsPDF, handleDownloadDataReport, getModeratorsOrAdmin, getUsersReport, getNotifications, clearNotifications } from '../controllers/user.controller.js';
-import { testBots } from "../controllers/test-bots.controller.js";
+import { downloadTestResult, testBots } from "../controllers/test-bots.controller.js";
 // import multer from 'multer';
 
 // const upload = multer();
@@ -148,5 +148,11 @@ export default function (app) {
     "/:id/test-bots",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     testBots
+  )
+
+  app.get(
+    "/download-test-bots-result",
+    [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
+    downloadTestResult
   )
 };
