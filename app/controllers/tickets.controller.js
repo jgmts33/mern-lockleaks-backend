@@ -161,7 +161,16 @@ export const sendMessage = async (req, res) => {
   }
 
   try {
-    let attachedImageNames = []
+
+    const ticket = await Tickets.findByPk(ticket_id);
+
+    if (!ticket) {
+      res.status(404).send({
+        message: "Ticket Not Found!"
+      })
+    }
+
+    let attachedImageNames = [];
     for (let attached_image of attached_images) {
 
       const currentDate = new Date().toLocaleString('en-GB', {
@@ -187,36 +196,38 @@ export const sendMessage = async (req, res) => {
 
     io.emit(`new_message_${ticket_id}`, newMessage);
 
-    const row = await Notifications.create({
-      content: 'Agent responded. Check tickets.',
-      user_id: sender_id
-    });
-
-    io.emit(`notification_${sender_id}`, row);
-
-    const moderatorsOrAdmins = await User.findAll({
-      include: [{
-        model: Role,
-        as: 'roles',
-        where: {
-          [Sequelize.Op.or]: [
-            {
-              name: 'admin'
-            },
-            {
-              name: 'moderator'
-            }
-          ]
-        }
-      }]
-    })
-
-    for (let each of moderatorsOrAdmins) {
-      const newRow = await Notifications.create({
-        content: 'New Message in Ticket!',
-        user_id: each.id
+    if (ticket.user_id != sender_id) {
+      const row = await Notifications.create({
+        content: 'Agent responded. Check tickets.',
+        user_id: sender_id
       });
-      io.emit(`notification_${each.id}`, newRow)
+
+      io.emit(`notification_${sender_id}`, row);
+    } else {
+      const moderatorsOrAdmins = await User.findAll({
+        include: [{
+          model: Role,
+          as: 'roles',
+          where: {
+            [Sequelize.Op.or]: [
+              {
+                name: 'admin'
+              },
+              {
+                name: 'moderator'
+              }
+            ]
+          }
+        }]
+      })
+
+      for (let each of moderatorsOrAdmins) {
+        const newRow = await Notifications.create({
+          content: 'New Message in Ticket!',
+          user_id: each.id
+        });
+        io.emit(`notification_${each.id}`, newRow)
+      }
     }
 
     res.status(200).send({
