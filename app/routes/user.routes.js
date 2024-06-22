@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { getUsersList, getUserInfo, getOrdersReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator, getDataReportList, getDataAnalyticsList, downloadReportOrAnalyticsPDF, handleDownloadDataReport, getModeratorsOrAdmin, getUsersReport, getNotifications, clearNotifications } from '../controllers/user.controller.js';
+import { getUsersList, getUserInfo, getOrdersReport, updatePaymentStatus, handleDeleteSubmition, updateUserInfo, updateUserRole, updateUserVisible, deleteUser, kycSubmit, handleKYCSubmission, uploadCopyrightHolder, downloadCopyrightHolder, updateToModerator, getDataReportList, getDataAnalyticsList, downloadReportOrAnalyticsPDF, handleDownloadDataReport, getModeratorsOrAdmin, getUsersReport, getNotifications, clearNotifications, updateUserEmailVerified } from '../controllers/user.controller.js';
 import { downloadTestResult, testBots } from "../controllers/test-bots.controller.js";
 // import multer from 'multer';
 
@@ -60,6 +60,12 @@ export default function (app) {
     "/user-role/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     updateUserRole
+  )
+
+  app.patch(
+    "/user-email-verify/:id",
+    [authJwt.verifyToken, authJwt.isAdmin],
+    updateUserEmailVerified
   )
 
   app.patch(
@@ -126,11 +132,6 @@ export default function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     downloadReportOrAnalyticsPDF
   )
-
-  // app.get(
-  //   "/moderators-admin",
-  //   getModeratorsOrAdmin
-  // )
 
   app.get(
     "/:id/notification",

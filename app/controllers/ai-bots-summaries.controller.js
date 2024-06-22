@@ -51,7 +51,7 @@ export const scan = async (req, res) => {
 
     console.log("scanRes:", scanRes);
 
-    await newAIBotsSummary.update({
+    const result = await newAIBotsSummary.update({
       result: scanRes.data.total_results,
       progress: 0
     });
