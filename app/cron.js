@@ -81,8 +81,8 @@ export default async () => {
                 Sequelize.Op.between]: [
                   // (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
                   // (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
-                  new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(0, 0),
-                  new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(59, 999)
+                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(0, 0)),
+                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(59, 999))
                 ]
             }
           }
@@ -105,7 +105,7 @@ export default async () => {
           status: { [Sequelize.Op.ne]: 'expired' },
           createdAt: {
             // [Sequelize.Op.lt]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
-            [Sequelize.Op.lt]: new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(59, 999)
+            [Sequelize.Op.lt]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(59, 999))
           }
         }
       });
