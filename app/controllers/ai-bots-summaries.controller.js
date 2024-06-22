@@ -107,7 +107,7 @@ export const downloadAIFaceResult = async (req, res) => {
     const scannedData = await AIBotsSummaries.findOne({
       where: {
         file,
-        process: 0
+        progress: 0
       }
     });
 
@@ -201,7 +201,7 @@ export const getAIFaceResultsList = async (req, res) => {
 
     const scannedData = await AIBotsSummaries.findAll({
       where: {
-        process: 0
+        progress: 0
       },
       order: [['createdAt', 'DESC']]
     });
