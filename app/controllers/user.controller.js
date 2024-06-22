@@ -6,7 +6,7 @@ import archiverZipEncryptable from 'archiver-zip-encryptable';
 import { io } from '../../server.js';
 import path from 'path';
 import bcrypt from 'bcryptjs';
-import { promises } from 'fs';
+import fs from 'fs';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
@@ -938,7 +938,27 @@ export const downloadCopyrightHolder = async (req, res) => {
 
     const filePath = path.join(`/root/lockleaks-backend/uploads/copyright_holder/copyright_holder_${id}.pdf`);
 
-    res.status(200).sendFile(filePath);
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        return res.status(404).send('File not found');
+      }
+
+      // Set headers to prompt download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="document.pdf"');
+
+      // Stream the file to the client
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+
+      fileStream.on('error', (err) => {
+          res.status(500).send(err.message);
+      });
+
+      fileStream.on('end', () => {
+          res.end();
+      });
+    })
 
   } catch (err) {
     res.status(500).send({
