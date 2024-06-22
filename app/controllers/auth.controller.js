@@ -156,7 +156,23 @@ export const sendEmailVerification = async (req, res) => {
         Body: [
           ElasticEmail.BodyPart.constructFromObject({
             ContentType: "HTML",
-            Content: `<div>Hi<br/><br/> Thanks for getting started with LockLeaks!<br/><br/>We need a little more information to complete your registration, including a confirmation of your email address.<br/><br/>Click below to confirm your email address:<br/><br/><br/><a href="https://lockleaks.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a><br/><br/></div>`
+            Content: `<div>
+              Hi
+              <br/><br/> 
+              Thank you for joining Lock Leaks!
+              <br/><br/>
+              To complete your registration, we just need to confirm your email address. Simply click the button below:
+              <br/><br/>
+              <a href="https://lockleaks.com/auth/verify-email/${token}" style="padding: 10px 20px; background: rgb(0, 140, 255); border-radius: 5px; color: white; text-decoration: none; border: none; cursor: pointer;" >Verify Email</a>
+              <br/><br/>
+              If you didn't create an account, you can ignore this email.
+              <br/><br/>
+              Welcome to the Lock Leaks community!
+              <br /><br />
+              Best Regards,
+              <br />
+              The Lock Leaks Team
+              </div>`
           })
         ],
         Subject: "Email Verification | LockLeaks",
