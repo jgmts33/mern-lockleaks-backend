@@ -46,7 +46,7 @@ export const scan = async (req, res) => {
 
     console.log("scanRes:", scanRes);
 
-    await newRRUserSummary.update({
+    const result = await newRRUserSummary.update({
       result: scanRes.data.total_results,
       progress: 0
     });

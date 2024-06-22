@@ -49,7 +49,7 @@ export const scan = async (req, res) => {
       }
     });
 
-    await newRRPhotoSummary.update({
+    const result = await newRRPhotoSummary.update({
       result: scanRes.data.total_results,
       progress: 0
     });
