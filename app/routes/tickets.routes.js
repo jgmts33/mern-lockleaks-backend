@@ -57,7 +57,7 @@ export default function (app) {
   )
 
   app.get(
-    "/current-ticket-status",
+    "/:id/current-ticket-status",
     [authJwt.verifyToken],
     getCurrentTicketsStatus
   )
