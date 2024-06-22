@@ -62,7 +62,7 @@ export const testBots = async (req, res) => {
             scanner: `scanner_${currentDate}_test`
         });
 
-        io.emit('test_scanner_finished', `scanner_${currentDate}_test`);
+        io.emit(`test_scanner_finished_${id}`, `scanner_${currentDate}_test`);
 
         // Social Media Scanner
 
@@ -78,7 +78,7 @@ export const testBots = async (req, res) => {
             sm_scanner: `sm_scanner_${currentDate}_test`
         })
 
-        io.emit('test_sm_scanner_finished', `sm_scanner_${currentDate}_test`);
+        io.emit(`test_sm_scanner_finished_${id}`, `sm_scanner_${currentDate}_test`);
 
         // AI Face Scanner
 
@@ -100,7 +100,7 @@ export const testBots = async (req, res) => {
             ai_face: `ai_face_${currentDate}_test`
         })
 
-        io.emit('test_ai_face_finished', `ai_face_${currentDate}_test`);
+        io.emit(`test_ai_face_finished_${id}`, `ai_face_${currentDate}_test`);
 
         // R&R Photo Scanner
 
@@ -120,7 +120,7 @@ export const testBots = async (req, res) => {
             rr_photo: `rr_photo_${currentDate}_test`
         })
 
-        io.emit('test_rr_photo_finished', `rr_photo_${currentDate}_test`);
+        io.emit(`test_rr_photo_finished_${id}`, `rr_photo_${currentDate}_test`);
 
 
         // R&R Username Scanner
@@ -141,7 +141,7 @@ export const testBots = async (req, res) => {
             rr_user: `rr_user_${currentDate}_test`
         });
 
-        io.emit('test_rr_user_finished', `rr_user_${currentDate}_test`);
+        io.emit(`test_rr_user_finished_${id}`, `rr_user_${currentDate}_test`);
 
         res.status(200).send(result);
 
