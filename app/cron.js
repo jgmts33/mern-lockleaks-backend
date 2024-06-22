@@ -155,7 +155,7 @@ export default async () => {
       }
       await downloadDataReport(dataReportInfo);
       const reportPdfName = `data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataReportInfo.user_id}.pdf`;
-      const reportPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/${reportPdfName}`);
+      const reportPdfBuffer = await promises.readFile(`./pdfs/${reportPdfName}`);
       const reportPdfBase64 = reportPdfBuffer.toString('base64');
 
       let attachments = [
@@ -169,7 +169,7 @@ export default async () => {
       if (user.subscription.plan_id == 4) {
         await downloadDataAnalytics(dataAnalyticsInfo);
         const analyticsPdfName = `data-analytics_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataAnalyticsInfo.user_id}.pdf`;
-        const analyticsPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/${analyticsPdfName}`);
+        const analyticsPdfBuffer = await promises.readFile(`./pdfs/${analyticsPdfName}`);
         const analyticsPdfBase64 = analyticsPdfBuffer.toString('base64');
 
         await user.update({
