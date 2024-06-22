@@ -8,6 +8,7 @@ import ElasticEmail from '@elasticemail/elasticemail-client';
 import elasticEmailConfig from './config/elasticEmail.config..js';
 import { downloadDataReport } from "./utils/data-report-to-pdf.js";
 import { downloadDataAnalytics } from "./utils/data-analytics-to-pdf.js";
+import moment from "moment-timezone";
 
 let defaultClient = ElasticEmail.ApiClient.instance;
 
@@ -152,7 +153,6 @@ export default async () => {
 
         // @TODO: should complete this with Social Media , Personal Agent , AI Bots
       }
-
       await downloadDataReport(dataReportInfo);
       const reportPdfName = `data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataReportInfo.user_id}.pdf`;
       const reportPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/${reportPdfName}`);
