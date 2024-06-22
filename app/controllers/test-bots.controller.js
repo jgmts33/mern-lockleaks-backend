@@ -58,7 +58,7 @@ export const testBots = async (req, res) => {
         });
 
 
-        result.update({
+        await result.update({
             scanner: `scanner_${currentDate}_test`
         });
 
