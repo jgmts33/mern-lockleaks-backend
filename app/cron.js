@@ -79,13 +79,22 @@ export default async () => {
             'subscription.from': {
               [
                 Sequelize.Op.between]: [
-                  (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
-                  (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
+                  // (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
+                  // (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
+                  new Date(new Date().setMinutes(new Date().getMinutes() - 1)).setSeconds(0, 0),
+                  new Date(new Date().setMinutes(new Date().getMinutes() - 1)).setSeconds(59, 999)
                 ]
             }
           }
         ]
-      }
+      },
+      include: [{
+        model: Role,
+        as: 'roles',
+        where: {
+          name: 'user'
+        }
+      }]
     }) || [];
 
     for (const user of users) {
@@ -95,7 +104,8 @@ export default async () => {
           user_id: user.id,
           status: { [Sequelize.Op.ne]: 'expired' },
           createdAt: {
-            [Sequelize.Op.lt]: (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            // [Sequelize.Op.lt]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            [Sequelize.Op.lt]: new Date(new Date().setMinutes(new Date().getMinutes() - 1)).setSeconds(59, 999)
           }
         }
       });
@@ -144,7 +154,7 @@ export default async () => {
       }
 
       await downloadDataReport(dataReportInfo);
-      const reportPdfName = `data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataReportInfo.user_id}.pdf.pdf`;
+      const reportPdfName = `data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataReportInfo.user_id}.pdf`;
       const reportPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/${reportPdfName}`);
       const reportPdfBase64 = reportPdfBuffer.toString('base64');
 
@@ -158,7 +168,7 @@ export default async () => {
 
       if (user.subscription.plan_id == 4) {
         await downloadDataAnalytics(dataAnalyticsInfo);
-        const analyticsPdfName = `data-analytics_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataAnalyticsInfo.user_id}.pdf.pdf`;
+        const analyticsPdfName = `data-analytics_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataAnalyticsInfo.user_id}.pdf`;
         const analyticsPdfBuffer = await promises.readFile(`root/lockleaks-backend/pdfs/${analyticsPdfName}`);
         const analyticsPdfBase64 = analyticsPdfBuffer.toString('base64');
 
@@ -179,7 +189,7 @@ export default async () => {
           content: 'Data Analytics sent. Check your email.',
           user_id: user.id
         });
-    
+
         io.emit(`notification_${user.id}`, row);
 
       } else {
@@ -234,7 +244,7 @@ export default async () => {
         content: 'Data report sent. Check your email.',
         user_id: user.id
       });
-  
+
       io.emit(`notification_${user.id}`, row);
     }
 
