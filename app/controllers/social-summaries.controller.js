@@ -40,7 +40,7 @@ export const scan = async (req, res) => {
 
     const scanRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/social`, requestData);
 
-    await newASocialSummary.update({
+    const result = await newASocialSummary.update({
       result: scanRes.data.total_results,
       progress: 0
     });
