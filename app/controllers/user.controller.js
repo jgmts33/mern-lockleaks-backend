@@ -968,7 +968,7 @@ export const downloadCopyrightHolder = async (req, res) => {
 
   try {
 
-    const filePath = path.join(`/root/lockleaks-backend/uploads/copyright_holder/copyright_holder_${id}.pdf`);
+    const filePath = path.join(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
 
     fs.access(filePath, fs.constants.F_OK, (err) => {
       if (err) {

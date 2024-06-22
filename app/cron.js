@@ -17,7 +17,17 @@ apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
-const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets, notifications: Notifications, role: Role } = db;
+const {
+  scrapeSummary: ScrapeSummary,
+  socialSummaries: SocialSummaries,
+  socialMediaProfiles: SocialMediaProfiles,
+  aiBotsSummaries: AIBotsSummaries,
+  user: User,
+  messages: Messages,
+  tickets: Tickets,
+  notifications: Notifications,
+  role: Role
+} = db;
 
 export default async () => {
 
@@ -82,8 +92,8 @@ export default async () => {
                 Sequelize.Op.between]: [
                   // (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
                   // (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
-                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(0, 0)),
-                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(59, 999))
+                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0)),
+                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(59, 999))
                 ]
             }
           }
@@ -100,17 +110,6 @@ export default async () => {
 
     for (const user of users) {
 
-      const scrapeDataList = await ScrapeSummary.findAll({
-        where: {
-          user_id: user.id,
-          status: { [Sequelize.Op.ne]: 'expired' },
-          createdAt: {
-            // [Sequelize.Op.lt]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
-            [Sequelize.Op.lt]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 5)).setSeconds(0, 0))
-          }
-        }
-      });
-
       let dataReportInfo = {
         name: user.name,
         key_metrics: 0,
@@ -122,15 +121,19 @@ export default async () => {
         user_id: user.id
       }
 
-      let dataAnalyticsInfo = {
-        name: user.name,
-        hosting_revenue: 0,
-        subscription_profits: 0,
-        advetisement_revenue: 0,
-        intermediary_forums_revenue: 0,
-        active_websites: 0,
-        user_id: user.id,
-      }
+      // Calculate Scanner Data
+
+      const scrapeDataList = await ScrapeSummary.findAll({
+        where: {
+          user_id: user.id,
+          status: { [Sequelize.Op.ne]: 'expired' },
+          prgoress: { [Sequelize.Op.ne]: 0 },
+          createdAt: {
+            // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
+          }
+        }
+      });
 
       for (const scrapeData of scrapeDataList) {
         dataReportInfo.key_metrics += (
@@ -150,9 +153,90 @@ export default async () => {
         )
 
         dataReportInfo.file_hosted += scrapeData.good_count;
-
-        // @TODO: should complete this with Social Media , Personal Agent , AI Bots
       }
+
+      // Calculate Social Scanner Data
+
+      const socialScannerDataList = await SocialSummaries.findAll({
+        attributes: [
+          [Sequelize.fn('SUM', Sequelize.col('result')), 'totalCount'],
+        ],
+        where: {
+          user_id: user.id,
+          status: { [Sequelize.Op.ne]: 'expired' },
+          prgoress: { [Sequelize.Op.ne]: 0 },
+          createdAt: {
+            // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
+          }
+        }
+      });
+      dataReportInfo.social_media += (socialScannerDataList[0]?.dataValues.totalCount || 0);
+
+      // Calculate Social Profiels Data
+
+      const socialProfilesDataList = await SocialMediaProfiles.findAll({
+        attributes: [
+          [Sequelize.fn('SUM', Sequelize.col('count')), 'totalCount'],
+        ],
+        where: {
+          user_id: user.id,
+          status: { [Sequelize.Op.ne]: 'expired' },
+          createdAt: {
+            // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
+          }
+        }
+      });
+      dataReportInfo.social_media += (socialProfilesDataList[0]?.dataValues.totalCount || 0);
+
+      // Calculate AI Face Scanner Data
+
+      const aiFaceScannerDataList = await AIBotsSummaries.findAll({
+        attributes: [
+          [Sequelize.fn('SUM', Sequelize.col('result')), 'totalCount'],
+        ],
+        where: {
+          user_id: user.id,
+          status: { [Sequelize.Op.ne]: 'expired' },
+          prgoress: { [Sequelize.Op.ne]: 0 },
+          createdAt: {
+            // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
+          }
+        }
+      });
+      dataReportInfo.ai_bots = aiFaceScannerDataList[0]?.dataValues.totalCount || 0;
+
+      // Calculate Personal Agent Count Data
+
+      const ticketsDataList = await Tickets.findAll({
+        attributes: [
+          [Sequelize.fn('SUM', Sequelize.col('count')), 'totalCount'],
+        ],
+        where: {
+          user_id: user.id,
+          status: { [Sequelize.Op.ne]: 'expired' },
+          createdAt: {
+            // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
+          }
+        }
+      });
+      dataReportInfo.personal_agent = ticketsDataList[0]?.dataValues.totalCount || 0;
+
+      // Should be fixed later
+
+      let dataAnalyticsInfo = {
+        name: user.name,
+        hosting_revenue: dataReportInfo.file_hosted,
+        subscription_profits: dataReportInfo.adult_tubes,
+        advetisement_revenue: dataReportInfo.adult_tubes,
+        intermediary_forums_revenue: dataReportInfo.adult_tubes,
+        active_websites: dataReportInfo.adult_tubes,
+        user_id: user.id,
+      }
+
       await downloadDataReport(dataReportInfo);
       const reportPdfName = `data-report_from_${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD_MMM_YYYY")}_to_${moment(new Date()).format("DD_MMM_YYYY")}_${dataReportInfo.user_id}.pdf`;
       const reportPdfBuffer = await promises.readFile(`./pdfs/${reportPdfName}`);
