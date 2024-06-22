@@ -274,3 +274,31 @@ export const addHelpCounts = async (req, res) => {
   }
 
 }
+
+export const getCurrentTicketsStatus = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+    // Calculate the sum of counts for records created today
+    const count = await Tickets.count({
+      where: {
+        user_id: id,
+        createdAt: {
+          [Sequelize.Op.gte]: `${currentDate}T00:00:00Z`, // Start of the day
+          [Sequelize.Op.lt]: `${currentDate}T23:59:59Z`, // End of the day
+        },
+      },
+    });
+
+    res.status(200).json({
+      count
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while calculating the total count.' });
+  }
+
+}

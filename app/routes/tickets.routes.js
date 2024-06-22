@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authjwt.js";
-import { addHelpCounts, createNewTicket, getMessagesByTicket, getTickets, getTicketsByUser, sendMessage, updateTicketStatus } from '../controllers/tickets.controller.js';
+import { addHelpCounts, createNewTicket, getCurrentTicketsStatus, getMessagesByTicket, getTickets, getTicketsByUser, sendMessage, updateTicketStatus } from '../controllers/tickets.controller.js';
 // import multer from 'multer';
 
 // const upload = multer();
@@ -54,6 +54,12 @@ export default function (app) {
     "/tickets-message",
     [authJwt.verifyToken],
     sendMessage
+  )
+
+  app.get(
+    "/current-ticket-status",
+    [authJwt.verifyToken],
+    getCurrentTicketsStatus
   )
 };
 
