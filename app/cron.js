@@ -16,7 +16,7 @@ apikey.apiKey = elasticEmailConfig.auth.apiKey
 
 let api = new ElasticEmail.EmailsApi()
 
-const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets, notifications: Notifications } = db;
+const { scrapeSummary: ScrapeSummary, user: User, messages: Messages, tickets: Tickets, notifications: Notifications, role: Role } = db;
 
 export default async () => {
 
