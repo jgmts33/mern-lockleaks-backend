@@ -154,10 +154,10 @@ export const getSocialResultByUser = async (req, res) => {
       totalResult += eachData.count;
     }
 
-    if (scannedData[0].createdAt > profilesData[0].createdAt) {
-      lastResult = scannedData[0].result
+    if (scannedData[0]?.dataValues.createdAt > profilesData[0]?.dataValues.createdAt) {
+      lastResult = scannedData[0].dataValues.result
     } else {
-      lastResult = profilesData[0].count
+      lastResult = profilesData[0].dataValues.count
     }
 
     res.status(200).send({
@@ -195,10 +195,10 @@ export const getSocialResult = async (req, res) => {
       totalResult += eachData.count;
     }
 
-    if (scannedData[0].createdAt > profilesData[0].createdAt) {
-      lastResult = scannedData[0].result
+    if (scannedData[0]?.dataValues.createdAt > profilesData[0]?.dataValues.createdAt) {
+      lastResult = scannedData[0].dataValues.result
     } else {
-      lastResult = profilesData[0].count
+      lastResult = profilesData[0].dataValues.count
     }
 
     res.status(200).send({
