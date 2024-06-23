@@ -90,10 +90,10 @@ export default async () => {
             'subscription.from': {
               [
                 Sequelize.Op.between]: [
-                  // (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
-                  // (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
-                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0)),
-                  new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(59, 999))
+                  (new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0),
+                  (new Date().setMonth(new Date().getMonth() - 1)).setHours(23, 59, 59, 999)
+                  // new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0)),
+                  // new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(59, 999))
                 ]
             }
           }
@@ -129,8 +129,8 @@ export default async () => {
           status: { [Sequelize.Op.ne]: 'expired' },
           progress: 0,
           createdAt: {
-            // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
-            [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
+            [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
+            // [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
           }
         }
       });
