@@ -14,8 +14,8 @@ export const downloadDataReport = async (info) => {
     doc.setFontSize(15);
     doc.text(`${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD MMM, YYYY")} ~ ${moment(new Date()).format("DD MMM, YYYY")}`, 116, 18);
     doc.text(`Dear ${info.name}`, 10, 30);
-    doc.text(`Thank you for being a valued subscriber to our services. Enclosed is your monthly analysis report between `, 10, 39);
-    doc.text(`${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD MMM, YYYY")} and ${moment(new Date()).format("DD MMM, YYYY")}. This report highlights the key activities and insights gathered over the past month.`, 10, 48);
+    doc.text(`Thank you for being a valued subscriber to our services. This report highlights the key activities and insights`, 10, 39);
+    doc.text(`gathered over the past month.`, 10, 48);
     doc.setFontSize(15);
     doc.text('1. Overview', 10, 60);
     doc.setFontSize(12);
