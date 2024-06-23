@@ -10,7 +10,7 @@ export const downloadDataReport = async (info) => {
     });
 
     doc.setFontSize(18);
-    doc.text('Monthly Analysis Report - Lock Leaks', 102, 12);
+    doc.text('Monthly Data Report - Lock Leaks', 102, 12);
     doc.setFontSize(15);
     doc.text(`${moment(new Date().setMonth(new Date().getMonth() - 1)).format("DD MMM, YYYY")} ~ ${moment(new Date()).format("DD MMM, YYYY")}`, 116, 18);
     doc.text(`Dear ${info.name}`, 10, 30);

@@ -127,7 +127,7 @@ export default async () => {
         where: {
           user_id: user.id,
           status: { [Sequelize.Op.ne]: 'expired' },
-          progress: { [Sequelize.Op.ne]: 0 },
+          progress: 0,
           createdAt: {
             // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
             [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
@@ -164,14 +164,14 @@ export default async () => {
         where: {
           user_id: user.id,
           expired: false,
-          progress: { [Sequelize.Op.ne]: 0 },
+          progress: 0,
           createdAt: {
             // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
             [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
           }
         }
       });
-      dataReportInfo.social_media += (socialScannerDataList[0]?.dataValues.totalCount || 0);
+      dataReportInfo.social_media += (Number(socialScannerDataList[0]?.dataValues.totalCount) || 0);
 
       // Calculate Social Profiels Data
 
@@ -187,7 +187,7 @@ export default async () => {
           }
         }
       });
-      dataReportInfo.social_media += (socialProfilesDataList[0]?.dataValues.totalCount || 0);
+      dataReportInfo.social_media += (Number(socialProfilesDataList[0]?.dataValues.totalCount) || 0);
 
       // Calculate AI Face Scanner Data
 
@@ -293,7 +293,7 @@ export default async () => {
         <p>Thank you for choosing our service..</p>
         <br />
         <p>Best regards,</p>
-        <p>Lock Leaks</p>
+        <p>Lock Leaks Team</p>
         <a href="https://lockleaks.com">lockleaks.com</a>
         `
       }

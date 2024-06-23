@@ -1080,6 +1080,7 @@ export const getDataReportList = async (req, res) => {
           [Sequelize.Op.ne]: ""
         }
       },
+      order: [['createdAt', 'DESC']],
       attributes: ['id', 'email', 'name', 'data_report']
     });
 
@@ -1102,6 +1103,7 @@ export const getDataAnalyticsList = async (req, res) => {
           [Sequelize.Op.ne]: ""
         }
       },
+      order: [['createdAt', 'DESC']],
       attributes: ['id', 'email', 'name', 'data_analytics']
     });
 
