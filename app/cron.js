@@ -198,7 +198,7 @@ export default async () => {
         where: {
           user_id: user.id,
           expired: false,
-          progress: { [Sequelize.Op.ne]: 0 },
+          progress: 0,
           createdAt: {
             // [Sequelize.Op.gte]: new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0)
             [Sequelize.Op.gte]: new Date(new Date(new Date().setMinutes(new Date().getMinutes() - 15)).setSeconds(0, 0))
