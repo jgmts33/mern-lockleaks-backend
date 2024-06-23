@@ -969,9 +969,8 @@ export const downloadCopyrightHolder = async (req, res) => {
   try {
 
     const pdfBuffer = await promises.readFile(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
-    const pdfBase64 = pdfBuffer.toString('base64');
 
-    return res.status(200).send(pdfBase64);
+    return res.status(200).send(pdfBuffer);
 
   } catch (err) {
     res.status(500).send({
@@ -1104,10 +1103,8 @@ export const downloadReportOrAnalyticsPDF = async (req, res) => {
   try {
 
     const reportPdfBuffer = await promises.readFile(`./pdfs/${file}`);
-    const reportPdfBase64 = reportPdfBuffer.toString('base64');
 
-
-    res.status(200).send(reportPdfBase64);
+    res.status(200).send(reportPdfBuffer);
 
   } catch (err) {
     res.status(500).send({
