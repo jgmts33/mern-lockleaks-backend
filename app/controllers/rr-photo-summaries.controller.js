@@ -155,7 +155,7 @@ export const getRRPhotoResultByUser = async (req, res) => {
 
     res.status(200).send({
       totalResult,
-      lastResult: scannedData[0]?.result || 0
+      lastResult: scannedData[0]?.dataVales.result || 0
     })
 
   } catch (err) {
@@ -183,7 +183,7 @@ export const getRRPhotoResult = async (req, res) => {
 
     res.status(200).send({
       totalResult,
-      lastResult: scannedData[0]?.result || 0
+      lastResult: scannedData[0]?.dataVales.result || 0
     })
 
   } catch (err) {
