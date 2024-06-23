@@ -36,7 +36,7 @@ const app = express({
 });
 
 app.use(cors({
-  origin: "*"
+  origin: ["https://lockleaks.com"]
 }));
 
 app.use(
@@ -46,10 +46,15 @@ app.use(
     parameterLimit: 50000
   })
 );
-
 app.use(express.json());
 
-db.sequelize.sync({ force: true }).then(() => {
+// Centralized error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ message: 'Something broke!' });
+});
+
+db.sequelize.sync().then(() => {
   db.role.create({
     id: 1,
     name: "user"
@@ -66,14 +71,11 @@ db.sequelize.sync({ force: true }).then(() => {
   });
 });
 
-app.get("/", (req, res) => {
-  res.send({ mesage: "Server is alive" });
-})
-
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: ["https://lockleaks.com"],
     credentials: true
   }
 });
@@ -90,41 +92,47 @@ io.on("connection", (socket) => {
 
 })
 
-app.get("/cron-job", async(req, res) => {
+
+app.get("/", (req, res) => {
+  res.send({ mesage: "Server is alive" });
+});
+
+app.get("/cron-job", async (req, res) => {
   await cronFunc();
   res.send({ mesage: "Cron worked correctly" });
-})
+});
 
-authRoutes(app);
-scrapeRoutes(app);
-keywordsRoutes(app);
-usernamesRoutes(app);
-socialUsernamesRoutes(app);
-dmcaRoutes(app);
-blogRoutes(app);
-userRoutes(app);
-imagesRoutes(app);
-helpRoutes(app);
-proxiesBotRoutes(app);
-customerReviewRoutes(app);
-socialMediaProfilesRoutes(app);
-vpsListRoutes(app);
-ticketsRoutes(app);
-paymentLinksRoutes(app);
-newsRoutes(app);
-pingModelsRoutes(app);
-reportsRoutes(app);
-socialScanRoutes(app);
-aiFaceScanRoutes(app);
-rrPhotoScanRoutes(app);
-rrUserScanRoutes(app);
+[
+  authRoutes,
+  scrapeRoutes,
+  keywordsRoutes,
+  usernamesRoutes,
+  socialUsernamesRoutes,
+  dmcaRoutes,
+  blogRoutes,
+  userRoutes,
+  imagesRoutes,
+  helpRoutes,
+  proxiesBotRoutes,
+  customerReviewRoutes,
+  socialMediaProfilesRoutes,
+  vpsListRoutes,
+  ticketsRoutes,
+  paymentLinksRoutes,
+  newsRoutes,
+  pingModelsRoutes,
+  reportsRoutes,
+  socialScanRoutes,
+  aiFaceScanRoutes,
+  rrPhotoScanRoutes,
+  rrUserScanRoutes
+].forEach(route => route(app));
+
 
 const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 })
-
-
 
 export { io };
