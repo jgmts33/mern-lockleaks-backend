@@ -968,29 +968,10 @@ export const downloadCopyrightHolder = async (req, res) => {
 
   try {
 
-    const filePath = path.join(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
+    const pdfBuffer = await promises.readFile(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
+    const pdfBase64 = pdfBuffer.toString('base64');
 
-    fs.access(filePath, fs.constants.F_OK, (err) => {
-      if (err) {
-        return res.status(404).send('File not found');
-      }
-
-      // Set headers to prompt download
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename="document.pdf"');
-
-      // Stream the file to the client
-      const fileStream = fs.createReadStream(filePath);
-      fileStream.pipe(res);
-
-      fileStream.on('error', (err) => {
-        res.status(500).send(err.message);
-      });
-
-      fileStream.on('end', () => {
-        res.end();
-      });
-    })
+    res.send(200).send(pdfBase64)
 
   } catch (err) {
     res.status(500).send({
