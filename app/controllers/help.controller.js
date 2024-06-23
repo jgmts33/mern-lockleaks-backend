@@ -95,8 +95,8 @@ export const addNewArticle = async (req, res) => {
       title: newArticle.title,
       content: newArticle.content,
       categoryId: newArticle.categoryId,
-      likes: article.likes,
-      dislikes: article.dislikes
+      likes: newArticle.likes,
+      dislikes: newArticle.dislikes
     });
 
   } catch (err) {
