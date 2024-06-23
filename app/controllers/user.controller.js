@@ -6,7 +6,7 @@ import archiverZipEncryptable from 'archiver-zip-encryptable';
 import { io } from '../../server.js';
 import path from 'path';
 import bcrypt from 'bcryptjs';
-import fs from 'fs';
+import fs, { promises } from 'fs';
 
 archiver.registerFormat('zip-encryptable', archiverZipEncryptable);
 
@@ -984,11 +984,11 @@ export const downloadCopyrightHolder = async (req, res) => {
       fileStream.pipe(res);
 
       fileStream.on('error', (err) => {
-          res.status(500).send(err.message);
+        res.status(500).send(err.message);
       });
 
       fileStream.on('end', () => {
-          res.end();
+        res.end();
       });
     })
 
@@ -1122,9 +1122,11 @@ export const downloadReportOrAnalyticsPDF = async (req, res) => {
 
   try {
 
-    const filePath = path.join(`/root/lockleaks-backend/pdfs/${file}`);
+    const reportPdfBuffer = await promises.readFile(`./pdfs/${file}`);
+    const reportPdfBase64 = reportPdfBuffer.toString('base64');
 
-    res.status(200).sendFile(filePath);
+
+    res.status(200).send(reportPdfBase64);
 
   } catch (err) {
     res.status(500).send({
