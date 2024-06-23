@@ -971,7 +971,7 @@ export const downloadCopyrightHolder = async (req, res) => {
     const pdfBuffer = await promises.readFile(`./uploads/copyright_holder/copyright_holder_${id}.pdf`);
     const pdfBase64 = pdfBuffer.toString('base64');
 
-    res.send(200).send(pdfBase64)
+    return res.status(200).send(pdfBase64);
 
   } catch (err) {
     res.status(500).send({
