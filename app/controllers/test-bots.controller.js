@@ -75,7 +75,7 @@ export const testBots = async (req, res) => {
         })
 
         await result.update({
-            sm_scanner: `sm_scanner_${currentDate}_test`
+            social: `sm_scanner_${currentDate}_test`
         })
 
         io.emit(`test_sm_scanner_finished_${id}`, `sm_scanner_${currentDate}_test`);
@@ -131,7 +131,7 @@ export const testBots = async (req, res) => {
         rr_user_data.append('email', user.email);
         rr_user_data.append('username', user.name);
 
-        const rrUserScannerRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/rr/user`, rr_user_data, {
+        const rrUserScannerRes = await axios.post(`${process.env.BOT_API_ENDPOINT}/scan/rr/username`, rr_user_data, {
             headers: {
                 ...rr_user_data.getHeaders()
             }
