@@ -28,7 +28,7 @@ export const createNewSocialUsername = async (req, res) => {
   const { username } = req.body;
 
   try {
-    
+
     const row = await SocialUsernames.create({
       username,
       userId: id
@@ -51,7 +51,7 @@ export const updateSocialUsername = async (req, res) => {
     const row = await SocialUsernames.findByPk(id);
 
     if (!row) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "Social Username is not found"
       })
     }
