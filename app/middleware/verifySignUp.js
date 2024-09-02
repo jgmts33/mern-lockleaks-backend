@@ -3,24 +3,21 @@ import db from '../models/index.js';
 const ROLES = db.ROLES;
 const User = db.user;
 
-export const checkDuplicateUsernameOrEmail = (req, res, next) => {
+export const checkDuplicateUsernameOrEmail = async (req, res, next) => {
 
   // Email
-  User.findOne({
+  const user = await User.findOne({
     where: {
       email: req.body.email
     }
-  }).then(user => {
-    if (user) {
-      res.status(400).send({
-        message: "Failed! Email is already in user!"
-      });
-      return;
-    }
-
-    next();
-  });
-
+  })
+  if (user) {
+    res.status(400).send({
+      message: "Failed! Email is already in user!"
+    });
+    return;
+  }
+  next();
 }
 
 export const checkRolesExisted = (req, res, next) => {
